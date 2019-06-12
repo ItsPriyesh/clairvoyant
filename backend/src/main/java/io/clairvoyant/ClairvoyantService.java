@@ -8,9 +8,8 @@ import io.grpc.stub.StreamObserver;
 final class ClairvoyantService extends ClairvoyantServiceGrpc.ClairvoyantServiceImplBase {
     @Override
     public void createDataPoint(DataPoint request, StreamObserver<Ack> responseObserver) {
-        super.createDataPoint(request, responseObserver);
-
         // Do stuff with received DataPoint payload
+        System.out.println(request);
 
         Ack ack = Ack.newBuilder()
                 .setDataPointId(request.getId())
