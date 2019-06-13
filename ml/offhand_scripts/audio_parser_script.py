@@ -2,8 +2,8 @@ import os
 
 dir_ = '/Users/justin/desktop/school/4th_year/FYDP/audio'
 
-if __name__ == "__main__":
-	os.chdir(dir_)
+
+def delete_bad_audio():
 	not_wanted = ['0', '2', '3', '4', '7', '9']
 	
 	for subdir, dirs, files in os.walk(dir_):
@@ -20,7 +20,23 @@ if __name__ == "__main__":
 	    			print(split_str)
 	    			print(file)
 	    			print("going to remove {0} file".format(file))
-	    			up_path = subdir + '/' + file
-	    			print("path: ", up_path)
-	    			os.remove(up_path)
+	    			cur_path = subdir + '/' + file
+	    			print("path: ", cur_path)
+	    			os.remove(cur_path)
 	    			break
+
+def move_audio():
+	for subdir, dirs, files in os.walk(dir_):
+	    for file in files:
+	    	cur_path = subdir + '/' + file
+	    	new_path = dir_ + '/' + file
+	    	print("cur_path: ", cur_path)
+	    	print("new_path: ", new_path)
+	    	os.rename(cur_path, new_path)
+
+if __name__ == "__main__":
+	os.chdir(dir_)
+
+	move_audio()
+
+

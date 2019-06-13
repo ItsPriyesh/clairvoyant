@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split 
 
-audio_dir = '/Users/justin/desktop/school/4th_year/FYDP/clairvoyant/ml/audio_samples/gun'
+audio_dir = '/Users/justin/desktop/school/4th_year/FYDP/audio/'
 
 def process_audio(sample):
 	## sample rate conversion
@@ -53,14 +53,23 @@ def extract_features(file_name):
 
 	return mfccs
 
-"""
-TODO: get samples for each class, run MFCCS on each, pipe into df for model training
-"""
 def create_df():
-	# TODO
-	df = pd.DataFrame()
+	path = os.getcwd() + '/' + "UpdatedUrbanSound.csv"
+	df = pd.read_csv(path)
 
-	return df
+	features = []
+
+	# Iterate through each sound file and extract the features 
+	for index, row in df.iterrows():
+	    file_name = os.path.join(os.path.abspath(audio_dir),str(row["slice_file_name"]))
+	    class_label = row["class"]
+	    data = extract_features(file_name)
+	    features.append([data, class_label])
+
+	features_df = pd.DataFrame(features, columns=['feature','class_label'])
+	features_df.to_csv("features_df.csv")
+	
+	return features_df
 
 def create_train_test_splits(df):
 	# Convert features and corresponding classification labels into numpy arrays
