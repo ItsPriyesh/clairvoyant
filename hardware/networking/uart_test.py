@@ -1,6 +1,6 @@
 import serial
 
-print "Starting uart stream between RPI Cosole and UART port"
+print ("Starting uart stream between RPI Cosole and UART port")
 
 
 ser = serial.Serial('/dev/ttyAMA0', baudrate=115200,
@@ -24,7 +24,7 @@ while:
 	    while True:
 	        if ser.inWaiting() > 0:
 	            data = ser.read()
-	            print data
+	            print (data)
 	        
 	except KeyboardInterrupt:
 	    print "Exiting Program"
