@@ -19,6 +19,11 @@ class ClairvoyantServiceStub(object):
         request_serializer=clairvoyant__pb2.DataPoint.SerializeToString,
         response_deserializer=clairvoyant__pb2.Ack.FromString,
         )
+    self.Ping = channel.unary_unary(
+        '/io.clairvoyant.proto.ClairvoyantService/Ping',
+        request_serializer=clairvoyant__pb2.Heartbeat.SerializeToString,
+        response_deserializer=clairvoyant__pb2.Ack.FromString,
+        )
 
 
 class ClairvoyantServiceServicer(object):
@@ -32,12 +37,24 @@ class ClairvoyantServiceServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def Ping(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_ClairvoyantServiceServicer_to_server(servicer, server):
   rpc_method_handlers = {
       'CreateDataPoint': grpc.unary_unary_rpc_method_handler(
           servicer.CreateDataPoint,
           request_deserializer=clairvoyant__pb2.DataPoint.FromString,
+          response_serializer=clairvoyant__pb2.Ack.SerializeToString,
+      ),
+      'Ping': grpc.unary_unary_rpc_method_handler(
+          servicer.Ping,
+          request_deserializer=clairvoyant__pb2.Heartbeat.FromString,
           response_serializer=clairvoyant__pb2.Ack.SerializeToString,
       ),
   }

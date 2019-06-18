@@ -20,10 +20,36 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='io.clairvoyant.proto',
   syntax='proto3',
   serialized_options=_b('P\001'),
-  serialized_pb=_b('\n\x11\x63lairvoyant.proto\x12\x14io.clairvoyant.proto\"*\n\tDataPoint\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\ttimestamp\x18\x02 \x01(\x03\"\x1a\n\x03\x41\x63k\x12\x13\n\x0b\x64\x61taPointId\x18\x01 \x01(\x05\x32\x65\n\x12\x43lairvoyantService\x12O\n\x0f\x43reateDataPoint\x12\x1f.io.clairvoyant.proto.DataPoint\x1a\x19.io.clairvoyant.proto.Ack\"\x00\x42\x02P\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x11\x63lairvoyant.proto\x12\x14io.clairvoyant.proto\"\xcf\x04\n\tDataPoint\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\ttimestamp\x18\x02 \x01(\x03\x12:\n\x10initial_location\x18\x03 \x01(\x0b\x32 .io.clairvoyant.proto.Coordinate\x12=\n\rvoice_payload\x18\x04 \x01(\x0b\x32$.io.clairvoyant.proto.VoiceDataPointH\x00\x12\x41\n\x0fvehicle_payload\x18\x05 \x01(\x0b\x32&.io.clairvoyant.proto.VehicleDataPointH\x00\x12\x41\n\x0fmissile_payload\x18\x06 \x01(\x0b\x32&.io.clairvoyant.proto.MissileDataPointH\x00\x12\x41\n\x0fgunshot_payload\x18\x07 \x01(\x0b\x32&.io.clairvoyant.proto.GunshotDataPointH\x00\x12\x10\n\x08tampered\x18\x08 \x01(\x08\x12\x10\n\x08presence\x18\t \x01(\x08\x12\x10\n\x08\x64uration\x18\n \x01(\x03\x12\x15\n\rdecibel_level\x18\x0b \x01(\x02\x12:\n\x0c\x61\x63\x63\x65leration\x18\x0c \x03(\x0b\x32$.io.clairvoyant.proto.CartesianPoint\x12\x32\n\x04gyro\x18\r \x03(\x0b\x32$.io.clairvoyant.proto.CartesianPoint\x12\x12\n\nconfidence\x18\x0e \x01(\x02\x42\x0e\n\x0cpayload_type\"X\n\x0eVoiceDataPoint\x12\x15\n\raudio_message\x18\x01 \x01(\x0c\x12\x13\n\x0bspeech_text\x18\x02 \x01(\t\x12\x1a\n\x12\x65stimated_distance\x18\x03 \x01(\x05\"\x9d\x01\n\x10VehicleDataPoint\x12@\n\x04type\x18\x01 \x01(\x0e\x32\x32.io.clairvoyant.proto.VehicleDataPoint.VehicleType\x12\x1a\n\x12\x65stimated_distance\x18\x02 \x01(\x05\"+\n\x0bVehicleType\x12\x07\n\x03\x43\x41R\x10\x00\x12\t\n\x05TRUCK\x10\x01\x12\x08\n\x04TANK\x10\x02\".\n\x10MissileDataPoint\x12\x1a\n\x12\x65stimated_distance\x18\x01 \x01(\x05\".\n\x10GunshotDataPoint\x12\x1a\n\x12\x65stimated_distance\x18\x01 \x01(\x05\"A\n\tHeartbeat\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x11\n\ttimestamp\x18\x02 \x01(\x03\x12\x15\n\rbattery_level\x18\x03 \x01(\x02\"\x1c\n\x03\x41\x63k\x12\x15\n\rdata_point_id\x18\x01 \x01(\x05\"1\n\x0e\x43\x61rtesianPoint\x12\t\n\x01x\x18\x01 \x01(\x02\x12\t\n\x01y\x18\x02 \x01(\x02\x12\t\n\x01z\x18\x03 \x01(\x02\"1\n\nCoordinate\x12\x10\n\x08latitude\x18\x01 \x01(\x02\x12\x11\n\tlongitude\x18\x02 \x01(\x02\x32\xab\x01\n\x12\x43lairvoyantService\x12O\n\x0f\x43reateDataPoint\x12\x1f.io.clairvoyant.proto.DataPoint\x1a\x19.io.clairvoyant.proto.Ack\"\x00\x12\x44\n\x04Ping\x12\x1f.io.clairvoyant.proto.Heartbeat\x1a\x19.io.clairvoyant.proto.Ack\"\x00\x42\x02P\x01\x62\x06proto3')
 )
 
 
+
+_VEHICLEDATAPOINT_VEHICLETYPE = _descriptor.EnumDescriptor(
+  name='VehicleType',
+  full_name='io.clairvoyant.proto.VehicleDataPoint.VehicleType',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='CAR', index=0, number=0,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='TRUCK', index=1, number=1,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='TANK', index=2, number=2,
+      serialized_options=None,
+      type=None),
+  ],
+  containing_type=None,
+  serialized_options=None,
+  serialized_start=842,
+  serialized_end=885,
+)
+_sym_db.RegisterEnumDescriptor(_VEHICLEDATAPOINT_VEHICLETYPE)
 
 
 _DATAPOINT = _descriptor.Descriptor(
@@ -47,6 +73,138 @@ _DATAPOINT = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='initial_location', full_name='io.clairvoyant.proto.DataPoint.initial_location', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='voice_payload', full_name='io.clairvoyant.proto.DataPoint.voice_payload', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='vehicle_payload', full_name='io.clairvoyant.proto.DataPoint.vehicle_payload', index=4,
+      number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='missile_payload', full_name='io.clairvoyant.proto.DataPoint.missile_payload', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='gunshot_payload', full_name='io.clairvoyant.proto.DataPoint.gunshot_payload', index=6,
+      number=7, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='tampered', full_name='io.clairvoyant.proto.DataPoint.tampered', index=7,
+      number=8, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='presence', full_name='io.clairvoyant.proto.DataPoint.presence', index=8,
+      number=9, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='duration', full_name='io.clairvoyant.proto.DataPoint.duration', index=9,
+      number=10, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='decibel_level', full_name='io.clairvoyant.proto.DataPoint.decibel_level', index=10,
+      number=11, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='acceleration', full_name='io.clairvoyant.proto.DataPoint.acceleration', index=11,
+      number=12, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='gyro', full_name='io.clairvoyant.proto.DataPoint.gyro', index=12,
+      number=13, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='confidence', full_name='io.clairvoyant.proto.DataPoint.confidence', index=13,
+      number=14, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+    _descriptor.OneofDescriptor(
+      name='payload_type', full_name='io.clairvoyant.proto.DataPoint.payload_type',
+      index=0, containing_type=None, fields=[]),
+  ],
+  serialized_start=44,
+  serialized_end=635,
+)
+
+
+_VOICEDATAPOINT = _descriptor.Descriptor(
+  name='VoiceDataPoint',
+  full_name='io.clairvoyant.proto.VoiceDataPoint',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='audio_message', full_name='io.clairvoyant.proto.VoiceDataPoint.audio_message', index=0,
+      number=1, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b(""),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='speech_text', full_name='io.clairvoyant.proto.VoiceDataPoint.speech_text', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='estimated_distance', full_name='io.clairvoyant.proto.VoiceDataPoint.estimated_distance', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -59,20 +217,59 @@ _DATAPOINT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=43,
-  serialized_end=85,
+  serialized_start=637,
+  serialized_end=725,
 )
 
 
-_ACK = _descriptor.Descriptor(
-  name='Ack',
-  full_name='io.clairvoyant.proto.Ack',
+_VEHICLEDATAPOINT = _descriptor.Descriptor(
+  name='VehicleDataPoint',
+  full_name='io.clairvoyant.proto.VehicleDataPoint',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='dataPointId', full_name='io.clairvoyant.proto.Ack.dataPointId', index=0,
+      name='type', full_name='io.clairvoyant.proto.VehicleDataPoint.type', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='estimated_distance', full_name='io.clairvoyant.proto.VehicleDataPoint.estimated_distance', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _VEHICLEDATAPOINT_VEHICLETYPE,
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=728,
+  serialized_end=885,
+)
+
+
+_MISSILEDATAPOINT = _descriptor.Descriptor(
+  name='MissileDataPoint',
+  full_name='io.clairvoyant.proto.MissileDataPoint',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='estimated_distance', full_name='io.clairvoyant.proto.MissileDataPoint.estimated_distance', index=0,
       number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -90,12 +287,230 @@ _ACK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=87,
-  serialized_end=113,
+  serialized_start=887,
+  serialized_end=933,
 )
 
+
+_GUNSHOTDATAPOINT = _descriptor.Descriptor(
+  name='GunshotDataPoint',
+  full_name='io.clairvoyant.proto.GunshotDataPoint',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='estimated_distance', full_name='io.clairvoyant.proto.GunshotDataPoint.estimated_distance', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=935,
+  serialized_end=981,
+)
+
+
+_HEARTBEAT = _descriptor.Descriptor(
+  name='Heartbeat',
+  full_name='io.clairvoyant.proto.Heartbeat',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='io.clairvoyant.proto.Heartbeat.id', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='timestamp', full_name='io.clairvoyant.proto.Heartbeat.timestamp', index=1,
+      number=2, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='battery_level', full_name='io.clairvoyant.proto.Heartbeat.battery_level', index=2,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=983,
+  serialized_end=1048,
+)
+
+
+_ACK = _descriptor.Descriptor(
+  name='Ack',
+  full_name='io.clairvoyant.proto.Ack',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='data_point_id', full_name='io.clairvoyant.proto.Ack.data_point_id', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1050,
+  serialized_end=1078,
+)
+
+
+_CARTESIANPOINT = _descriptor.Descriptor(
+  name='CartesianPoint',
+  full_name='io.clairvoyant.proto.CartesianPoint',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='x', full_name='io.clairvoyant.proto.CartesianPoint.x', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='y', full_name='io.clairvoyant.proto.CartesianPoint.y', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='z', full_name='io.clairvoyant.proto.CartesianPoint.z', index=2,
+      number=3, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1080,
+  serialized_end=1129,
+)
+
+
+_COORDINATE = _descriptor.Descriptor(
+  name='Coordinate',
+  full_name='io.clairvoyant.proto.Coordinate',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='latitude', full_name='io.clairvoyant.proto.Coordinate.latitude', index=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='longitude', full_name='io.clairvoyant.proto.Coordinate.longitude', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1131,
+  serialized_end=1180,
+)
+
+_DATAPOINT.fields_by_name['initial_location'].message_type = _COORDINATE
+_DATAPOINT.fields_by_name['voice_payload'].message_type = _VOICEDATAPOINT
+_DATAPOINT.fields_by_name['vehicle_payload'].message_type = _VEHICLEDATAPOINT
+_DATAPOINT.fields_by_name['missile_payload'].message_type = _MISSILEDATAPOINT
+_DATAPOINT.fields_by_name['gunshot_payload'].message_type = _GUNSHOTDATAPOINT
+_DATAPOINT.fields_by_name['acceleration'].message_type = _CARTESIANPOINT
+_DATAPOINT.fields_by_name['gyro'].message_type = _CARTESIANPOINT
+_DATAPOINT.oneofs_by_name['payload_type'].fields.append(
+  _DATAPOINT.fields_by_name['voice_payload'])
+_DATAPOINT.fields_by_name['voice_payload'].containing_oneof = _DATAPOINT.oneofs_by_name['payload_type']
+_DATAPOINT.oneofs_by_name['payload_type'].fields.append(
+  _DATAPOINT.fields_by_name['vehicle_payload'])
+_DATAPOINT.fields_by_name['vehicle_payload'].containing_oneof = _DATAPOINT.oneofs_by_name['payload_type']
+_DATAPOINT.oneofs_by_name['payload_type'].fields.append(
+  _DATAPOINT.fields_by_name['missile_payload'])
+_DATAPOINT.fields_by_name['missile_payload'].containing_oneof = _DATAPOINT.oneofs_by_name['payload_type']
+_DATAPOINT.oneofs_by_name['payload_type'].fields.append(
+  _DATAPOINT.fields_by_name['gunshot_payload'])
+_DATAPOINT.fields_by_name['gunshot_payload'].containing_oneof = _DATAPOINT.oneofs_by_name['payload_type']
+_VEHICLEDATAPOINT.fields_by_name['type'].enum_type = _VEHICLEDATAPOINT_VEHICLETYPE
+_VEHICLEDATAPOINT_VEHICLETYPE.containing_type = _VEHICLEDATAPOINT
 DESCRIPTOR.message_types_by_name['DataPoint'] = _DATAPOINT
+DESCRIPTOR.message_types_by_name['VoiceDataPoint'] = _VOICEDATAPOINT
+DESCRIPTOR.message_types_by_name['VehicleDataPoint'] = _VEHICLEDATAPOINT
+DESCRIPTOR.message_types_by_name['MissileDataPoint'] = _MISSILEDATAPOINT
+DESCRIPTOR.message_types_by_name['GunshotDataPoint'] = _GUNSHOTDATAPOINT
+DESCRIPTOR.message_types_by_name['Heartbeat'] = _HEARTBEAT
 DESCRIPTOR.message_types_by_name['Ack'] = _ACK
+DESCRIPTOR.message_types_by_name['CartesianPoint'] = _CARTESIANPOINT
+DESCRIPTOR.message_types_by_name['Coordinate'] = _COORDINATE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 DataPoint = _reflection.GeneratedProtocolMessageType('DataPoint', (_message.Message,), dict(
@@ -105,12 +520,61 @@ DataPoint = _reflection.GeneratedProtocolMessageType('DataPoint', (_message.Mess
   ))
 _sym_db.RegisterMessage(DataPoint)
 
+VoiceDataPoint = _reflection.GeneratedProtocolMessageType('VoiceDataPoint', (_message.Message,), dict(
+  DESCRIPTOR = _VOICEDATAPOINT,
+  __module__ = 'clairvoyant_pb2'
+  # @@protoc_insertion_point(class_scope:io.clairvoyant.proto.VoiceDataPoint)
+  ))
+_sym_db.RegisterMessage(VoiceDataPoint)
+
+VehicleDataPoint = _reflection.GeneratedProtocolMessageType('VehicleDataPoint', (_message.Message,), dict(
+  DESCRIPTOR = _VEHICLEDATAPOINT,
+  __module__ = 'clairvoyant_pb2'
+  # @@protoc_insertion_point(class_scope:io.clairvoyant.proto.VehicleDataPoint)
+  ))
+_sym_db.RegisterMessage(VehicleDataPoint)
+
+MissileDataPoint = _reflection.GeneratedProtocolMessageType('MissileDataPoint', (_message.Message,), dict(
+  DESCRIPTOR = _MISSILEDATAPOINT,
+  __module__ = 'clairvoyant_pb2'
+  # @@protoc_insertion_point(class_scope:io.clairvoyant.proto.MissileDataPoint)
+  ))
+_sym_db.RegisterMessage(MissileDataPoint)
+
+GunshotDataPoint = _reflection.GeneratedProtocolMessageType('GunshotDataPoint', (_message.Message,), dict(
+  DESCRIPTOR = _GUNSHOTDATAPOINT,
+  __module__ = 'clairvoyant_pb2'
+  # @@protoc_insertion_point(class_scope:io.clairvoyant.proto.GunshotDataPoint)
+  ))
+_sym_db.RegisterMessage(GunshotDataPoint)
+
+Heartbeat = _reflection.GeneratedProtocolMessageType('Heartbeat', (_message.Message,), dict(
+  DESCRIPTOR = _HEARTBEAT,
+  __module__ = 'clairvoyant_pb2'
+  # @@protoc_insertion_point(class_scope:io.clairvoyant.proto.Heartbeat)
+  ))
+_sym_db.RegisterMessage(Heartbeat)
+
 Ack = _reflection.GeneratedProtocolMessageType('Ack', (_message.Message,), dict(
   DESCRIPTOR = _ACK,
   __module__ = 'clairvoyant_pb2'
   # @@protoc_insertion_point(class_scope:io.clairvoyant.proto.Ack)
   ))
 _sym_db.RegisterMessage(Ack)
+
+CartesianPoint = _reflection.GeneratedProtocolMessageType('CartesianPoint', (_message.Message,), dict(
+  DESCRIPTOR = _CARTESIANPOINT,
+  __module__ = 'clairvoyant_pb2'
+  # @@protoc_insertion_point(class_scope:io.clairvoyant.proto.CartesianPoint)
+  ))
+_sym_db.RegisterMessage(CartesianPoint)
+
+Coordinate = _reflection.GeneratedProtocolMessageType('Coordinate', (_message.Message,), dict(
+  DESCRIPTOR = _COORDINATE,
+  __module__ = 'clairvoyant_pb2'
+  # @@protoc_insertion_point(class_scope:io.clairvoyant.proto.Coordinate)
+  ))
+_sym_db.RegisterMessage(Coordinate)
 
 
 DESCRIPTOR._options = None
@@ -121,8 +585,8 @@ _CLAIRVOYANTSERVICE = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=115,
-  serialized_end=216,
+  serialized_start=1183,
+  serialized_end=1354,
   methods=[
   _descriptor.MethodDescriptor(
     name='CreateDataPoint',
@@ -130,6 +594,15 @@ _CLAIRVOYANTSERVICE = _descriptor.ServiceDescriptor(
     index=0,
     containing_service=None,
     input_type=_DATAPOINT,
+    output_type=_ACK,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Ping',
+    full_name='io.clairvoyant.proto.ClairvoyantService.Ping',
+    index=1,
+    containing_service=None,
+    input_type=_HEARTBEAT,
     output_type=_ACK,
     serialized_options=None,
   ),
