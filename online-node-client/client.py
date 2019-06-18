@@ -1,6 +1,6 @@
 import grpc
-import clairvoyant_pb2 as grpc_model
-import clairvoyant_pb2_grpc as grpc_service
+from gen import clairvoyant_pb2 as grpc_model
+from gen import clairvoyant_pb2_grpc as grpc_service
 from time import time
 
 channel = grpc.insecure_channel("localhost:8080")
