@@ -7,10 +7,10 @@ import javax.inject.Inject;
 
 public class DataProcessor {
 
-    private final FluentLogger logger;
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
-    @Inject DataProcessor(FluentLogger logger) {
-        this.logger = logger;
+    @Inject
+    DataProcessor() {
     }
 
     void processDataPoint(DataPoint dataPoint) {
