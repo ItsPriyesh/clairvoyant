@@ -10,9 +10,20 @@ public class ClairvoyantServer {
     private static final int PORT = 8080;
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        Server server = ServerBuilder.forPort(PORT).addService(new ClairvoyantService()).build();
+        // Build DI graph
+        ClairvoyantComponent component = DaggerClairvoyantComponent.create();
+
+        component.logger().atInfo().log("Starting server");
+        Server server = ServerBuilder
+                .forPort(PORT)
+                .addService(component.createService())
+                .build();
+
         server.start();
-        System.out.println("Running server on port " + PORT);
+
+        component.logger().atInfo().log("Listening on port " + PORT);
         server.awaitTermination();
+
+        component.logger().atInfo().log("Server terminated!");
     }
 }
