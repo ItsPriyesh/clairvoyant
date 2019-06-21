@@ -5,8 +5,19 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class Node {
 
-    public static Node create(int id, long timestamp, float batteryLevel) {
-        return new AutoValue_Node(id, timestamp, batteryLevel);
+    public static Builder builder() {
+        return new AutoValue_Node.Builder();
+    }
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder setId(int id);
+
+        public abstract Builder setLastHeartbeat(long timestamp);
+
+        public abstract Builder setBatteryLevel(float batteryLevel);
+
+        public abstract Node build();
     }
 
     public abstract int id();

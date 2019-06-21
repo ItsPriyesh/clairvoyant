@@ -1,6 +1,5 @@
 package io.clairvoyant;
 
-import com.google.auto.value.AutoValue;
 import com.google.common.flogger.FluentLogger;
 import io.clairvoyant.model.Node;
 import io.clairvoyant.proto.Heartbeat;
@@ -25,8 +24,11 @@ public class NodeManager {
     void addNode(Heartbeat heartbeat) {
         int id = heartbeat.getId();
         logger.atInfo().log("Received heartbeat from node %s", id);
-
-        Node node = Node.create(id, heartbeat.getTimestamp(), heartbeat.getBatteryLevel());
-        nodes.put(id, node);
+        nodes.put(id, Node.builder()
+                .setId(id)
+                .setLastHeartbeat(heartbeat.getTimestamp())
+                .setBatteryLevel(heartbeat.getBatteryLevel())
+                .build()
+        );
     }
 }
