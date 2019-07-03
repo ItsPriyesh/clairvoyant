@@ -3,7 +3,6 @@ CREATE TABLE User(
    userID       varchar(255) not null,
    firstName    varchar(255) not null,
    lastName     varchar(255) not null,
-   birthDate    date,
    createdDate  date,
    passwordHash	varchar(255) not null,
    PRIMARY KEY(userID)
@@ -27,7 +26,7 @@ CREATE TABLE DataPoint(
    confidence	float		 not null 
    CHECK(confidence >= 0 AND confidence <= 1),
    CONSTRAINT DataPoint_nodeID FOREIGN KEY (nodeID) REFERENCES Node(nodeID),
-   PRIMARY KEY(dataPointID, nodeID)
+   PRIMARY KEY(dataPointID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `UserDataPoint`;
