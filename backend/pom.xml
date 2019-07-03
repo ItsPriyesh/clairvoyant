@@ -50,6 +50,16 @@
             <version>1.6.2</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>io.requery</groupId>
+            <artifactId>requery</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.16</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -96,6 +106,11 @@
                             <groupId>com.google.auto.value</groupId>
                             <artifactId>auto-value</artifactId>
                             <version>1.6.2</version>
+                        </path>
+                        <path>
+                            <groupId>io.requery</groupId>
+                            <artifactId>requery-processor</artifactId>
+                            <version>1.6.0</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

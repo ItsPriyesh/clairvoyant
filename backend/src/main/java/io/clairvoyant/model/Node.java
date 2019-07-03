@@ -1,8 +1,11 @@
 package io.clairvoyant.model;
 
 import com.google.auto.value.AutoValue;
+import io.requery.Entity;
+import io.requery.Key;
 
 @AutoValue
+@Entity
 public abstract class Node {
 
     public static Builder builder() {
@@ -20,6 +23,7 @@ public abstract class Node {
         public abstract Node build();
     }
 
+    @Key
     public abstract int id();
 
     public abstract long lastHeartbeat();
