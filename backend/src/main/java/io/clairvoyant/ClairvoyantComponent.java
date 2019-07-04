@@ -1,7 +1,7 @@
 package io.clairvoyant;
 
 import dagger.Component;
-import io.clairvoyant.api.WebApiService;
+import io.clairvoyant.api.LoginApi;
 import io.clairvoyant.gateway.ClairvoyantService;
 
 import javax.inject.Singleton;
@@ -10,5 +10,5 @@ import javax.inject.Singleton;
 @Component(modules = ClairvoyantModule.class)
 public interface ClairvoyantComponent {
     ClairvoyantService createGatewayRpcService();
-    WebApiService createWebApiService();
+    LoginApi createWebApiService();
 }
