@@ -1,28 +1,15 @@
 package io.clairvoyant.model;
 
-import com.google.auto.value.AutoValue;
+import org.davidmoten.rx.jdbc.annotations.Column;
 
-@AutoValue
-public abstract class Node {
+public interface Node {
 
-    public static Builder builder() {
-        return new AutoValue_Node.Builder();
-    }
+    @Column
+    int nodeID();
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder setId(int id);
+    @Column
+    int userID();
 
-        public abstract Builder setLastHeartbeat(long timestamp);
-
-        public abstract Builder setBatteryLevel(float batteryLevel);
-
-        public abstract Node build();
-    }
-
-    public abstract int id();
-
-    public abstract long lastHeartbeat();
-
-    public abstract float batteryLevel();
+    @Column
+    long lastHeartbeat();
 }

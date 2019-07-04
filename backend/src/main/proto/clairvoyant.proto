@@ -5,73 +5,24 @@ option java_multiple_files = true;
 package io.clairvoyant.proto;
 
 service ClairvoyantService {
-  rpc CreateDataPoint (DataPoint) returns (Ack) {}
-  rpc Ping (Heartbeat) returns (Ack) {}
+    rpc CreateDataPoint (DataPoint) returns (Ack) {}
+    rpc Ping (Heartbeat) returns (Ack) {}
 }
 
 message DataPoint {
-  int32 id = 1;
-  int64 timestamp = 2;
-  Coordinate initial_location = 3;
-
-  oneof payload_type {
-    VoiceDataPoint voice_payload = 4;
-    VehicleDataPoint vehicle_payload = 5;
-    MissileDataPoint missile_payload = 6;
-    GunshotDataPoint gunshot_payload = 7;
-  }
-
-  bool tampered = 8;
-  bool presence = 9;
-  int64 duration = 10;
-  float decibel_level = 11;
-  repeated CartesianPoint acceleration = 12;
-  repeated CartesianPoint gyro = 13;
-  float confidence = 14;
-}
-
-message VoiceDataPoint {
-  bytes audio_message = 1;
-  string speech_text = 2;
-  int32 estimated_distance = 3;
-}
-
-message VehicleDataPoint {
-  enum VehicleType {
-    CAR = 0;
-    TRUCK = 1;
-    TANK = 2;
-  }
-
-  VehicleType type = 1;
-  int32 estimated_distance = 2;
-}
-
-message MissileDataPoint {
-  int32 estimated_distance = 1;
-}
-
-message GunshotDataPoint {
-  int32 estimated_distance = 1;
+    int32 id = 1;
+    int32 node_id = 2;
+    int64 timestamp = 3;
+    string event_type = 4;
+    float confidence = 5;
 }
 
 message Heartbeat {
-  int32 id = 1;
-  int64 timestamp = 2;
-  float battery_level = 3;
+    int32 id = 1;
+    int64 timestamp = 2;
+    float battery_level = 3;
 }
 
 message Ack {
-  int32 data_point_id = 1;
-}
-
-message CartesianPoint {
-  float x = 1;
-  float y = 2;
-  float z = 3;
-}
-
-message Coordinate {
-  float latitude = 1;
-  float longitude = 2;
+    int32 data_point_id = 1;
 }
