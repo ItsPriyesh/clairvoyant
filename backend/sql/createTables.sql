@@ -4,7 +4,7 @@ CREATE TABLE User(
    first_name    varchar(255) not null,
    last_name     varchar(255) not null,
    email        varchar(255) not null,
-   created_at    date,
+   created_at    datetime,
    password_hash	varchar(255) not null,
    PRIMARY KEY(user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
