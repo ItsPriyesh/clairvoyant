@@ -42,7 +42,7 @@ public class ClairvoyantServer {
         Spark.port(frontendPort);
         logger.atInfo().log("Listening for frontend on port " + frontendPort);
 
-        Spark.get("/createUser", api::createUser);
+        Spark.post("/createUser", api::createUser);
 
         server.awaitTermination();
         logger.atInfo().log("Server terminated!");

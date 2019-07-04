@@ -21,11 +21,14 @@ public abstract class UserAuto implements User {
 
         public abstract Builder setCreatedAt(Date date);
 
+        public abstract Builder setSessionToken(String token);
+
         public abstract UserAuto build();
     }
 
     public static Builder builder() {
-        return new AutoValue_UserAuto.Builder();
+        return new AutoValue_UserAuto.Builder()
+                .setUserID(0); // This gets overwritten by auto_increment id in SQL, but needs to be set here for builder to work
     }
 
 }

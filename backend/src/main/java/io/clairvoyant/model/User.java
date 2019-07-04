@@ -23,4 +23,7 @@ public interface User {
 
     @Column
     Date createdAt();
+
+    @Column
+    String sessionToken();
 }
