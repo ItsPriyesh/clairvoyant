@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
 from sklearn.model_selection import train_test_split 
 
-audio_dir = '/Users/justin/desktop/school/4th_year/FYDP/audio/'
+AUDIO_DIR = '/Users/justin/desktop/school/4th_year/FYDP/audio/'
 
 def process_audio(sample):
 	## sample rate conversion
@@ -22,7 +22,6 @@ def process_audio(sample):
 	print('Original audio file min~max range:', np.min(scipy_audio), 'to', np.max(scipy_audio))
 	print('Librosa audio file min~max range:', np.min(librosa_audio), 'to', np.max(librosa_audio))
 
-	"""
 	## original audio channel
 	plt.figure(figsize=(12, 4))
 	plt.plot(scipy_audio)
@@ -32,7 +31,7 @@ def process_audio(sample):
 	plt.figure(figsize=(12, 4))
 	plt.plot(librosa_audio)
 	plt.show()
-	"""
+	
 
 	## extract MFCC
 	mfccs = librosa.feature.mfcc(y=librosa_audio, sr=librosa_sample_rate, n_mfcc=40)
@@ -47,6 +46,10 @@ def extract_features(file_name):
 		pad_width = max_pad_len - mfccs.shape[1]
 		mfccs = np.pad(mfccs, pad_width=((0, 0), (0, pad_width)), mode='constant')
 
+		print('Librosa sample rate:', sample_rate)
+		print('Librosa audio file min~max range:', np.min(audio), 'to', np.max(audio))
+		# print(mfccs)
+		print(mfccs.shape)
 	except Exception as e:
 		print("Error encountered while parsing file: ", file_name)
 		return None
@@ -61,25 +64,13 @@ def create_df():
 
 	# Iterate through each sound file and extract the features 
 	for index, row in df.iterrows():
-	    file_name = os.path.join(os.path.abspath(audio_dir),str(row["slice_file_name"]))
+	    file_name = os.path.join(os.path.abspath(AUDIO_DIR),str(row["slice_file_name"]))
 	    class_label = row["class"]
 	    data = extract_features(file_name)
+	    print(data)
 	    features.append([data, class_label])
 
 	features_df = pd.DataFrame(features, columns=['feature','class_label'])
 	features_df.to_csv("features_df.csv")
 	
 	return features_df
-
-def create_train_test_splits(df):
-	# Convert features and corresponding classification labels into numpy arrays
-	X = np.array(df.feature.tolist())
-	y = np.array(df.class_label.tolist())
-
-	# Encode the classification labels
-	le = LabelEncoder()
-	yy = to_categorical(le.fit_transform(y)) 
-
-	x_train, x_test, y_train, y_test = train_test_split(X, yy, test_size=0.2, random_state = 42)
-
-	return x_train, x_test, y_train, y_test
