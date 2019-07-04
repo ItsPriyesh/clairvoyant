@@ -22,6 +22,6 @@ To build the code and generate gRPC server stubs, run the `compile` step from th
 Or compile and run from terminal:
 ```
 mvn compile
-mvn exec:java -Dexec.mainClass=io.clairvoyant.ClairvoyantServer
+mvn exec:java -Dexec.mainClass=io.clairvoyant.ClairvoyantServer 8080 8081
 ```
 
