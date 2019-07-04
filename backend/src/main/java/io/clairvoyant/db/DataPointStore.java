@@ -8,15 +8,15 @@ import javax.inject.Inject;
 
 public class DataPointStore {
 
-    private final Database db;
+    private final Database database;
 
     @Inject
     public DataPointStore(Database database) {
-        db = database;
+        this.database = database;
     }
 
     public Completable insert(DataPoint point) {
-        return db
+        return database
                 .update("insert into DataPoint values(?, ?, FROM_UNIXTIME(?), ?, ?)")
                 .parameters(
                         point.getId(),

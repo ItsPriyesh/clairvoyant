@@ -6,6 +6,7 @@ import dagger.Provides;
 import io.clairvoyant.db.DatabaseConfig;
 import org.davidmoten.rx.jdbc.Database;
 
+import javax.inject.Singleton;
 import java.sql.SQLException;
 
 /**
@@ -34,6 +35,7 @@ public class ClairvoyantModule {
     }
 
     @Provides
+    @Singleton
     static Database provideDatabase(DatabaseConfig config) {
         MysqlDataSource source = new MysqlDataSource();
         source.setServerName(config.address());
