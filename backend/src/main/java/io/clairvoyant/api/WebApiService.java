@@ -16,6 +16,6 @@ public class WebApiService {
     }
 
     public String createUser(Request req, Response res) {
-        return null;
+        return "hi";
     }
 }
