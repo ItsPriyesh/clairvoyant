@@ -1,6 +1,7 @@
 package io.clairvoyant;
 
 import com.google.common.flogger.FluentLogger;
+import io.clairvoyant.api.ApiService;
 import io.clairvoyant.api.LoginApi;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -38,11 +39,11 @@ public class ClairvoyantServer {
         logger.atInfo().log("Listening for gateway on port " + gatewayPort);
 
         logger.atInfo().log("Starting web API");
-        LoginApi api = component.createWebApiService();
+        ApiService api = component.createWebApiService();
         Spark.port(frontendPort);
         logger.atInfo().log("Listening for frontend on port " + frontendPort);
 
-        Spark.post("/createUser", api::createUser);
+        Spark.post("/createUser", api.login::createUser);
 
         server.awaitTermination();
         logger.atInfo().log("Server terminated!");
