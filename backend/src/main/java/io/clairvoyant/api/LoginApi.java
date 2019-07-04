@@ -3,6 +3,7 @@ package io.clairvoyant.api;
 import io.clairvoyant.db.UserStore;
 import io.clairvoyant.model.User;
 import io.clairvoyant.model.auto.UserAuto;
+import io.reactivex.Maybe;
 import spark.Request;
 import spark.Response;
 
@@ -52,8 +53,25 @@ public class LoginApi {
     }
 
     public String login(Request req, Response res) {
-        // params could be (username + pass) or sessionToken
-        return null;
+        if (!hasParams(req, "email", "password")) {
+            res.status(400);
+            return "Required parameters not specified!";
+        }
+
+        Maybe<User> userMaybe = userStore.getUser(req.queryParams("email"));
+        if (userMaybe.isEmpty().blockingGet()) {
+            res.status(400);
+            return "Invalid email!";
+        }
+
+        User user = userMaybe.blockingGet();
+        if (passManager.check(req.queryParams("password"), user.passwordHash())) {
+            res.status(200);
+            return user.sessionToken();
+        } else {
+            res.status(400);
+            return "Invalid password!";
+        }
     }
 
     private static boolean hasParams(Request req, String... required) {

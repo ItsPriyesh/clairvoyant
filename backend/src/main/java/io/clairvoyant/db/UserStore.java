@@ -32,14 +32,14 @@ public class UserStore {
                 .complete();
     }
 
-    public Maybe<String> getSessionToken(String userEmail) {
+    public Maybe<User> getUser(String userEmail) {
         return database.select("select * from User where email = ?")
                 .parameter(userEmail)
                 .autoMap(User.class)
                 .toList()
                 .flatMapMaybe(users -> users.isEmpty()
                         ? Maybe.empty()
-                        : Maybe.just(users.get(0).sessionToken())
+                        : Maybe.just(users.get(0))
                 );
     }
 }
