@@ -14,4 +14,10 @@ public interface DataPoint {
 
     @Column
     Date receivedAt();
+
+    @Column
+    String eventType();
+
+    @Column
+    float confidence();
 }

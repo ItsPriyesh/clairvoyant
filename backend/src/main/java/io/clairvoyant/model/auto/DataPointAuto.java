@@ -15,6 +15,10 @@ public abstract class DataPointAuto implements DataPoint {
 
         public abstract Builder setReceivedAt(Date receivedAt);
 
+        public abstract Builder setEventType(String eventType);
+
+        public abstract Builder setConfidence(float confidence);
+
         public abstract DataPointAuto build();
     }
 
