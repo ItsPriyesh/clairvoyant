@@ -2,14 +2,16 @@ package io.clairvoyant.model;
 
 import org.davidmoten.rx.jdbc.annotations.Column;
 
-public interface Node {
+import java.sql.Date;
+
+public interface DataPoint {
+
+    @Column
+    int dataPointID();
 
     @Column
     int nodeID();
 
     @Column
-    int userID();
-
-    @Column
-    long lastHeartbeat();
+    Date receivedAt();
 }

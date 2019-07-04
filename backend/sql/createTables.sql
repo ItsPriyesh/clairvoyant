@@ -1,39 +1,40 @@
 DROP TABLE IF EXISTS `User`;
 CREATE TABLE User(
-   userID       varchar(255) not null,
-   firstName    varchar(255) not null,
-   lastName     varchar(255) not null,
-   createdDate  date,
-   passwordHash	varchar(255) not null,
-   PRIMARY KEY(userID)
+   user_id       varchar(255) not null,
+   first_name    varchar(255) not null,
+   last_name     varchar(255) not null,
+   email        varchar(255) not null,
+   created_at    date,
+   password_hash	varchar(255) not null,
+   PRIMARY KEY(user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `Node`;
 CREATE TABLE Node(
-   nodeID       int 		 not null auto_increment,
-   receivedTime datetime 	 not null,
-   userID		varchar(255) not null,
-   CONSTRAINT Node_userID FOREIGN KEY (userID) REFERENCES User(userID),
-   PRIMARY KEY(nodeID, receivedTime, userID)
+   node_id        int 		 not null auto_increment,
+   last_heartbeat datetime 	 not null,
+   user_id		 varchar(255) not null,
+   CONSTRAINT Node_user_id FOREIGN KEY (user_id) REFERENCES User(user_id),
+   PRIMARY KEY(node_id, last_heartbeat, user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `DataPoint`;
 CREATE TABLE DataPoint(
-   dataPointID  int 		 not null auto_increment,
-   nodeID 		int 		 not null,
-   receivedTime datetime 	 not null,
-   eventType	varchar(255) not null,
+   data_point_id  int 		 not null auto_increment,
+   node_id 		int 		 not null,
+   received_at   datetime 	 not null,
+   event_type	varchar(255) not null,
    confidence	float		 not null 
    CHECK(confidence >= 0 AND confidence <= 1),
-   CONSTRAINT DataPoint_nodeID FOREIGN KEY (nodeID) REFERENCES Node(nodeID),
-   PRIMARY KEY(dataPointID)
+   CONSTRAINT DataPoint_node_id FOREIGN KEY (node_id) REFERENCES Node(node_id),
+   PRIMARY KEY(data_point_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `UserDataPoint`;
 CREATE TABLE UserDataPoint(
-   userID		varchar(255) not null,
-   dataPointID 	int 		 not null,
-   CONSTRAINT UserDataPoint_userID FOREIGN KEY (userID) REFERENCES User(userID),
-   CONSTRAINT UserDataPoint_dataPointID FOREIGN KEY (dataPointID) REFERENCES DataPoint(dataPointID),
-   PRIMARY KEY(dataPointID)
+   user_id		varchar(255) not null,
+   data_point_id 	int 		 not null,
+   CONSTRAINT UserDataPoint_user_id FOREIGN KEY (user_id) REFERENCES User(user_id),
+   CONSTRAINT UserDataPoint_data_point_id FOREIGN KEY (data_point_id) REFERENCES DataPoint(data_point_id),
+   PRIMARY KEY(data_point_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
