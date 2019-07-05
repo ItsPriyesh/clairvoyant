@@ -4,6 +4,7 @@ import com.google.auto.value.AutoValue;
 import io.clairvoyant.model.User;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @AutoValue
 public abstract class UserAuto implements User {
@@ -19,7 +20,7 @@ public abstract class UserAuto implements User {
 
         public abstract Builder setPasswordHash(String passwordHash);
 
-        public abstract Builder setCreatedAt(Date date);
+        public abstract Builder setCreatedAt(Timestamp date);
 
         public abstract Builder setSessionToken(String token);
 

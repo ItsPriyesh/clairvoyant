@@ -9,6 +9,7 @@ import spark.Response;
 
 import javax.inject.Inject;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
@@ -37,7 +38,7 @@ public class LoginApi {
                 .setLastName(req.queryParams("lastName"))
                 .setEmail(req.queryParams("email"))
                 .setPasswordHash(passManager.hash(req.queryParams("password")))
-                .setCreatedAt(new Date(System.currentTimeMillis()))
+                .setCreatedAt(new Timestamp(System.currentTimeMillis()))
                 .setSessionToken(sessionToken)
                 .build();
 

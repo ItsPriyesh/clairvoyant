@@ -3,6 +3,7 @@ package io.clairvoyant.model;
 import org.davidmoten.rx.jdbc.annotations.Column;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public interface User {
 
@@ -22,7 +23,7 @@ public interface User {
     String passwordHash();
 
     @Column
-    Date createdAt();
+    Timestamp createdAt();
 
     @Column
     String sessionToken();

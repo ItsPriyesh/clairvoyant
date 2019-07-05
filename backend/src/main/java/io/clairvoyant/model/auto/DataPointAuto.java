@@ -4,6 +4,7 @@ import com.google.auto.value.AutoValue;
 import io.clairvoyant.model.DataPoint;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @AutoValue
 public abstract class DataPointAuto implements DataPoint {
@@ -13,7 +14,7 @@ public abstract class DataPointAuto implements DataPoint {
 
         public abstract Builder setNodeID(int id);
 
-        public abstract Builder setReceivedAt(Date receivedAt);
+        public abstract Builder setReceivedAt(Timestamp receivedAt);
 
         public abstract Builder setEventType(String eventType);
 
