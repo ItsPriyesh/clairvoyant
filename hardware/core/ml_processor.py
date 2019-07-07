@@ -37,6 +37,9 @@ def ml_process(ml_q):
         yy = to_categorical(le.fit_transform(y)) 
         model = load_model(MODEL_PATH)
         ml_q.put(1)
+        while (ml_q.empty()==False): #wait for global scheduler to start other stuff
+                pass
+        print("ML: Entering superloop")
 
         #Actual ML Processing
         while(1):
