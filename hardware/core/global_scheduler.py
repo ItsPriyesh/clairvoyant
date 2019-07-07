@@ -1,31 +1,26 @@
 from multiprocessing import Queue
 from audio_recorder import record_process
 from data_processor import audio_process
-from ml_processor import ml_process
 import multiprocessing
-
-
-import warnings
-
+from ml_processor import ml_process
 
 
 if __name__ == '__main__':
 
-
     #define queues
     audio_q = Queue()
     ml_q = Queue()
+    ml_q_init = Queue()
 
     #start ml task
-    ml_task = multiprocessing.Process(target=ml_process, args=(ml_q,))
+    ml_task = multiprocessing.Process(target=ml_process, args = (ml_q,ml_q_init,))
     ml_task.start()
-
-    #wait for ml_q
-    while (1):
-        if (ml_q.empty() == False):
-            break
-    ml_q.get()
-    print("Done ML Init")
+    #wait for it to load model
+    while (ml_q_init.empty() == True):
+        pass
+    ml_q_init.get()
+    print ("Done ml init")
+    
 
     #start Recorder Task
     recorder_task = multiprocessing.Process(target=record_process, args=(audio_q,))
@@ -34,5 +29,4 @@ if __name__ == '__main__':
     #start Data Procesing Task
     data_task = multiprocessing.Process(target=audio_process, args=(audio_q,ml_q,))
     data_task.start()
-
 

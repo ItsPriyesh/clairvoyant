@@ -15,14 +15,14 @@ import multiprocessing
 
 
 
-def ml_process(ml_q):
+def ml_process(ml_q, ml_q_init):
 
         files = []
-        warnings.filterwarnings("ignore")
-        tf.logging.set_verbosity(tf.logging.ERROR)
+        #warnings.filterwarnings("ignore")
+        #tf.logging.set_verbosity(tf.logging.ERROR)
         #Initialize ML PROCESS
 
-        MODEL_PATH = os.path.join('ml_model','weights.best.basic_cnn_3.hdf5')
+        MODEL_PATH = os.path.join('ml_model','weights.best.basic_cnn_2.hdf5')
         CSV_PATH = os.path.join('ml_model','testing_noise.csv')
 
         ## fixed params
@@ -36,9 +36,8 @@ def ml_process(ml_q):
         le = LabelEncoder()
         yy = to_categorical(le.fit_transform(y)) 
         model = load_model(MODEL_PATH)
-        ml_q.put(1)
-        while (ml_q.empty()==False): #wait for global scheduler to start other stuff
-                pass
+        ml_q_init.put(1)
+
         print("ML: Entering superloop")
 
         #Actual ML Processing
