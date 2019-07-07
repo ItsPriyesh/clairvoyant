@@ -4,9 +4,9 @@ import wave
 import os
 import contextlib
 
-def audio_process(audio_q):
+def audio_process(audio_q,ml_q):
 
-    shift = int(176400) #4 second
+    shift = int(176400/2) #2 second
     files = []
     frames_1 = []
     frames_2 = []
@@ -50,6 +50,7 @@ def audio_process(audio_q):
                 f1.close()
 
                 #insert ml func call here..
+                ml_q.put(count)
                 #print("processed frames count: " +str(len(frames_1)))
 
                 #increment sample index
@@ -99,6 +100,7 @@ def audio_process(audio_q):
 
                 
                 #insert ml func call here..
+                ml_q.put(count)
 
                 #increment sample index
                 sample_index += shift
