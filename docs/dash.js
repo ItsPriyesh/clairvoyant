@@ -30,6 +30,10 @@ $(document).ready(function() {
   bindHistory(datapoints);
 });
 
+  let webSocket = new WebSocket('ws://localhost:8081/dataPointStream/');
+  webSocket.onmessage = function (msg) { console.log('onmessage ' + msg); };
+  webSocket.onclose = function () { console.log('onclose '); };
+
 fetchDataPoints = function() {
   $.ajax({
     url: 'http://localhost:8081/getDataPoints',
@@ -42,6 +46,7 @@ fetchDataPoints = function() {
       bindHistory(datapoints);
   }).fail(function(error) {
       // show error
+
   });
 }
 
