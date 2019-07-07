@@ -22,7 +22,7 @@ def ml_process(ml_q):
         tf.logging.set_verbosity(tf.logging.ERROR)
         #Initialize ML PROCESS
 
-        MODEL_PATH = os.path.join('ml_model','weights.best.basic_cnn_2.hdf5')
+        MODEL_PATH = os.path.join('ml_model','weights.best.basic_cnn_3.hdf5')
         CSV_PATH = os.path.join('ml_model','testing_noise.csv')
 
         ## fixed params
