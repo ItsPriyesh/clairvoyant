@@ -4,7 +4,8 @@ import wave
 import os
 import contextlib
 
-def audio_process(audio_q):
+def audio_process(audio_q, ml_q):
+    frame_length = 44100*10 #10 sec
 
     shift = int(176400) #4 second
     files = []
@@ -22,16 +23,15 @@ def audio_process(audio_q):
             files.append(str(audio_q.get()) + ".wav")
 
         if (len(files) > 0):
-            #sample rate is 44100, so 176400 samples in 4 seconds
             
             fname = os.path.join('output','raw_audio',files[0])
             f1 = wave.open(fname,'rb')
             frame_cnt = f1.getnframes()
             #print(frame_cnt)
             
-            #Case 1: Current file has 176400 unread samples
-            if (sample_index + 176400 <= frame_cnt):
-                #read out 176400 frames, put wave file in processed_audio, and
+            #Case 1: Current file has frame length unread samples
+            if (sample_index + frame_length <= frame_cnt):
+                #read out frame length frames, put wave file in processed_audio, and
                 #call ml and pass file name.  deletes file after
                 #processing
                 frames_1 = f1.readframes(f1.getsampwidth()*frame_cnt)
@@ -50,6 +50,7 @@ def audio_process(audio_q):
                 f1.close()
 
                 #insert ml func call here..
+                ml_q.put(count)
                 #print("processed frames count: " +str(len(frames_1)))
 
                 #increment sample index
@@ -81,7 +82,7 @@ def audio_process(audio_q):
                 frame_cnt2 = f1.getnframes()
                 
                 frames_2 = f1.readframes(f1.getsampwidth()*frame_cnt2)
-                frames_2 = frames_2[:f1.getsampwidth()*(176400 - (frame_cnt - sample_index))]
+                frames_2 = frames_2[:f1.getsampwidth()*(frame_length - (frame_cnt - sample_index))]
                 f1.close()
 
                 #print("bb" + str(len(frames_2)/2))
@@ -99,6 +100,7 @@ def audio_process(audio_q):
 
                 
                 #insert ml func call here..
+                ml_q.put(count)
 
                 #increment sample index
                 sample_index += shift
