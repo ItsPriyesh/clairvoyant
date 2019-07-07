@@ -1,3 +1,5 @@
+import os
+
 MODEL_NAME = 'audio_embeddings'
 MODEL_LICENSE = 'Apache 2.0'
 
@@ -9,7 +11,6 @@ MODEL_META_DATA = {
     'license': '{}'.format(MODEL_LICENSE)
 }
 
-local = "/Users/priyesh/Desktop/audio-classifier/assets"
-DEFAULT_EMBEDDING_CHECKPOINT = local + "/vggish_model.ckpt"
-DEFAULT_PCA_PARAMS = local + "/vggish_pca_params.npz"
-DEFAULT_CLASSIFIER_MODEL = local + "/classifier_model.h5"
+DEFAULT_EMBEDDING_CHECKPOINT = os.path.join("assets","vggish_model.ckpt")
+DEFAULT_PCA_PARAMS = os.path.join("assets","vggish_pca_params.npz")
+DEFAULT_CLASSIFIER_MODEL = os.path.join("assets","classifier_model.h5")

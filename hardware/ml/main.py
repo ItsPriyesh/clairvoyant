@@ -4,8 +4,9 @@
 # Extract the model tar and put the files in a folder called 'assets' in the same directory as this file.
 #
 from core.model import ModelWrapper
+import os
 
-input = "/Users/priyesh/Desktop/test/3.wav"
+input = os.path.join("samples","gunshots.wav")
 model_wrapper = ModelWrapper()
 predictions = model_wrapper._predict(input, 0)
 print(predictions)

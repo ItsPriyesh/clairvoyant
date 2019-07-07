@@ -23,7 +23,7 @@ from . import vggish_slim
 from config import MODEL_META_DATA as model_meta
 from maxfw.model import MAXModelWrapper
 from config import DEFAULT_EMBEDDING_CHECKPOINT, DEFAULT_PCA_PARAMS, DEFAULT_CLASSIFIER_MODEL
-
+import os
 
 class ModelWrapper(MAXModelWrapper):
     """
@@ -52,7 +52,8 @@ class ModelWrapper(MAXModelWrapper):
         self.pproc = vggish_postprocess.Postprocessor(pca_params)
 
         # Metadata
-        self.indices = pd.read_csv('/Users/priyesh/Desktop/MAX-Audio-Classifier/samples/class_labels_indices.csv')
+        fname = os.path.join("assets","class_labels_indices.csv")
+        self.indices = pd.read_csv(fname)
 
     def generate_embeddings(self, wav_file):
         """
