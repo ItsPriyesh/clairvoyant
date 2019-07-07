@@ -1,0 +1,60 @@
+body {
+	background: #202023;
+}
+
+.header {
+	background: #1c1c1f;
+	height: 80px !important;
+	padding-left: 172px;
+}
+
+.logo {
+	color: #e3e3e3;
+	font-size: 22pt;
+	font-family: 'Rajdhani', sans-serif;
+	margin-top: 20pt;
+	margin-bottom: 20pt;
+}
+
+.card {
+	background: #27272b;
+	padding: 12px;
+	box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.1);
+
+}
+
+.subheading {
+	color: #e3e3e3;
+	font-size: 14pt;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 500;
+	padding: 8px;
+}
+
+
+.history_table_head {
+	color: #e3e3e3;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 400;
+	opacity: .6;
+}
+
+.history_table_body {
+	color: #e3e3e3;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 400;
+	opacity: .85;
+}
+
+.event-pie-legend li span {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    border-radius: 25px;
+}
+
+.event-pie-legend li {
+    color: #e3e3e3;
+    list-style-type:none;
+}
