@@ -4,6 +4,7 @@ import com.google.common.flogger.FluentLogger;
 import com.google.gson.Gson;
 import io.clairvoyant.api.model.Credentials;
 import io.clairvoyant.db.UserStore;
+import io.clairvoyant.gateway.DataPointPublisher;
 import io.clairvoyant.model.auto.DataPointAuto;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -30,9 +31,9 @@ public class DataPointSocketHandler {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
-    private final DataPointPublisher dataPointManager;
     private final Gson gson;
     private final UserStore userStore;
+    private final DataPointPublisher dataPointManager;
     private final Map<Session, Disposable> clients = new ConcurrentHashMap<>();
 
     @Inject
@@ -73,12 +74,7 @@ public class DataPointSocketHandler {
     private void startListening(Session session, int userID) {
         logger.atInfo().log("Forwarding events to user=%s, address=%s", userID, session.getLocalAddress());
 
-        Disposable disposable = dataPointManager
-                .listen(userID)
-                .filter(datapoint -> {
-                    // Join with UserDataPoint to see if it's the right users datapoint
-                    return true;
-                })
+        Disposable disposable = dataPointManager.listenForUser(userID)
                 .map(proto -> DataPointAuto.builder()
                         .setDataPointId(proto.getId())
                         .setNodeId(proto.getNodeId())
@@ -87,11 +83,7 @@ public class DataPointSocketHandler {
                         .setReceivedAt(new Timestamp(proto.getTimestamp()))
                 )
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(data -> {
-                    String json = gson.toJson(data);
-                    System.out.println(json);
-                    session.getRemote().sendString(json);
-                });
+                .subscribe(data -> session.getRemote().sendString(gson.toJson(data)));
 
         clients.put(session, disposable);
     }
