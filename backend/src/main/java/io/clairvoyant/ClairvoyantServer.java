@@ -3,7 +3,6 @@ package io.clairvoyant;
 import com.google.common.flogger.FluentLogger;
 import io.clairvoyant.api.ApiService;
 import io.clairvoyant.api.DataPointSocketHandler;
-import io.clairvoyant.api.LoginApi;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import spark.Spark;
@@ -44,8 +43,7 @@ public class ClairvoyantServer {
         Spark.port(frontendPort);
         logger.atInfo().log("Listening for frontend on port " + frontendPort);
 
-        Spark.webSocket("/dataPointStream", new DataPointSocketHandler());
-//        Spark.init();
+        Spark.webSocket("/listenDataPoint", component.createSocketHandler());
 
         Spark.before((req, res) -> {
             res.header("Access-Control-Allow-Origin", "*");
