@@ -1,7 +1,6 @@
 package io.clairvoyant.gateway;
 
 import com.google.common.flogger.FluentLogger;
-import io.clairvoyant.api.DataPointPublisher;
 import io.clairvoyant.db.DataPointStore;
 import io.clairvoyant.proto.Ack;
 import io.clairvoyant.proto.ClairvoyantServiceGrpc;
