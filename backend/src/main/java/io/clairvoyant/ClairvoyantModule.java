@@ -1,12 +1,12 @@
 package io.clairvoyant;
 
 import com.google.gson.FieldNamingPolicy;
-import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import dagger.Module;
 import dagger.Provides;
+import io.clairvoyant.api.model.Credentials;
 import io.clairvoyant.db.DatabaseConfig;
 import org.davidmoten.rx.jdbc.Database;
 
@@ -59,6 +59,7 @@ public class ClairvoyantModule {
     @Singleton
     static Gson provideGson() {
         return new GsonBuilder()
+                .registerTypeAdapter(Credentials.class, Credentials.DESERIALIZER)
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
     }

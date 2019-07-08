@@ -2,16 +2,15 @@ package io.clairvoyant.model;
 
 import org.davidmoten.rx.jdbc.annotations.Column;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 public interface DataPoint {
 
     @Column
-    int dataPointID();
+    int dataPointId();
 
     @Column
-    int nodeID();
+    int nodeId();
 
     @Column
     Timestamp receivedAt();

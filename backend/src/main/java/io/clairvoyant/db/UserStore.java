@@ -42,4 +42,12 @@ public class UserStore {
                         : Maybe.just(users.get(0))
                 );
     }
+
+    public Single<Boolean> isUserSessionValid(int userID, String sessionToken) {
+        return database.select("select * from User where user_id = ?")
+                .parameter(userID)
+                .autoMap(User.class)
+                .toList()
+                .map(users -> !users.isEmpty() && users.get(0).sessionToken().equals(sessionToken));
+    }
 }

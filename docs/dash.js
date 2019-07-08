@@ -28,11 +28,20 @@ let pieColors = {
 $(document).ready(function() {
   bindEventBreakdown(datapoints);
   bindHistory(datapoints);
+  listenForDataPoints();
 });
 
-  let webSocket = new WebSocket('ws://localhost:8081/dataPointStream/');
-  webSocket.onmessage = function (msg) { console.log('onmessage ' + msg); };
-  webSocket.onclose = function () { console.log('onclose '); };
+listenForDataPoints = function() {
+  let webSocket = new WebSocket('ws://localhost:8081/listenDataPoint/');
+  webSocket.onopen = function () {
+    let listenRequest = {user_id: 19, session_token: "6594ccfa-e950-4c8a-a408-613c8d87580d"};
+    webSocket.send(JSON.stringify(listenRequest)); 
+  }
+  webSocket.onmessage = function (msg) { 
+    console.log('Received datapoint: ' + msg.data);
+    // TODO: Update UI
+  };
+};
 
 fetchDataPoints = function() {
   $.ajax({
