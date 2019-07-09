@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
 
+import static io.clairvoyant.api.ApiService.hasParams;
+
 public class LoginApi {
 
     private final UserStore userStore;
@@ -85,9 +87,5 @@ public class LoginApi {
             res.status(400);
             return Error.create("Invalid password!");
         }
-    }
-
-    private static boolean hasParams(Request req, String... required) {
-        return req.queryParams().containsAll(new HashSet<>(Arrays.asList(required)));
     }
 }

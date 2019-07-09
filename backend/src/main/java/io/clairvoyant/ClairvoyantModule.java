@@ -8,6 +8,7 @@ import dagger.Module;
 import dagger.Provides;
 import io.clairvoyant.api.model.Credentials;
 import io.clairvoyant.db.DatabaseConfig;
+import io.clairvoyant.model.DataPoint;
 import org.davidmoten.rx.jdbc.Database;
 
 import javax.inject.Singleton;
@@ -60,6 +61,7 @@ public class ClairvoyantModule {
     static Gson provideGson() {
         return new GsonBuilder()
                 .registerTypeAdapter(Credentials.class, Credentials.DESERIALIZER)
+                .registerTypeAdapter(DataPoint.class, DataPoint.SERIALIZER)
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
     }
