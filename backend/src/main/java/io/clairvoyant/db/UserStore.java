@@ -52,10 +52,10 @@ public class UserStore {
                 .map(users -> !users.isEmpty() && users.get(0).sessionToken().equals(sessionToken));
     }
 
-    public Single<Integer> getUserForDataPoint(DataPoint dataPoint) {
-        return database.select("select user_id from UserDataPoint where data_point_id = ?")
-                .parameter(dataPoint.getId())
+    public Single<Integer> getUserForNode(int nodeId) {
+        return database.select("select user_id from Node where node_id = ?")
+                .parameter(nodeId)
                 .getAs(Integer.class)
-                .firstOrError();
+                .first(-1);
     }
 }

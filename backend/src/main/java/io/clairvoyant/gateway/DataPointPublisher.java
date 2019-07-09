@@ -26,7 +26,7 @@ public class DataPointPublisher {
     public Observable<DataPoint> listenForUser(int userId) {
         return subject
                 .flatMapSingle(dataPoint -> userStore
-                        .getUserForDataPoint(dataPoint)
+                        .getUserForNode(dataPoint.getNodeId())
                         .map(u -> new DataPointUser(dataPoint, u))
                 )
                 .filter(d -> d.userId == userId)

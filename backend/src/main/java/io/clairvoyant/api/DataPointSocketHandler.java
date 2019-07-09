@@ -83,7 +83,7 @@ public class DataPointSocketHandler {
                         .setReceivedAt(new Timestamp(proto.getTimestamp()))
                 )
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(data -> session.getRemote().sendString(gson.toJson(data)));
+                .subscribe(data -> session.getRemote().sendString(gson.toJson(data)), e -> e.printStackTrace());
 
         clients.put(session, disposable);
     }
