@@ -30,12 +30,3 @@ CREATE TABLE DataPoint(
    CONSTRAINT DataPoint_node_id FOREIGN KEY (node_id) REFERENCES Node(node_id),
    PRIMARY KEY(data_point_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `UserDataPoint`;
-CREATE TABLE UserDataPoint(
-   user_id		int not null,
-   data_point_id 	int 		 not null,
-   CONSTRAINT UserDataPoint_user_id FOREIGN KEY (user_id) REFERENCES User(user_id),
-   CONSTRAINT UserDataPoint_data_point_id FOREIGN KEY (data_point_id) REFERENCES DataPoint(data_point_id),
-   PRIMARY KEY(data_point_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
