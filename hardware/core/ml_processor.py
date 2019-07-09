@@ -10,7 +10,7 @@ import time
 import warnings
 import tensorflow as tf
 
-def ml_process(ml_q):
+def ml_process(ml_q,ml_init_q,):
 
     files = []
     warnings.filterwarnings("ignore")
@@ -18,9 +18,8 @@ def ml_process(ml_q):
 
     model_wrapper = ModelWrapper()
 
-    ml_q.put(1)
-    while (ml_q.empty()==False): #wait for global scheduler to start other stuff
-        pass
+    ml_init_q.put(1)
+
     print("ML: Entering superloop")
     while (1):
         

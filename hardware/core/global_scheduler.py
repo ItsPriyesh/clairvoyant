@@ -10,14 +10,15 @@ if __name__ == '__main__':
     #define queues
     audio_q = Queue()
     ml_q = Queue()
+    ml_init_q = Queue()
 
     #start ml task
-    ml_task = multiprocessing.Process(target=ml_process, args = (ml_q,))
+    ml_task = multiprocessing.Process(target=ml_process, args = (ml_q,ml_init_q,))
     ml_task.start()
     #wait for it to load model
-    while (ml_q.empty() == True):
+    while (ml_init_q.empty() == True):
         pass
-    ml_q.get()
+    ml_init_q.get()
     print ("Done ml init")
     
 
