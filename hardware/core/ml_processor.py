@@ -10,7 +10,7 @@ import time
 import warnings
 import tensorflow as tf
 
-def ml_process(ml_q,ml_init_q,):
+def ml_process(ml_q,ml_init_q):
 
     files = []
     warnings.filterwarnings("ignore")
