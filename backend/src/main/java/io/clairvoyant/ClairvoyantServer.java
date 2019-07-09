@@ -9,6 +9,8 @@ import spark.Spark;
 
 import java.io.IOException;
 
+import static spark.Spark.*;
+
 public class ClairvoyantServer {
 
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
@@ -38,23 +40,27 @@ public class ClairvoyantServer {
         server.start();
         logger.atInfo().log("Listening for gateway on port " + gatewayPort);
 
+        setupApi(component, frontendPort);
+
+        server.awaitTermination();
+        logger.atInfo().log("Server terminated!");
+    }
+
+    private static void setupApi(ClairvoyantComponent component, int port) {
         logger.atInfo().log("Starting web API");
         ApiService api = component.createWebApiService();
-        Spark.port(frontendPort);
-        logger.atInfo().log("Listening for frontend on port " + frontendPort);
+        port(port);
+        logger.atInfo().log("Listening for frontend on port " + port);
 
-        Spark.webSocket("/listenDataPoint", component.createSocketHandler());
+        webSocket("/listenDataPoint", component.createSocketHandler());
 
-        Spark.before((req, res) -> {
+        before((req, res) -> {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Content-Type", "application/json");
             res.header("X-Content-Type-Options", "nosniff");
         });
-        Spark.post("/createUser", api.login::createUser);
-        Spark.get("/login", api.login::login);
-
-
-        server.awaitTermination();
-        logger.atInfo().log("Server terminated!");
+        post("/createUser", api.login::createUser);
+        get("/login", api.login::login);
+        get("/datapoints", api.dash::getDataPoints);
     }
 }

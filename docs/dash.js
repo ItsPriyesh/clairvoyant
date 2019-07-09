@@ -1,24 +1,3 @@
-let datapoints = [
-  {
-    node_id: 1,
-    type: "Gunshot",
-    confidence: .96,
-    time: "July 4, 16:04:20"
-  },
-  {
-    node_id: 2,
-    type: "Vehicle",
-    confidence: .94,
-    time: "July 4, 16:04:20"
-  },
-  {
-    node_id: 3,
-    type: "Missile",
-    confidence: .91,
-    time: "July 4, 16:04:20"
-  }
-];
-
 let pieColors = {
   Gunshot: '#ba2c54',
   Missile: '#4275f7',
@@ -26,16 +5,17 @@ let pieColors = {
 };
 
 $(document).ready(function() {
-  bindEventBreakdown(datapoints);
-  bindHistory(datapoints);
+  fetchDataPoints();
   listenForDataPoints();
 });
+
+// TODO: read this from local storage / cookies
+let credentials = {user_id: 19, session_token: "6594ccfa-e950-4c8a-a408-613c8d87580d"};
 
 listenForDataPoints = function() {
   let webSocket = new WebSocket('ws://localhost:8081/listenDataPoint/');
   webSocket.onopen = function () {
-    let listenRequest = {user_id: 19, session_token: "6594ccfa-e950-4c8a-a408-613c8d87580d"};
-    webSocket.send(JSON.stringify(listenRequest)); 
+    webSocket.send(JSON.stringify(credentials)); 
   }
   webSocket.onmessage = function (msg) { 
     console.log('Received datapoint: ' + msg.data);
@@ -45,12 +25,11 @@ listenForDataPoints = function() {
 
 fetchDataPoints = function() {
   $.ajax({
-    url: 'http://localhost:8081/getDataPoints',
+    url: 'http://localhost:8081/datapoints',
     type: 'GET',
-    'data' : {
-      'token': sessionToken
-    }
+    'data' : credentials
   }).done(function(datapoints) {
+      console.log('Received datapoints ' + JSON.stringify(datapoints))
       bindEventBreakdown(datapoints);
       bindHistory(datapoints);
   }).fail(function(error) {
