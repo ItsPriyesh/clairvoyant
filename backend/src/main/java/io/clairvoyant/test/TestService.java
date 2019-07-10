@@ -7,7 +7,13 @@ import javax.inject.Singleton;
 public class TestService {
 
     public final User user;
+    public final DataPoint dataPoint;
+    public final Node node;
 
     @Inject
-    public TestService(User user) { this.user = user; }
+    public TestService(User user, DataPoint dataPoint, Node node) {
+        this.user = user;
+        this.dataPoint = dataPoint;
+        this.node = node;
+    }
 }
