@@ -3,11 +3,13 @@ package io.clairvoyant;
 import com.google.common.flogger.FluentLogger;
 import io.clairvoyant.api.ApiService;
 import io.clairvoyant.api.LoginApi;
+import io.clairvoyant.test.TestService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import spark.Spark;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 public class ClairvoyantServer {
 
@@ -15,16 +17,17 @@ public class ClairvoyantServer {
 
     /**
      * Usage:
-     * java ClairvoyantServer <gateway_port> <web_api_port>
+     * java ClairvoyantServer <gateway_port> <web_api_port> <test_mode>
      */
     public static void main(String[] args) throws InterruptedException, IOException {
-        if (args.length != 2) {
+        if (args.length != 3) {
             throw new IllegalArgumentException(
                     "Ports for gateway service and web API must be specified!");
         }
 
         final int gatewayPort = Integer.parseInt(args[0]);
         final int frontendPort = Integer.parseInt(args[1]);
+        final boolean testMode = Boolean.parseBoolean(args[2]);
 
         // Build DI graph
         ClairvoyantComponent component = DaggerClairvoyantComponent.create();
@@ -45,6 +48,17 @@ public class ClairvoyantServer {
 
         Spark.post("/createUser", api.login::createUser);
         Spark.get("/login", api.login::login);
+
+        if(testMode) {
+            // create test data
+            logger.atInfo().log("Creating test user...");
+            TestService ts = component.createTestService();
+            try {
+                ts.user.createUser("Test", "User", "test@test.com", "password");
+            } catch(Exception ex) {
+                // do smthg
+            }
+        }
 
         server.awaitTermination();
         logger.atInfo().log("Server terminated!");

@@ -4,6 +4,7 @@ import dagger.Component;
 import io.clairvoyant.api.ApiService;
 import io.clairvoyant.api.LoginApi;
 import io.clairvoyant.gateway.ClairvoyantService;
+import io.clairvoyant.test.TestService;
 
 import javax.inject.Singleton;
 
@@ -12,4 +13,5 @@ import javax.inject.Singleton;
 public interface ClairvoyantComponent {
     ClairvoyantService createGatewayRpcService();
     ApiService createWebApiService();
+    TestService createTestService();
 }

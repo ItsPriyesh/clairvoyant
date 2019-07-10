@@ -9,11 +9,11 @@ public class PasswordManager {
     @Inject
     public PasswordManager() {}
 
-    String hash(String password) {
+    public String hash(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    boolean check(String password, String hash) {
+    public boolean check(String password, String hash) {
         return BCrypt.checkpw(password, hash);
     }
 }
