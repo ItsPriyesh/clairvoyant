@@ -2,85 +2,60 @@ import pyaudio
 import multiprocessing
 import wave
 import os
+import time
 
-def wav_recorder(frames, count, audio_q):
-    # save the audio frames as .wav file
-    fname = str(count)+".wav"
-    p_fname = os.path.join('output','raw_audio',fname)
-    
-    wavefile = wave.open(p_fname,'wb')
-    wavefile.setnchannels(1)
-    wavefile.setsampwidth(2)
-    wavefile.setframerate(44100)
-    wavefile.writeframes(b''.join(frames))
-    wavefile.close()
-    audio_q.put(count)
-    
-    
+FORMAT = pyaudio.paInt16
+CHANNELS = 1
+RATE = 44100
+CHUNK = 4096
+RECORD_SECONDS = 11
+DEVICE_INDEX = 0
+
 def print_available_mics():
     audio = pyaudio.PyAudio()
     #Print out available mics
     for ii in range(audio.get_device_count()):
         print(audio.get_device_info_by_index(ii).get('name'))
 
+def wav_recorder(frames, count, output_buff, audio):
+    file_name = str(count)+".wav"
+    p_fname = os.path.join('output','raw_audio', file_name)
 
-def record_process(audio_q):
+    waveFile = wave.open(p_fname, 'wb')
+    waveFile.setnchannels(CHANNELS)
+    waveFile.setsampwidth(2)
+    waveFile.setframerate(RATE)
+    waveFile.writeframes(b''.join(frames))
+    waveFile.close()
 
-    frames_1 = []
-    frames_2 = []
-    frames = []
+    output_buff.put({'file_name': file_name, 'path' : p_fname, 'frames': frames[:]})
 
+def init(input_buff, output_buff):
+    print("Initializing Audio Recorder Process...")
 
-    #initialize microphone
     audio = pyaudio.PyAudio()
-   
-    form_1 = pyaudio.paInt16 # 16-bit resolution
-    chans = 1 # 1 channel
-    samp_rate = 44100 # 44.1kHz sampling rate
-    chunk = 4096 # 2^12 samples for buffer
-    record_secs = 6 # seconds to record
-    dev_index = 1 # device index found by p.get_device_info_by_index(ii)
 
-    # create pyaudio stream
-    stream = audio.open(format = form_1,rate = samp_rate,channels = chans, \
-                          input_device_index = dev_index,input = True, \
-                            frames_per_buffer=chunk)
+    # Initialize audio stream
+    stream = audio.open(
+        format=FORMAT, 
+        channels=CHANNELS, 
+        rate=RATE, 
+        input_device_index = DEVICE_INDEX, 
+        input=True, 
+        frames_per_buffer=CHUNK)
 
-    process_running = False
-    frame_switch_flag = False
     count = 0
-    
-    while (1):
-                # loop through stream and append audio chunks to frame array
-        for ii in range(0,int((samp_rate/chunk)*record_secs)):
-            data = stream.read(chunk)
 
-            if (frame_switch_flag) == False:
-                frames_1.append(data)
-            else:
-                frames_2.append(data)
-        #start wave file process
-        if (frame_switch_flag) == False:
-            frames = frames_1.copy()
-            frame_switch_flag = True
-            frames_2.clear()
-        else:
-            frames = frames_2.copy()
-            frame_switch_flag = False
-            frames_1.clear()
+    while(1):
+        frames = []
+        for i in range(0,int((RATE/CHUNK)*RECORD_SECONDS)):
+            frames.append(stream.read(CHUNK))
 
         #init subprcss
-        wav_prcss = multiprocessing.Process(target=wav_recorder, args=(frames,count,audio_q,))
+        wav_prcss = multiprocessing.Process(target=wav_recorder, args=(frames[:],count,output_buff,audio,))
         wav_prcss.start()
-        wav_prcss.join()
 
         count+=1
-        
-        
-
-
-
-
 
 """
 # stop the stream, close it, and terminate the pyaudio instantiation

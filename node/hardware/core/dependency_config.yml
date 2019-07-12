@@ -1,0 +1,21 @@
+# General template of processor configs should be as follows:
+# [PROCESSOR LABEL]:
+# 	module_name: [MODULE_NAME]
+# 	input_sources:
+# 		- [LABEL_1]
+# 		...
+# 		- [LABEL_n]
+
+audio_proc_1:
+  module_name: audio_recorder
+  input_sources:
+
+data_proc_1:
+  module_name: data_processor
+  input_sources: 
+    - audio_proc_1
+
+ml_proc_1:
+  module_name: ml_processor
+  input_sources:
+    - data_proc_1

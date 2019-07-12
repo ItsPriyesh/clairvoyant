@@ -4,8 +4,9 @@ import wave
 import os
 import contextlib
 
-def audio_process(audio_q, ml_q):
-    frame_length = 44100*10 #10 sec
+def init(audio_q, ml_q):
+    print("Initializing Data Processing Process...")
+    FRAME_LENGTH = 44100*10 #10 sec
 
     shift = int(176400) #4 second
     files = []
@@ -15,29 +16,25 @@ def audio_process(audio_q, ml_q):
     sample_index = 0
     count = 0
     
-
     while(1):
-    
         #check for new files
         if (audio_q.empty() == False):
-            files.append(str(audio_q.get()) + ".wav")
+            files.append(audio_q.get()['file_name'])
 
         if (len(files) > 0):
-            
             fname = os.path.join('output','raw_audio',files[0])
             f1 = wave.open(fname,'rb')
             frame_cnt = f1.getnframes()
             #print(frame_cnt)
             
             #Case 1: Current file has frame length unread samples
-            if (sample_index + frame_length <= frame_cnt):
+            if (sample_index + FRAME_LENGTH <= frame_cnt):
                 #read out frame length frames, put wave file in processed_audio, and
                 #call ml and pass file name.  deletes file after
                 #processing
                 frames_1 = f1.readframes(f1.getsampwidth()*frame_cnt)
 
-                frames_1 = frames_1[sample_index*f1.getsampwidth():f1.getsampwidth()*(sample_index+176400)]
-
+                frames_1 = frames_1[sample_index*f1.getsampwidth():f1.getsampwidth()*(sample_index+FRAME_LENGTH)]
 
                 fname = str(count)+".wav"
                 fname = os.path.join('output','processed_audio',fname)
@@ -57,15 +54,14 @@ def audio_process(audio_q, ml_q):
                 sample_index += shift
 
                 if (sample_index >= frame_cnt):
-                    #done with fil                    #add delete file here
+                    #done with fil                    
+                    #add delete file here
                     del files[0]
                     sample_index -= frame_cnt
                 #print (sample_index)
 
                     
                 count+=1
-                
-
                 
             #else, we need to look at next file for part of the 176400 unread samples
             elif (len(files)>1): #make sure there is a 2nd file, else wait
@@ -82,7 +78,7 @@ def audio_process(audio_q, ml_q):
                 frame_cnt2 = f1.getnframes()
                 
                 frames_2 = f1.readframes(f1.getsampwidth()*frame_cnt2)
-                frames_2 = frames_2[:f1.getsampwidth()*(frame_length - (frame_cnt - sample_index))]
+                frames_2 = frames_2[:f1.getsampwidth()*(FRAME_LENGTH - (frame_cnt - sample_index))]
                 f1.close()
 
                 #print("bb" + str(len(frames_2)/2))
@@ -122,7 +118,8 @@ def audio_process(audio_q, ml_q):
                 #frames_1 = frames_1[f1.getsampwidth()*sample_index:]
                 f1.close()
                 #print("aa" + str(len(frames_1)/2))
-                """
+
+"""                
 #testing code 
                 fname = str(count)+".wav"
                 fname = os.path.join('output','processed_audio',fname)

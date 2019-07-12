@@ -10,8 +10,10 @@ import time
 import warnings
 import tensorflow as tf
 
-def ml_process(ml_q,ml_init_q):
+def init(ml_q,ml_init_q):
 
+    print("Initializing Machine Learning Process...")
+    
     files = []
     warnings.filterwarnings("ignore")
     tf.logging.set_verbosity(tf.logging.ERROR)
