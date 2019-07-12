@@ -5,16 +5,19 @@ $(document).ready(function(){
       type: 'GET',
       'data' : {
         'email' : $("#login").val(),
-        'password' : $("#password").val(),
+        'password' : md5($("#password").val()),
       }
     }).done(function(data) {
-        console.log('done!');
-        console.log(data);
-        // load user dashboard
+      loadDashboard(data);
+    }).fail(function(error) {
+      alert(error.responseText);
     });
   });
 });
 
-loadDashboard = function() {
-  
+loadDashboard = function(data) {
+  console.log(data);
+  localStorage.setItem('token', data);
+  console.log(localStorage.getItem('token'));
+  window.location = "./dash.html";
 }
