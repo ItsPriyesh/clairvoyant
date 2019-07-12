@@ -35,16 +35,15 @@ def lora_comm_processor():
 
 
 
-
-
-
 #There are 2 types of packets (Event Packet from Node, or MESH PATH ack packets during mesh path finding
 #Packet Structure for Event Packets
 #B1 = enum(event  packet, mesh path_1 packet, mesh path_2 packet event ack packet, mesh path ack packet)
 #B2 = Hop #
 #B3 = Battery Life ( 0 to 100), nodes with constant pwr have 100
-#B4 = Number of Triplets
-#B(5 to 5+ 3*75 - 1) = 75 Triplets ( #sec since event, event type enum(Movement, Human Voice, Vehicles, Gunshots, Explosions), confidence level ( to 100)).
+#B4 = # Secs since event
+#B5 Event type enum (movement, human voice, vehicles, gunshots, explosions)
+#B6 Confidence level (0 to 100)
+#B7-229 NULL
 #B(230 to B236) = Signature (c51410)
 #B(237 to 240) = CRC32
 
@@ -87,4 +86,4 @@ def lora_comm_processor():
 
         
 
-}
+
