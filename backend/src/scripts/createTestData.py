@@ -24,3 +24,4 @@ except requests.exceptions.HTTPError as e:
 	print(e)
 
 # TODO: create nodes and datapoints using the api endpoints once they are created
+# can use createTestData.sql to create datapoints and nodes for now
