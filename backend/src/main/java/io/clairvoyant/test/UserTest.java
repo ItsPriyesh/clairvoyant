@@ -12,26 +12,26 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-public class User {
+public class UserTest {
 
     private final UserStore userStore;
     private final PasswordManager passManager;
 
     @Inject
-    public User(UserStore userStore, PasswordManager pwManager) {
+    public UserTest(UserStore userStore, PasswordManager pwManager) {
         this.userStore = userStore;
         this.passManager = pwManager;
     }
 
-    public void createUser(String fn, String ln, String em, String pw) throws Exception {
-        Maybe<io.clairvoyant.model.User> userMaybe = userStore.getUser(em);
+    public void createUser() throws Exception {
+        Maybe<io.clairvoyant.model.User> userMaybe = userStore.getUser("test@test.com");
         if(userMaybe.isEmpty().blockingGet()) {
             String sessionToken = UUID.randomUUID().toString();
-            String initialHashPw = initialHash(pw);
+            String initialHashPw = initialHash("password");
             io.clairvoyant.model.User user = UserAuto.builder()
-                    .setFirstName(fn)
-                    .setLastName(ln)
-                    .setEmail(em)
+                    .setFirstName("Test")
+                    .setLastName("User")
+                    .setEmail("test@test.com")
                     .setPasswordHash(passManager.hash(initialHashPw))
                     .setCreatedAt(new Timestamp(System.currentTimeMillis()))
                     .setSessionToken(sessionToken)
