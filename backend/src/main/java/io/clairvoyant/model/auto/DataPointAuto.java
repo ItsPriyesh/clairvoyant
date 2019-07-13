@@ -24,6 +24,7 @@ public abstract class DataPointAuto implements DataPoint {
     }
 
     public static Builder builder() {
-        return new AutoValue_DataPointAuto.Builder();
+        return new AutoValue_DataPointAuto.Builder()
+                .setDataPointID(0);
     }
 }

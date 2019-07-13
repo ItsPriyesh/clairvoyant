@@ -8,12 +8,10 @@ public class TestService {
 
     public final User user;
     public final DataPoint dataPoint;
-    public final Node node;
 
     @Inject
-    public TestService(User user, DataPoint dataPoint, Node node) {
+    public TestService(User user, DataPoint dataPoint) {
         this.user = user;
         this.dataPoint = dataPoint;
-        this.node = node;
     }
 }

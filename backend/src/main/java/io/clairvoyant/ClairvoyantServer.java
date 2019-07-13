@@ -3,6 +3,7 @@ package io.clairvoyant;
 import com.google.common.flogger.FluentLogger;
 import io.clairvoyant.api.ApiService;
 import io.clairvoyant.api.LoginApi;
+import io.clairvoyant.model.EventType;
 import io.clairvoyant.test.TestService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -10,6 +11,7 @@ import spark.Spark;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 
 public class ClairvoyantServer {
 
@@ -55,6 +57,8 @@ public class ClairvoyantServer {
             TestService ts = component.createTestService();
             try {
                 ts.user.createUser("Test", "User", "test@test.com", "password");
+                ts.dataPoint.createDataPoint(1, new Timestamp(System.currentTimeMillis()),
+                        EventType.EXPLOSION.toString(), (float)0.87);
             } catch(Exception ex) {
                 // do smthg
             }
