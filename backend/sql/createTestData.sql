@@ -1,4 +1,7 @@
-SELECT @testUser := LAST_INSERT_ID();
+use clairvoyant;
+
+SELECT @testUser := user_id FROM User 
+WHERE email = 'test@test.com';
 
 -- create nodes
 INSERT INTO Node(last_heartbeat, user_id)
@@ -6,7 +9,9 @@ VALUES ('2019-01-01 11:38:01.00', @testUser),
 	   ('2019-01-01 12:45:01.00', @testUser),
 	   ('2019-01-01 10:13:01.00', @testUser);
 
-SELECT @node := LAST_INSERT_ID();
+SELECT @node := node_id FROM Node
+WHERE user_id = @testUser
+LIMIT 1;
 
 -- create datapoints
 INSERT INTO DataPoint (node_id, received_at, event_type, confidence) 

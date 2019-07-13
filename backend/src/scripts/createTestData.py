@@ -4,10 +4,6 @@ import hashlib
 baseUrl = 'http://localhost:8081'
 userEndpoint = '/createUser'
 
-# TODO: add these endpoints when they are available
-nodeEndpoint = ''
-datapointEndpoint = ''
-
 pw = 'password'
 # hash pw in md5 because fe hashes pw in md5 in request
 initialHashPw = hashlib.md5(pw.encode()).hexdigest()
@@ -23,5 +19,5 @@ try:
 except requests.exceptions.HTTPError as e:
 	print(e)
 
-# TODO: create nodes and datapoints using the api endpoints once they are created
-# can use createTestData.sql to create datapoints and nodes for now
+# using sql to create nodes and datapoints for now (since
+# endpoints are unavailable)
