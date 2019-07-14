@@ -1,7 +1,7 @@
 package io.clairvoyant;
 
 import com.google.common.flogger.FluentLogger;
-import io.clairvoyant.api.ApiService;
+import io.clairvoyant.api.DashboardApi;
 import io.clairvoyant.api.LoginApi;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -38,15 +38,30 @@ public class ClairvoyantServer {
         server.start();
         logger.atInfo().log("Listening for gateway on port " + gatewayPort);
 
-        logger.atInfo().log("Starting web API");
-        ApiService api = component.createWebApiService();
-        Spark.port(frontendPort);
-        logger.atInfo().log("Listening for frontend on port " + frontendPort);
-
-        Spark.post("/createUser", api.login::createUser);
-        Spark.get("/login", api.login::login);
+        setupApi(component, frontendPort);
 
         server.awaitTermination();
         logger.atInfo().log("Server terminated!");
+    }
+
+    private static void setupApi(ClairvoyantComponent component, int port) {
+        logger.atInfo().log("Starting web API");
+        Spark.port(port);
+        logger.atInfo().log("Listening for frontend on port " + port);
+
+        Spark.webSocket("/listenDataPoint", component.createSocketHandler());
+
+        Spark.before((req, res) -> {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Content-Type", "application/json");
+            res.header("X-Content-Type-Options", "nosniff");
+        });
+
+        LoginApi login = component.createLoginApi();
+        Spark.post("/createUser", login::createUser);
+        Spark.get("/login", login::login);
+
+        DashboardApi dash = component.createDashboardApi();
+        Spark.get("/datapoints", dash::getDataPoints);
     }
 }

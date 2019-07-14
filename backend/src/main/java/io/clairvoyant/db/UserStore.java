@@ -1,6 +1,7 @@
 package io.clairvoyant.db;
 
 import io.clairvoyant.model.User;
+import io.clairvoyant.proto.DataPoint;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
@@ -41,5 +42,20 @@ public class UserStore {
                         ? Maybe.empty()
                         : Maybe.just(users.get(0))
                 );
+    }
+
+    public Single<Boolean> isUserSessionValid(int userID, String sessionToken) {
+        return database.select("select * from User where user_id = ?")
+                .parameter(userID)
+                .autoMap(User.class)
+                .toList()
+                .map(users -> !users.isEmpty() && users.get(0).sessionToken().equals(sessionToken));
+    }
+
+    public Single<Integer> getUserForNode(int nodeId) {
+        return database.select("select user_id from Node where node_id = ?")
+                .parameter(nodeId)
+                .getAs(Integer.class)
+                .first(-1);
     }
 }

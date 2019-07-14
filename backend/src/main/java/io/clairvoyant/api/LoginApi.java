@@ -1,5 +1,8 @@
 package io.clairvoyant.api;
 
+import com.google.gson.Gson;
+import io.clairvoyant.api.model.Error;
+import io.clairvoyant.api.model.SessionToken;
 import io.clairvoyant.db.UserStore;
 import io.clairvoyant.model.User;
 import io.clairvoyant.model.auto.UserAuto;
@@ -8,28 +11,25 @@ import spark.Request;
 import spark.Response;
 
 import javax.inject.Inject;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Optional;
 import java.util.UUID;
 
-public class LoginApi {
+public class LoginApi extends ApiBase {
 
     private final UserStore userStore;
     private final PasswordManager passManager;
 
     @Inject
-    public LoginApi(UserStore userStore, PasswordManager passManager) {
+    public LoginApi(UserStore userStore, PasswordManager passManager, Gson gson) {
+        super(gson, userStore);
         this.userStore = userStore;
         this.passManager = passManager;
     }
 
     public String createUser(Request req, Response res) {
-        if (!hasParams(req, "firstName", "lastName", "email", "password")) {
-            res.status(400);
-            return "Required parameters not specified!";
-        }
+        Optional<Error> err = assertParams(req, res, "firstName", "lastName", "email", "password");
+        if (err.isPresent()) return toJson(err.get());
 
         String sessionToken = UUID.randomUUID().toString();
 
@@ -42,40 +42,33 @@ public class LoginApi {
                 .setSessionToken(sessionToken)
                 .build();
 
-        System.out.println(user);
-        Throwable error = userStore.insert(user).blockingGet();
-        if (error == null) {
+        Throwable insertErr = userStore.insert(user).blockingGet();
+        if (insertErr == null) {
             res.status(200);
-            return sessionToken;
+            return toJson(SessionToken.create(sessionToken));
         } else {
             res.status(500);
-            return error.getMessage();
+            return toJson(Error.create(insertErr.getMessage()));
         }
     }
 
     public String login(Request req, Response res) {
-        if (!hasParams(req, "email", "password")) {
-            res.status(400);
-            return "Required parameters not specified!";
-        }
+        Optional<Error> error = assertParams(req, res, "email", "password");
+        if (error.isPresent()) return toJson(error);
 
         Maybe<User> userMaybe = userStore.getUser(req.queryParams("email"));
         if (userMaybe.isEmpty().blockingGet()) {
             res.status(400);
-            return "Invalid email!";
+            return toJson(Error.create("Invalid email!"));
         }
 
         User user = userMaybe.blockingGet();
         if (passManager.check(req.queryParams("password"), user.passwordHash())) {
             res.status(200);
-            return user.sessionToken();
+            return toJson(SessionToken.create(user.sessionToken()));
         } else {
             res.status(400);
-            return "Invalid password!";
+            return toJson(Error.create("Invalid password!"));
         }
-    }
-
-    private static boolean hasParams(Request req, String... required) {
-        return req.queryParams().containsAll(new HashSet<>(Arrays.asList(required)));
     }
 }

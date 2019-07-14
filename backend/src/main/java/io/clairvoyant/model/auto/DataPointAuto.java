@@ -10,9 +10,9 @@ import java.sql.Timestamp;
 public abstract class DataPointAuto implements DataPoint {
     @AutoValue.Builder
     public static abstract class Builder {
-        public abstract Builder setDataPointID(int id);
+        public abstract Builder setDataPointId(int id);
 
-        public abstract Builder setNodeID(int id);
+        public abstract Builder setNodeId(int id);
 
         public abstract Builder setReceivedAt(Timestamp receivedAt);
 
