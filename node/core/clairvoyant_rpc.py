@@ -57,7 +57,7 @@ class ClairvoyantRPCService:
 		return params
 
 	"""
-	Raise ValueError if missing parameters.
+	Note: This function sets default values for any missing arguments.
 	Expected arguments:
 		DataPoint {
 		    int32 id = 1;
@@ -76,7 +76,7 @@ class ClairvoyantRPCService:
 			raise(e)
 
 	"""
-	Raise ValueError if missing parameters.
+	Note: This function sets default values for any missing arguments.
 	Expected arguments:
 		HeartBeat {
 		    int32 id = 1;
