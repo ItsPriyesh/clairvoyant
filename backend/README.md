@@ -25,3 +25,13 @@ mvn compile
 mvn exec:java -Dexec.mainClass=io.clairvoyant.ClairvoyantServer 8080 8081
 ```
 
+DB with test data Setup
+-----------------------
+- Create a db with the name `clairvoyant`
+
+- Navigate to `clairvoyant/backend/src/scripts/`
+
+- Run the `create_test_db.sh` script to create the db with test data:
+```
+sh create_test_db.sh
+```

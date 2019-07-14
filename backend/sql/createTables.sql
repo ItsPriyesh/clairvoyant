@@ -1,4 +1,10 @@
+use clairvoyant;
+
+DROP TABLE IF EXISTS `UserDataPoint`;
+DROP TABLE IF EXISTS `DataPoint`;
+DROP TABLE IF EXISTS `Node`;
 DROP TABLE IF EXISTS `User`;
+
 CREATE TABLE User(
    user_id       int not null auto_increment,
    first_name    varchar(255) not null,
@@ -10,7 +16,6 @@ CREATE TABLE User(
    PRIMARY KEY(user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `Node`;
 CREATE TABLE Node(
    node_id        int 		 not null auto_increment,
    last_heartbeat datetime 	 not null,
@@ -19,7 +24,6 @@ CREATE TABLE Node(
    PRIMARY KEY(node_id, last_heartbeat, user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `DataPoint`;
 CREATE TABLE DataPoint(
    data_point_id  int 		 not null auto_increment,
    node_id 		int 		 not null,
