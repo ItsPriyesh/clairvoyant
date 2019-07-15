@@ -17,7 +17,7 @@ $(document).ready(function(){
 
 loadDashboard = function(data) {
   console.log(data);
-  localStorage.setItem('token', data);
+  localStorage.setItem('token', data.token);
   console.log(localStorage.getItem('token'));
   window.location = "./dash.html";
 }

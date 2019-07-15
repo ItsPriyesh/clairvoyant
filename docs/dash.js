@@ -1,7 +1,7 @@
 let pieColors = {
-  Gunshot: '#ba2c54',
-  Missile: '#4275f7',
-  Vehicle: '#b4d664',
+  GUNSHOT: '#ba2c54',
+  EXPLOSION: '#4275f7',
+  VEHICLE: '#b4d664',
 };
 
 $(document).ready(function() {
@@ -10,7 +10,7 @@ $(document).ready(function() {
 });
 
 // TODO: read this from local storage / cookies
-let credentials = {user_id: 19, session_token: "6594ccfa-e950-4c8a-a408-613c8d87580d"};
+let credentials = {user_id: 1, session_token: localStorage.getItem('token')};
 
 listenForDataPoints = function() {
   let webSocket = new WebSocket('ws://localhost:8081/listenDataPoint/');
