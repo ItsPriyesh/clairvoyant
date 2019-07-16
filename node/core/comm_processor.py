@@ -14,10 +14,12 @@ from collections import deque
 
 """
 The communication processor is responsible for any message communication.
-Any data that is passed through the input_buff will be passed through the appropriate network communication protocol
-Note: If there is a valid WiFi connection, the data will be passed to the server instead of the LoRa Module.
+Any data that is passed through the input_buff will be passed through the appropriate network 
+communication protocol
+Note: If there is a valid WiFi connection, the data will be passed to the server 
+instead of the LoRa Module.
 Note: Application layer retry logic will be handled by the comm_processor
-    Note: If the "force_gateway" is set true, then LoRa will be by passed.
+Note: If the FORCE_GATEWAY is set true, then LoRa will be bypassed.
 Note: The current version of the comm_processor does not handle routing and is simply broadcast_all
 Note: This comm_processor is not thread-safe.
 
@@ -102,8 +104,9 @@ class RetryService:
 
     """
     Raise out of range error if no data in the retry service.
-    Note: get() will return the data element at the head of the queue regardless of retry configuration.
-    Note: get() will automaticall update internal ttr and retry count metadat for the data element at the head of the queue.
+    Note: get() will return the data element at the head of the queue regardless of retry config.
+    Note: get() will automaticall update internal ttr and retry count metadat for the data element
+          at the head of the queue.
     """
     def get(self):
         data = self._retry_blocking_q[0]
@@ -123,12 +126,14 @@ class RetryService:
 
 
     def add_message_to_blocking_queue(self, data):
-        if ((data is None or not isinstance(data, Packet)) or (data.get_type() not in Packet.VALID_EVENT_TYPES)):
+        if ((data is None or not isinstance(data, Packet)) 
+            or (data.get_type() not in Packet.VALID_EVENT_TYPES)):
             raise ValueError("Invalid data argument {}".format(data))
         self._retry_blocking_q.append(data)
 
     def ack(self, ack):
-        if (ack is None or not isinstance(ack, Packet) or ack.get_type() not in Packet.VALID_ACK_TYPES):
+        if (ack is None or not isinstance(ack, Packet) 
+            or ack.get_type() not in Packet.VALID_ACK_TYPES):
             raise ValueError("Invalid data argument {}".format(ack))
 
         if (ack.get_message_id() in self._retry_map):
@@ -181,20 +186,27 @@ def init(input_buff, output_buff):
         else:
             continue
 
+        print("processing...")
+
         #TODO(Sathoshi): implement cache for TTL
         if data.get_type() == "ACK":
-            uart_tx_buff.put(data)
+            if (not clairvoyant.FORCE_GATEWAY):
+                uart_tx_buff.put(data)
         elif data.get_type() == "ML_CLASS":
             try:
+                #TODO(Sathoshi): Handle server ack
                 rpc_service.create_data_point(**data.get_payload())
             except Exception as e:
                 # traceback.print_exc
-                uart_tx_buff.put(data)
+                if (not clairvoyant.FORCE_GATEWAY):
+                    uart_tx_buff.put(data)
         elif data.get_type() == "HEART_BEAT":
             try:
+                #TODO(Sathoshi): Handle server ack
                 rpc_service.create_data_point(**data.get_payload())
             except Exception as e:
                 # traceback.print_exc
-                uart_tx_buff.put(data)
+                if (not clairvoyant.FORCE_GATEWAY):
+                    uart_tx_buff.put(data)
 
-        print("processing...")
+
