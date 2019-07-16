@@ -70,16 +70,13 @@ class RetryService:
         return time.time() + random.randint(5,15)
 
     def has_messages(self):
-        print("COM: Blocking Queue {}".format(len(self._retry_blocking_q)))
         while len(self._retry_blocking_q) > 0:
             data = self._retry_blocking_q[0]
-            # print("Peaking retry q {}".format(data))
-            print('\r\nCOM: [{}]\r\n'.format(self._retry_map))
+            # Check if there is any metadata assosciated with message.
             if data.get_message_id() in self._retry_map:
                 retry_metadata = self._retry_map[data.get_message_id()]
                 # If the message has been acked, discard it.
                 if retry_metadata['ack'] == True:
-                    print("COM: Deleting because already acked")
                     self._retry_blocking_q.popleft()
                     del self._retry_map[data.get_message_id()]
                     continue
@@ -87,17 +84,18 @@ class RetryService:
                     # Message has not been acked yet
                     # Check if current time is greater than estimated backoff time.
                     if time.time() > retry_metadata['ttr']:
+                        # If retry count is greater than MAX_RETRY_COUNT, drop packet
                         if retry_metadata['retry'] > RetryService._MAX_RETRY_COUNT:
-                            print("COM: Deleting because tried too many times.")
                             self._retry_blocking_q.popleft()
                             del self._retry_map[data.get_message_id()]
                             continue
                         else:
+                            # If retry count is smaller than MAX_RETRY_COUNT, message is ready.
                             return True
                     else:
-                        print("COM: {}s til attempting to resend".format(retry_metadata['ttr'] - time.time()))
                         return False
             else:
+                # If there is no metadata, message is ready.
                 return True
         return False
 
@@ -125,7 +123,6 @@ class RetryService:
 
 
     def add_message_to_blocking_queue(self, data):
-        print("COM: Adding to blocking Queue")
         if ((data is None or not isinstance(data, Packet)) or (data.get_type() not in Packet.VALID_EVENT_TYPES)):
             raise ValueError("Invalid data argument {}".format(data))
         self._retry_blocking_q.append(data)
@@ -162,12 +159,10 @@ def init(input_buff, output_buff):
         data = None
         if (retry_service.has_messages()):
             data = retry_service.get()
-            print("COM: From blocking queue: {}".format(data))
         elif not input_buff.empty():
             data = input_buff.get()
             # If it is a piece of data that we don't know what to do with. simply drop it
             if not isinstance(data, Packet):
-                print("COM: Dropping unknown type of data [{}]".format(data))
                 continue;
 
             if data.get_node_id() == clairvoyant.CURRENT_NODE:
@@ -178,19 +173,15 @@ def init(input_buff, output_buff):
                         traceback.print_exc()
                     continue
                 elif data.get_type() in Packet.VALID_ACK_TYPES:
-                    print("COM: !!!!!!!!!!!!!!!!!! RECIEVED ACK!!!!!!!!!!!!!!!!!!!\r\n {}\r\n".format(data))
                     try:
                         retry_service.ack(data)
                     except Exception as e:
                         traceback.print_exc()
                     continue
         else:
-            print("COM: doing some other work {} \r\n".format(time.time()))
-            time.sleep(3)
             continue
 
-        print("COM: sending.. {}".format(data))
-        #TODO(Sathoshi) implement cache for TTL
+        #TODO(Sathoshi): implement cache for TTL
         if data.get_type() == "ACK":
             uart_tx_buff.put(data)
         elif data.get_type() == "ML_CLASS":
@@ -205,3 +196,5 @@ def init(input_buff, output_buff):
             except Exception as e:
                 # traceback.print_exc
                 uart_tx_buff.put(data)
+
+        print("processing...")
