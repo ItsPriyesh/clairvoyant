@@ -1,89 +1,207 @@
-import pyaudio
+import traceback
 import multiprocessing
-import serial
 import time
-import os
-from multiprocessing import queue
+import random
+import clairvoyant
+import traceback
+
+from multiprocessing import Queue
 from uart_processor import uart_process
+from clairvoyant_rpc import ClairvoyantRPCService
+from clairvoyant_data import Packet
+from clairvoyant_data import PacketBuilder
+from collections import deque
+
+"""
+The communication processor is responsible for any message communication.
+Any data that is passed through the input_buff will be passed through the appropriate network communication protocol
+Note: If there is a valid WiFi connection, the data will be passed to the server instead of the LoRa Module.
+Note: Application layer retry logic will be handled by the comm_processor
+    Note: If the "force_gateway" is set true, then LoRa will be by passed.
+Note: The current version of the comm_processor does not handle routing and is simply broadcast_all
+Note: This comm_processor is not thread-safe.
+
+The messeages that must be handled can be broken into two main criteria
+    Case 1: Messages that need to be sent to servers.
+        - Events that are detected by the machine learning model.
+        - Heart beat/ status information about nodes
+    Case 2: Messages that need to be sent to a node.
+        - Ack messages.
+
+Expected Packet
+{
+    t: [HEART_BEAT, ML_CLASS, ACK],
+    node_id: 
+    message_id: 1,
+    payload: { /* follow rpc standard */},
+    ttl: 10000s
+}
+
+Note: Refer to clairvoyant_data Packet or the latest version.
+Note: All data that are not Packet objects are dropped.
+
+"""
 
 
-def lora_comm_processor():
-    #transmit queue
-    tx_q = queue.Queue()
-    #rx event queue, i.e where event notifs are
-    rx_event_q = queue.Queue()
-    #rx cmd queue i.e where +OK, +Reset, +Ready, etc from Lora module come
-    rx_cmd_q = queue.Queue()
 
-    #start uart process
-    uart_task = multiprocessing.Process(target=uart_process, args=(tx_q,rx_event_q,rx_cmd_q,))
-    uart_task.start()
 
-    
-    #init LoRa module
-    software_reset(tx_q)
-    set_work_mode(tx_q)
-    set_uart_baud(tx_q)
-    set_rf_params(tx_q)
-    set_rf_frequency(tx_q)
-    set_at_address(tx_q)
-    set_network_id(tx_q)
-    set_network_pass(tx_q)
+"""
+Retry Service is responsible for handling application layer retry logic
+for messages that are from the current node.
+
+Note: retry_map has the following format.
+{
+    [unique message id] : {
+            ack: [true/false]
+            ttr: [timestamp]
+            retry: [count]
+    }
+}
+"""
+class RetryService:
+
+    _MAX_RETRY_COUNT = 5
+
+    def __init__(self):
+        self._retry_blocking_q = deque()
+        self._retry_map = {}
+
+    def _calculate_backoff_time(self):
+        return time.time() + random.randint(5,15)
+
+    def has_messages(self):
+        print("COM: Blocking Queue {}".format(len(self._retry_blocking_q)))
+        while len(self._retry_blocking_q) > 0:
+            data = self._retry_blocking_q[0]
+            # print("Peaking retry q {}".format(data))
+            print('\r\nCOM: [{}]\r\n'.format(self._retry_map))
+            if data.get_message_id() in self._retry_map:
+                retry_metadata = self._retry_map[data.get_message_id()]
+                # If the message has been acked, discard it.
+                if retry_metadata['ack'] == True:
+                    print("COM: Deleting because already acked")
+                    self._retry_blocking_q.popleft()
+                    del self._retry_map[data.get_message_id()]
+                    continue
+                else:
+                    # Message has not been acked yet
+                    # Check if current time is greater than estimated backoff time.
+                    if time.time() > retry_metadata['ttr']:
+                        if retry_metadata['retry'] > RetryService._MAX_RETRY_COUNT:
+                            print("COM: Deleting because tried too many times.")
+                            self._retry_blocking_q.popleft()
+                            del self._retry_map[data.get_message_id()]
+                            continue
+                        else:
+                            return True
+                    else:
+                        print("COM: {}s til attempting to resend".format(retry_metadata['ttr'] - time.time()))
+                        return False
+            else:
+                return True
+        return False
+
+
+    """
+    Raise out of range error if no data in the retry service.
+    Note: get() will return the data element at the head of the queue regardless of retry configuration.
+    Note: get() will automaticall update internal ttr and retry count metadat for the data element at the head of the queue.
+    """
+    def get(self):
+        data = self._retry_blocking_q[0]
+
+        # Check if the data has a metadata in the map
+        if data.get_message_id() in self._retry_map:
+            # If there is already metadata in the map, update its metadata.
+            retry_metadata = self._retry_map[data.get_message_id()]
+            retry_metadata['retry'] = retry_metadata['retry'] + 1
+            retry_metadata['ttr'] = self._calculate_backoff_time()
+            return data
+        else:
+            # Add metadata to retry_map and return
+            metadata = {'ack':False,'ttr': self._calculate_backoff_time(), 'retry':0}
+            self._retry_map[data.get_message_id()] = metadata
+            return data
+
+
+    def add_message_to_blocking_queue(self, data):
+        print("COM: Adding to blocking Queue")
+        if ((data is None or not isinstance(data, Packet)) or (data.get_type() not in Packet.VALID_EVENT_TYPES)):
+            raise ValueError("Invalid data argument {}".format(data))
+        self._retry_blocking_q.append(data)
+
+    def ack(self, ack):
+        if (ack is None or not isinstance(ack, Packet) or ack.get_type() not in Packet.VALID_ACK_TYPES):
+            raise ValueError("Invalid data argument {}".format(ack))
+
+        if (ack.get_message_id() in self._retry_map):
+            self._retry_map[ack.get_message_id()]['ack'] = True
+
+
+
+def init(input_buff, output_buff):
+    print("Initializing Communication Process...")
+
+    # Launch uart subprocess
+    # Initialize uart_tx queue
+    uart_tx_buff = Queue()
+
+    # Any recieving messages from the lora module should be put back into the 
+    # input_buffer for the comm_processor to handle.
+    uart_rx_buff = input_buff
+
+    # Start uart processttggt
+    uart_proc = multiprocessing.Process(target=uart_process, args=(uart_tx_buff, uart_rx_buff),)
+    uart_proc.start()
+
+    # Initalize rpc service for communicating with clairvoyant server
+    rpc_service = ClairvoyantRPCService()
+    retry_service = RetryService()
 
     while(1):
-        #insert state machine here..
+        data = None
+        if (retry_service.has_messages()):
+            data = retry_service.get()
+            print("COM: From blocking queue: {}".format(data))
+        elif not input_buff.empty():
+            data = input_buff.get()
+            # If it is a piece of data that we don't know what to do with. simply drop it
+            if not isinstance(data, Packet):
+                print("COM: Dropping unknown type of data [{}]".format(data))
+                continue;
 
+            if data.get_node_id() == clairvoyant.CURRENT_NODE:
+                if data.get_type() in Packet.VALID_EVENT_TYPES:
+                    try:
+                        retry_service.add_message_to_blocking_queue(data)
+                    except Exception as e:
+                        traceback.print_exc()
+                    continue
+                elif data.get_type() in Packet.VALID_ACK_TYPES:
+                    print("COM: !!!!!!!!!!!!!!!!!! RECIEVED ACK!!!!!!!!!!!!!!!!!!!\r\n {}\r\n".format(data))
+                    try:
+                        retry_service.ack(data)
+                    except Exception as e:
+                        traceback.print_exc()
+                    continue
+        else:
+            print("COM: doing some other work {} \r\n".format(time.time()))
+            time.sleep(3)
+            continue
 
-
-#There are 2 types of packets (Event Packet from Node, or MESH PATH ack packets during mesh path finding
-#Packet Structure for Event Packets
-#B1 = enum(event  packet, mesh path_1 packet, mesh path_2 packet event ack packet, mesh path ack packet)
-#B2 = Hop #
-#B3 = Battery Life ( 0 to 100), nodes with constant pwr have 100
-#B4 = # Secs since event
-#B5 Event type enum (movement, human voice, vehicles, gunshots, explosions)
-#B6 Confidence level (0 to 100)
-#B7-229 NULL
-#B(230 to B236) = Signature (c51410)
-#B(237 to 240) = CRC32
-
-
-#Mesh Path ACK Packet Structure
-#B1 = enum(event  packet, mesh path_1 packet, mesh path_2 packet event ack packet, mesh path ack packet)
-#B2 = Battery Life
-#B(3 - 229) = NULL
-#B(230 to 236) = Signature (c51410)
-#B(237 to 240) = CRC32
-
-
-#Gateway sends 3 types of Packets
-
-#Mesh Path packet and Event ack packet
-#Event ack packet structure
-#B1 = enum(event  packet, mesh path_1 packet, mesh path_2 packet event ack packet, mesh path ack packet)
-#B2 = ID of recepient
-#B(3 - 229) = NULL
-#B(230 to 236) = Signature (c51410)
-#B(237 to 240) = CRC32
-
-
-#Mesh Path_1 Packet structure
-#B1 = enum(event  packet, mesh path_1 packet, mesh path_2 packet event ack packet, mesh path ack packet)
-#B(2 - 229) = NULL
-#B(230 to 236) = Signature (c51410)
-#B(237 to 240) = CRC32
-
-
-#Mesh Path_2 Packet structure
-#B1 = enum(event  packet, mesh path_1 packet, mesh path_2 packet event ack packet, mesh path ack packet)
-#B2 = 'G'
-#B3 = '.'
-#B(4 to N) = ID of each node that hasn't been detected yet by the gateway
-#B(N+1) = '.'
-#B(N+2 to 229) = NULL
-#B(230 to 236) = Signature (c51410)
-#B(237 to 240) = CRC32
-
-        
-
-
+        print("COM: sending.. {}".format(data))
+        #TODO(Sathoshi) implement cache for TTL
+        if data.get_type() == "ACK":
+            uart_tx_buff.put(data)
+        elif data.get_type() == "ML_CLASS":
+            try:
+                rpc_service.create_data_point(**data.get_payload())
+            except Exception as e:
+                # traceback.print_exc
+                uart_tx_buff.put(data)
+        elif data.get_type() == "HEART_BEAT":
+            try:
+                rpc_service.create_data_point(**data.get_payload())
+            except Exception as e:
+                # traceback.print_exc
+                uart_tx_buff.put(data)
