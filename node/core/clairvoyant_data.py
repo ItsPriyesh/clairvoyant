@@ -136,6 +136,7 @@ class PacketBuilder:
 ##    int32 hop_count = 7;
 ##}
 class MlPayload:
+        
         def __init__(self):
                 self._battery_lvl = None
                 self._timestamp = None
@@ -159,12 +160,12 @@ class MlPayload:
 ##    int32 hop_count = 6;
 ##}          
 class HeartbeatPayload:
+        
         def __init__(self):
-
                 self._battery_lvl = None
                 self._timestamp = None
                 
-        def to_array(self):
+        def to_array(self):   
                 if ((self._battery_lvl == None) or (self._timestamp == None)):
                         raise ValueError("Fields are missing")
                 payload = [self._battery_lvl, self._timestamp]
