@@ -10,19 +10,25 @@ service ClairvoyantService {
 }
 
 message DataPoint {
-    int32 id = 1;
-    int32 node_id = 2;
+    string node_id = 1;
+    string message_id = 2;
     int64 timestamp = 3;
-    string event_type = 4;
+    string classification = 4;
     float confidence = 5;
+    int32 retry_count = 6;
+    int32 hop_count = 7;
 }
 
 message Heartbeat {
-    int32 id = 1;
-    int64 timestamp = 2;
-    float battery_level = 3;
+    string node_id = 1;
+    string message_id = 2;
+    int64 timestamp = 3;
+    float battery_level = 4;
+    int32 retry_count = 5;
+    int32 hop_count = 6;
 }
 
 message Ack {
-    int32 data_point_id = 1;
+    string node_id = 1;
+    string message_id = 2;
 }

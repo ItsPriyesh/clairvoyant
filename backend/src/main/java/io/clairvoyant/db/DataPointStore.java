@@ -22,10 +22,10 @@ public class DataPointStore {
         return database
                 .update("insert into DataPoint values(?, ?, FROM_UNIXTIME(?), ?, ?)")
                 .parameters(
-                        point.getId(),
+                        point.getMessageId(),
                         point.getNodeId(),
                         point.getTimestamp(),
-                        point.getEventType(),
+                        point.getClassification(),
                         point.getConfidence()
                 )
                 .complete();

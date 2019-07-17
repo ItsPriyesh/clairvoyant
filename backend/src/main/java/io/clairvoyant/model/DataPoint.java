@@ -12,16 +12,16 @@ import java.sql.Timestamp;
 public interface DataPoint {
 
     @Column
-    int dataPointId();
+    String dataPointId();
 
     @Column
-    int nodeId();
+    String nodeId();
 
     @Column
-    Timestamp receivedAt();
+    Timestamp createdAt();
 
     @Column
-    String eventType();
+    String classification();
 
     @Column
     float confidence();
@@ -30,9 +30,9 @@ public interface DataPoint {
         JsonObject json = new JsonObject();
         json.addProperty("id", dp.dataPointId());
         json.addProperty("node_id", dp.nodeId());
-        json.addProperty("type", dp.eventType());
+        json.addProperty("type", dp.classification());
         json.addProperty("confidence", dp.confidence());
-        json.addProperty("time", dp.receivedAt().toString());
+        json.addProperty("time", dp.createdAt().toString());
         return json;
     };
 }

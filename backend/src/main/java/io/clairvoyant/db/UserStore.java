@@ -52,7 +52,7 @@ public class UserStore {
                 .map(users -> !users.isEmpty() && users.get(0).sessionToken().equals(sessionToken));
     }
 
-    public Single<Integer> getUserForNode(int nodeId) {
+    public Single<Integer> getUserForNode(String nodeId) {
         return database.select("select user_id from Node where node_id = ?")
                 .parameter(nodeId)
                 .getAs(Integer.class)
