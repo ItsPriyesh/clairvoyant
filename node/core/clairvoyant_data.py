@@ -25,6 +25,8 @@ class Packet:
 		self._message_id = message_id
 		self._payload = payload
 		self._ttl = ttl
+		self._hopcount = hopcount
+		self._retry = retry
 
 	def __str__(self):
 		return 'Packet [type:{}, node_id:{}, message_id:{}, payload:{}, ttl:{}]'.format(self._type, self._node_id, self._message_id, self._payload, self._ttl)
@@ -129,42 +131,21 @@ class PacketBuilder:
 ##    int32 retry_count = 6;
 ##    int32 hop_count = 7;
 ##}
-class ml_packet:
-        packet_type = "ml"
+class ml_payload:
         def __init__(self):
-                self.__node_id = None
-                self.__message_id = None
-                self.__battery_lvl = None
-                self.__timestamp = None
-                self.__classification = None
-                self.__confidence = None
-                self.__retry_count = None
-                self.__hop_count = None
-                self.__payload = []
+                self._battery_lvl = None
+                self._timestamp = None
+                self._classification = None
+                self._confidence = None
                 
         def parse_to_array(self):
-                if ((self.__node__id == None) or (self.__message_id == None) or (self.__battery_lvl == None) or (self.__timestamp == None) or (self.__classification == None) or (self.__confidence == None) or (self.__retry_count == None) or (self.__hop_count == None)):
+                if ((self._battery_lvl == None) or (self._timestamp == None) or (self._classification == None) or (self._confidence == None)):
                         raise ValueError("Fields are missing")
-                self.__payload = [self.__node_id, self.__message_id, self.__battery_lvl, self.__timestamp, self.__classification, self.__confidence, self.__retry_count, self.__hop_count]
+                payload = [self._battery_lvl, self._timestamp, self._classification, self._confidence]
 
-                return self
+                return payload
+        
                     
-        def parse_from_array(array):
-                if (len(array) != 8):
-                    raise ValueError("Array length is wrong")
-                self.__payload = array
-                
-                self.__node_id = array[0]
-                self.__message_id = array[1]
-                self.__battery_lvl = array[2]
-                self.__timestamp == array[3]
-                self.__classification == array[4]
-                self.__confidence == array[5]
-                self.__retry_count == array[6]
-                self.__hop_count == array[7]
-                    
-                return self
-
 ##message Heartbeat {
 ##    string node_id = 1;
 ##    string message_id = 2;
@@ -173,66 +154,25 @@ class ml_packet:
 ##    int32 retry_count = 5;
 ##    int32 hop_count = 6;
 ##}          
-class heartbeat_packet:
-        packet_type = "hb"
+class heartbeat_payload:
         def __init__(self):
-                self.__node_id = None
-                self.__message_id = None
-                self.__battery_lvl = None
-                self.__timestamp = None
-                self.__retry_count = None
-                self.__hop_count = None
-                self.__payload = []
+
+                self._battery_lvl = None
+                self._timestamp = None
                 
         def parse_to_array(self):
-                if ((self.__node__id == None) or (self.__message_id == None) or (self.__battery_lvl == None) or (self.__timestamp == None)(self.__retry_count == None) or (self.__hop_count == None)):
+                if ((self.__battery_lvl == None) or (self.__timestamp == None)):
                         raise ValueError("Fields are missing")
-                self.__payload = [self.__node_id, self.__message_id, self.__battery_lvl, self.__timestamp, self.__retry_count, self.__hop_count]
+                payload = [self._battery_lvl, self._timestamp]
 
-                return self
+                return payload
                     
-        def parse_from_array(array):
-                if (len(array) != 6):
-                    raise ValueError("Array length is wrong")
-                self.__payload = array
-                
-                self.__node_id = array[0]
-                self.__message_id = array[1]
-                self.__battery_lvl = array[2]
-                self.__timestamp == array[3]
-                self.__retry_count == array[4]
-                self.__hop_count == array[5]
-                    
-                return self              
+            
 
 
 
 ##message Ack {
 ##    string node_id = 1;
-##    string message_id = 2;
+##    string message_id = 2; stuff is empty
 ##
 ##}
-
-class ack_packet:
-        packet_type = "ack"
-        def __init__(self):
-                self.__node_id = None
-                self.__message_id = None
-                self.__payload = []
-                
-        def parse_to_array(self):
-                if ((self.__node__id == None) or (self.__message_id == None)):
-                        raise ValueError("Fields are missing")
-                self.__payload = [self.__node_id, self.__message_id]
-
-                return self
-                    
-        def parse_from_array(array):
-                if (len(array) != 2):
-                    raise ValueError("Array length is wrong")
-                self.__payload = array
-                
-                self.__node_id = array[0]
-                self.__message_id = array[1]
-                    
-                return self  
