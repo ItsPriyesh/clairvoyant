@@ -1,6 +1,5 @@
 import os
 import serial
-from uart_process import serial
 import time
 
 class LoraString:
@@ -18,9 +17,6 @@ def software_reset(uart_q):
 
     uart_q.put(string)
         
-
-
-
 #set to transmit and receive mode
 def set_work_mode(uart_q): 
     input = "AT+MODE=0\r\n"
@@ -118,6 +114,16 @@ def set_rf_output_pwr(uart_q):
 
     #expecting +OK
 
+def lora_init(uart_q):
+    software_reset(uart_q)
+    set_work_mode(uart_q)
+    set_uart_baud(uart_q)
+    set_rf_params(uart_q)
+    set_rf_frequency(uart_q)
+    set_at_address(uart_q)
+    set_network_id(uart_q)
+    set_network_pass(uart_q)
+    set_rf_output_pwr(uart_q)
 
 #transmit data
 # @transmit_all is false when sending to a specific address, else true

@@ -143,7 +143,7 @@ class MlPayload:
                 self._classification = None
                 self._confidence = None
                 
-        def to_array(self):
+        def to_array():
                 if ((self._battery_lvl == None) or (self._timestamp == None) or (self._classification == None) or (self._confidence == None)):
                         raise ValueError("Fields are missing")
                 
@@ -152,7 +152,7 @@ class MlPayload:
                 return payload
                 
         def from_array(array):
-                 if (len(array)) != 4:
+                if (len(array) != 4):
                         raise ValueError("Incorrect Array length")
                 
                 self._battery_lvl = array[0]

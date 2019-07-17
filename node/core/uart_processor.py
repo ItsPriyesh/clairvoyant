@@ -118,7 +118,7 @@ def construct_packet_from_list(payload):
         packet.set_message_id(packet, payload[2])
         packet.set_hop_count(packet, payload[3])
         packet.set_retry_count(packet, payload[4])
-        packet.set_payload(packet, mlpayload.to_array(payload[5:]))
+        packet.set_payload(packet, mlpayload.from_array(payload[5:]))
         
     elif (payload[0] == "hb"):
         hbpayload = HeartbeatPayload()
@@ -128,9 +128,9 @@ def construct_packet_from_list(payload):
         packet.set_message_id(packet, payload[2])
         packet.set_hop_count(packet, payload[3])
         packet.set_retry_count(packet, payload[4])
-        packet.set_payload(packet, hbpayload.to_array(payload[5:]))
+        packet.set_payload(packet, hbpayload.from_array(payload[5:]))
 
-    elif (payload[0[ == "ACK"):
+    elif (payload[0] == "ACK"):
         packet.set_type(packet, "ACK")
         packet.set_node_id(packet, payload[1])
         packet.set_message_id(packet, payload[2])
@@ -200,10 +200,6 @@ def construct_lora_ack_string(Packet):
     return string
 
 
-def lora_init(ser):
-    #software reset
-    software_reset(ser)
-
 
     
 
@@ -225,7 +221,8 @@ def uart_process(packet_tx_q, packet_rx_q):
     curr_ack_index = 0
     #Timestamp used for retrying, when an ack wasnt received
     curr_ack_ts = None
-    
+
+    lora_init()
 
     while(1):
 
@@ -290,7 +287,7 @@ def uart_process(packet_tx_q, packet_rx_q):
                 string = construct_lora_ml_string(packet)
                 lora_transmit(uart_q, False, Packet.node_id, string)
                 
-            elif (packet.get_type() = "HEART_BEAT"):
+            elif (packet.get_type() == "HEART_BEAT"):
                 string = construct_lora_heartbeat_string(packet)
                 lora_transmit(uart_q, False, Packet.node_id, string)
 
