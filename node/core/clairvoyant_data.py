@@ -50,7 +50,7 @@ class Packet:
 
 	def payload_arg_validate(payload):
 		#TODO(Sathoshi): Strict typed handling		
-		if (payload is None) or (isinstance(payload, dict) and payload == {}):
+		if (payload is None) or (isinstance(payload, list) and payload == []):
 			raise ValueError("Payload is empty")
 
 	def node_id_arg_validate(node_id):
@@ -146,10 +146,22 @@ class MlPayload:
         def to_array(self):
                 if ((self._battery_lvl == None) or (self._timestamp == None) or (self._classification == None) or (self._confidence == None)):
                         raise ValueError("Fields are missing")
+                
                 payload = [self._battery_lvl, self._timestamp, self._classification, self._confidence]
 
                 return payload
-        
+                
+        def from_array(array):
+                 if (len(array)) != 4:
+                        raise ValueError("Incorrect Array length")
+                
+                self._battery_lvl = array[0]
+                self._timestamp = array[1]
+                self._classification = array[2]
+                self._confidence = array[3]
+
+                return self
+                
                     
 ##message Heartbeat {
 ##    string node_id = 1;
@@ -172,7 +184,14 @@ class HeartbeatPayload:
 
                 return payload
                     
-            
+        def from_array(array):
+                if (len(array)) != 2:
+                        raise ValueError("Incorrect Array length")
+                
+                self._battery_lvl = array[0]
+                self._timestamp = array[1]
+                
+                return self
 
 
 
