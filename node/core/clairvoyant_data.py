@@ -143,7 +143,7 @@ class ml_packet:
                 self.__payload = []
                 
         def parse_to_array(self):
-                if ((self.__node__id == None) or (self.__message_id == None) or (self.__battery_lvl == None) or (self.__timestamp == None) or (self.__classification == None) or (self.__confidence == None) or (self.__retry_count == None) or (self.__hop_count == None):
+                if ((self.__node__id == None) or (self.__message_id == None) or (self.__battery_lvl == None) or (self.__timestamp == None) or (self.__classification == None) or (self.__confidence == None) or (self.__retry_count == None) or (self.__hop_count == None)):
                         raise ValueError("Fields are missing")
                 self.__payload = [self.__node_id, self.__message_id, self.__battery_lvl, self.__timestamp, self.__classification, self.__confidence, self.__retry_count, self.__hop_count]
 
@@ -185,7 +185,7 @@ class heartbeat_packet:
                 self.__payload = []
                 
         def parse_to_array(self):
-                if ((self.__node__id == None) or (self.__message_id == None) or (self.__battery_lvl == None) or (self.__timestamp == None)(self.__retry_count == None) or (self.__hop_count == None):
+                if ((self.__node__id == None) or (self.__message_id == None) or (self.__battery_lvl == None) or (self.__timestamp == None)(self.__retry_count == None) or (self.__hop_count == None)):
                         raise ValueError("Fields are missing")
                 self.__payload = [self.__node_id, self.__message_id, self.__battery_lvl, self.__timestamp, self.__retry_count, self.__hop_count]
 
