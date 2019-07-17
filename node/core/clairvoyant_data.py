@@ -17,7 +17,7 @@ class Packet:
 
 	_DEFAULT_TTL = 10000 #ms
 
-	def __init__(self, type = None, node_id = None, message_id = None, payload = None, ttl = None, hopcount = None, retry = None):
+	def __init__(self, type = None, node_id = None, message_id = None, payload = None, ttl = None, hop_count = None, retry_count = None):
 		self._strict_arg_validate(type, node_id, message_id, payload, ttl)
 
 		self._type = type
@@ -25,8 +25,8 @@ class Packet:
 		self._message_id = message_id
 		self._payload = payload
 		self._ttl = ttl
-		self._hopcount = hopcount
-		self._retry = retry
+		self._hop_count = hop_count
+		self._retry_count = retry_count
 
 	def __str__(self):
 		return 'Packet [type:{}, node_id:{}, message_id:{}, payload:{}, ttl:{}]'.format(self._type, self._node_id, self._message_id, self._payload, self._ttl)
