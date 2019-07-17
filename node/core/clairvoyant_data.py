@@ -135,7 +135,7 @@ class PacketBuilder:
 ##    int32 retry_count = 6;
 ##    int32 hop_count = 7;
 ##}
-class ml_payload:
+class MlPayload:
         def __init__(self):
                 self._battery_lvl = None
                 self._timestamp = None
@@ -158,7 +158,7 @@ class ml_payload:
 ##    int32 retry_count = 5;
 ##    int32 hop_count = 6;
 ##}          
-class heartbeat_payload:
+class HeartbeatPayload:
         def __init__(self):
 
                 self._battery_lvl = None
