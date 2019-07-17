@@ -142,7 +142,7 @@ class MlPayload:
                 self._classification = None
                 self._confidence = None
                 
-        def construct_payload(self):
+        def to_array(self):
                 if ((self._battery_lvl == None) or (self._timestamp == None) or (self._classification == None) or (self._confidence == None)):
                         raise ValueError("Fields are missing")
                 payload = [self._battery_lvl, self._timestamp, self._classification, self._confidence]
@@ -164,7 +164,7 @@ class HeartbeatPayload:
                 self._battery_lvl = None
                 self._timestamp = None
                 
-        def construct_payload(self):
+        def to_array(self):
                 if ((self._battery_lvl == None) or (self._timestamp == None)):
                         raise ValueError("Fields are missing")
                 payload = [self._battery_lvl, self._timestamp]
