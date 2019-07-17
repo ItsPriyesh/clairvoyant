@@ -17,7 +17,7 @@ class Packet:
 
 	_DEFAULT_TTL = 10000 #ms
 
-	def __init__(self, type = None, node_id = None, message_id = None, payload = None, ttl = None):
+	def __init__(self, type = None, node_id = None, message_id = None, payload = None, ttl = None, hopcount = None, retry = None):
 		self._strict_arg_validate(type, node_id, message_id, payload, ttl)
 
 		self._type = type
@@ -76,6 +76,8 @@ class Packet:
 		Packet.message_id_arg_validate(message_id)
 		Packet.ttl_arg_validate(ttl)
 
+	##SATOSHI TO DO: ADD retry_count, hop_count funcs
+
 class PacketBuilder:
 
 	def __init__(self):
@@ -121,6 +123,8 @@ class PacketBuilder:
 	def build(self):
 		return Packet(type = self._type, node_id = self._node_id, message_id = self._message_id, payload = self._payload, ttl = self._ttl)
 
+        ##SATOSHI TO DO: ADD retry_count, hop_count funcs
+
 	
 ##message DataPoint {
 ##    string node_id = 1;
@@ -138,7 +142,7 @@ class ml_payload:
                 self._classification = None
                 self._confidence = None
                 
-        def parse_to_array(self):
+        def construct_payload(self):
                 if ((self._battery_lvl == None) or (self._timestamp == None) or (self._classification == None) or (self._confidence == None)):
                         raise ValueError("Fields are missing")
                 payload = [self._battery_lvl, self._timestamp, self._classification, self._confidence]
@@ -160,8 +164,8 @@ class heartbeat_payload:
                 self._battery_lvl = None
                 self._timestamp = None
                 
-        def parse_to_array(self):
-                if ((self.__battery_lvl == None) or (self.__timestamp == None)):
+        def construct_payload(self):
+                if ((self._battery_lvl == None) or (self._timestamp == None)):
                         raise ValueError("Fields are missing")
                 payload = [self._battery_lvl, self._timestamp]
 
