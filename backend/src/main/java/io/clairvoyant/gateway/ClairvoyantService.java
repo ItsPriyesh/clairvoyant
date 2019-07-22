@@ -30,9 +30,11 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
                 .doOnComplete(() -> dataPointPublisher.publish(dataPoint))
                 .subscribe(() -> {
                     Ack ack = Ack.newBuilder()
-                            .setDataPointId(dataPoint.getId())
+                            .setMessageId(dataPoint.getMessageId())
+                            .setNodeId(dataPoint.getNodeId())
                             .build();
-                    logger.atInfo().log("DataPoint %s created", dataPoint.getId());
+                    logger.atInfo()
+                        .log("DataPoint %s created", dataPoint.getMessageId());
                     response.onNext(ack);
                     response.onCompleted();
                 }, error -> {
@@ -45,7 +47,8 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
     @Override
     public void ping(Heartbeat heartbeat, StreamObserver<Ack> responseObserver) {
         Ack ack = Ack.newBuilder()
-                .setDataPointId(heartbeat.getId())
+                .setMessageId(heartbeat.getMessageId())
+                .setNodeId(heartbeat.getNodeId())
                 .build();
 
         responseObserver.onNext(ack);

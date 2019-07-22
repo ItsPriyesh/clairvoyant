@@ -76,11 +76,11 @@ public class DataPointSocketHandler {
 
         Disposable disposable = dataPointManager.listenForUser(userID)
                 .map(proto -> DataPointAuto.builder()
-                        .setDataPointId(proto.getId())
+                        .setDataPointId(proto.getMessageId())
                         .setNodeId(proto.getNodeId())
-                        .setEventType(proto.getEventType())
+                        .setClassification(proto.getClassification())
                         .setConfidence(proto.getConfidence())
-                        .setReceivedAt(new Timestamp(proto.getTimestamp()))
+                        .setCreatedAt(new Timestamp(proto.getTimestamp()))
                 )
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(data -> session.getRemote().sendString(gson.toJson(data)), e -> e.printStackTrace());

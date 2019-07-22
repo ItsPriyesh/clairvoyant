@@ -7,7 +7,7 @@ import io.clairvoyant.model.Node;
 public abstract class NodeAuto implements Node {
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder setNodeID(int id);
+        public abstract Builder setNodeID(String id);
 
         public abstract Builder setUserID(int id);
 
