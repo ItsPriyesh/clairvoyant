@@ -63,5 +63,6 @@ public class ClairvoyantServer {
 
         DashboardApi dash = component.createDashboardApi();
         Spark.get("/datapoints", dash::getDataPoints);
+        Spark.get("/nodes", dash::getNodes);
     }
 }
