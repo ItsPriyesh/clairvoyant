@@ -17,7 +17,7 @@ class Packet:
 
 	_DEFAULT_TTL = 10000 #ms
 
-	def __init__(self, type = None, node_id = None, message_id = None, payload = None, ttl = None):
+	def __init__(self, type = None, node_id = None, message_id = None, payload = None, ttl = None, hop_count = None, retry_count = None):
 		self._strict_arg_validate(type, node_id, message_id, payload, ttl)
 
 		self._type = type
@@ -25,6 +25,8 @@ class Packet:
 		self._message_id = message_id
 		self._payload = payload
 		self._ttl = ttl
+		self._hop_count = hop_count
+		self._retry_count = retry_count
 
 	def __str__(self):
 		return 'Packet [type:{}, node_id:{}, message_id:{}, payload:{}, ttl:{}]'.format(self._type, self._node_id, self._message_id, self._payload, self._ttl)
@@ -48,7 +50,7 @@ class Packet:
 
 	def payload_arg_validate(payload):
 		#TODO(Sathoshi): Strict typed handling		
-		if (payload is None) or (isinstance(payload, dict) and payload == {}):
+		if (payload is None) or (isinstance(payload, list) and payload == []):
 			raise ValueError("Payload is empty")
 
 	def node_id_arg_validate(node_id):
@@ -73,6 +75,8 @@ class Packet:
 		Packet.node_id_arg_validate(node_id)
 		Packet.message_id_arg_validate(message_id)
 		Packet.ttl_arg_validate(ttl)
+
+	##SATOSHI TO DO: ADD retry_count, hop_count funcs
 
 class PacketBuilder:
 
@@ -119,7 +123,80 @@ class PacketBuilder:
 	def build(self):
 		return Packet(type = self._type, node_id = self._node_id, message_id = self._message_id, payload = self._payload, ttl = self._ttl)
 
-	def parseFromSerial(self):
-		#TODO(Akaash): Parse the data that is recieved from LoRa side into a Packet before adding into comm_processor input q.
-		pass
+        ##SATOSHI TO DO: ADD retry_count, hop_count funcs
 
+	
+##message DataPoint {
+##    string node_id = 1;
+##    string message_id = 2;
+##    int64 timestamp = 3;
+##    string classification = 4;
+##    float confidence = 5;
+##    int32 retry_count = 6;
+##    int32 hop_count = 7;
+##}
+class MlPayload:
+        
+        def __init__(self):
+                self._battery_lvl = None
+                self._timestamp = None
+                self._classification = None
+                self._confidence = None
+                
+        def to_array():
+                if ((self._battery_lvl == None) or (self._timestamp == None) or (self._classification == None) or (self._confidence == None)):
+                        raise ValueError("Fields are missing")
+                
+                payload = [self._battery_lvl, self._timestamp, self._classification, self._confidence]
+
+                return payload
+                
+        def from_array(array):
+                if (len(array) != 4):
+                        raise ValueError("Incorrect Array length")
+                
+                self._battery_lvl = array[0]
+                self._timestamp = array[1]
+                self._classification = array[2]
+                self._confidence = array[3]
+
+                return self
+                
+                    
+##message Heartbeat {
+##    string node_id = 1;
+##    string message_id = 2;
+##    int64 timestamp = 3;
+##    float battery_level = 4;
+##    int32 retry_count = 5;
+##    int32 hop_count = 6;
+##}          
+class HeartbeatPayload:
+        
+        def __init__(self):
+                self._battery_lvl = None
+                self._timestamp = None
+                
+        def to_array(self):   
+                if ((self._battery_lvl == None) or (self._timestamp == None)):
+                        raise ValueError("Fields are missing")
+                payload = [self._battery_lvl, self._timestamp]
+
+                return payload
+                    
+        def from_array(array):
+                if (len(array)) != 2:
+                        raise ValueError("Incorrect Array length")
+                
+                self._battery_lvl = array[0]
+                self._timestamp = array[1]
+                
+                return self
+
+
+
+##message Ack {
+##    string node_id = 1;
+##    string message_id = 2; stuff is empty
+##
+##}
