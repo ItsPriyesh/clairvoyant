@@ -9,8 +9,7 @@ $(document).ready(function() {
   listenForDataPoints();
 });
 
-// TODO: read this from local storage / cookies
-let credentials = {user_id: 1, session_token: localStorage.getItem('token')};
+let credentials = {user_id: localStorage.getItem('userId'), session_token: localStorage.getItem('token')};
 
 listenForDataPoints = function() {
   let webSocket = new WebSocket('ws://localhost:8081/listenDataPoint/');
@@ -21,7 +20,7 @@ listenForDataPoints = function() {
     console.log('Received datapoint: ' + msg.data);
     // TODO: Update UI
   };
-};
+}
 
 fetchDataPoints = function() {
   $.ajax({

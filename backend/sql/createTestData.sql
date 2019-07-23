@@ -5,9 +5,9 @@ WHERE email = 'test@test.com';
 
 -- create nodes
 INSERT INTO Node(node_id,last_heartbeat, user_id)
-VALUES ('first','2019-01-01 11:38:01.00', @testUser),
-	   ('second','2019-01-01 12:45:01.00', @testUser),
-	   ('third','2019-01-01 10:13:01.00', @testUser);
+VALUES ('1','2019-01-01 11:38:01.00', @testUser),
+	   ('2','2019-01-01 12:45:01.00', @testUser),
+	   ('3','2019-01-01 10:13:01.00', @testUser);
 
 SELECT @node := node_id FROM Node
 WHERE user_id = @testUser

@@ -1,6 +1,7 @@
 package io.clairvoyant.api;
 
 import com.google.gson.Gson;
+import io.clairvoyant.api.model.Credentials;
 import io.clairvoyant.api.model.Error;
 import io.clairvoyant.api.model.SessionToken;
 import io.clairvoyant.db.UserStore;
@@ -44,8 +45,11 @@ public class LoginApi extends ApiBase {
 
         Throwable insertErr = userStore.insert(user).blockingGet();
         if (insertErr == null) {
+            int userId = userStore.getUser(user.email())
+                    .blockingGet()
+                    .userID();
             res.status(200);
-            return toJson(SessionToken.create(sessionToken));
+            return toJson(Credentials.create(userId, sessionToken));
         } else {
             res.status(500);
             return toJson(Error.create(insertErr.getMessage()));
@@ -64,8 +68,9 @@ public class LoginApi extends ApiBase {
 
         User user = userMaybe.blockingGet();
         if (passManager.check(req.queryParams("password"), user.passwordHash())) {
+            int userId = user.userID();
             res.status(200);
-            return toJson(SessionToken.create(user.sessionToken()));
+            return toJson(Credentials.create(userId, user.sessionToken()));
         } else {
             res.status(400);
             return toJson(Error.create("Invalid password!"));
