@@ -125,17 +125,17 @@ def construct_packet_from_list(payload):
         hbpayload = HeartbeatPayload()
         
         packet.set_type(packet, "HEART_BEAT")
-        packet.set_node_id(packet, payload[1])
-        packet.set_message_id(packet, payload[2])
-        packet.set_hop_count(packet, payload[3])
-        packet.set_retry_count(packet, payload[4])
-        packet.set_payload(packet, hbpayload.from_array(payload[6:]))
+        packet.set_node_id( payload[1])
+        packet.set_message_id( payload[2])
+        packet.set_hop_count( payload[3])
+        packet.set_retry_count( payload[4])
+        packet.set_payload( hbpayload.from_array(payload[6:]))
 
     elif (payload[0] == "ACK"):
         packet.set_type(packet, "ACK")
-        packet.set_node_id(packet, payload[1])
-        packet.set_message_id(packet, payload[2])
-        packet.set_payload(packet, None)
+        packet.set_node_id( payload[1])
+        packet.set_message_id( payload[2])
+        packet.set_payload(AckPayload())
 
     else:
         return False
