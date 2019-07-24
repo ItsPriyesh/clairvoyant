@@ -19,14 +19,7 @@ public class DataPointStore {
     }
 
     public Completable insert(io.clairvoyant.proto.DataPoint point) {
-        Single<Boolean> notExists = database
-                .select("select data_point_id from DataPoint where data_point_id = ?")
-                .parameter(point.getMessageId())
-                .getAs(String.class)
-                .toList()
-                .map(List::isEmpty);
-
-        Completable insert = database
+        return database
                 .update("insert into DataPoint values(?, ?, from_unixtime(?), ?, ?)")
                 .parameters(
                         point.getMessageId(),
@@ -36,8 +29,14 @@ public class DataPointStore {
                         point.getConfidence()
                 )
                 .complete();
+    }
 
-        return notExists.flatMapCompletable(isNew -> isNew ? insert : Completable.complete());
+    public Single<Boolean> contains(io.clairvoyant.proto.DataPoint point) {
+        return database.select("select data_point_id from DataPoint where data_point_id = ?")
+                .parameter(point.getMessageId())
+                .getAs(String.class)
+                .toList()
+                .map(res -> !res.isEmpty());
     }
 
     public Single<List<DataPoint>> getDataPoints(int userId) {
