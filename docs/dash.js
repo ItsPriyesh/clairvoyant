@@ -29,6 +29,7 @@ $(document).ready(function() {
   });
 
   listenForDataPoints();
+  // $("#datapoint-notif").css({"left"})
 });
 
 
@@ -68,7 +69,7 @@ bindNodes = function(nodes) {
       size: 3
     }
   });
-  
+
   let graphEdges = []
   for (var i = 0; i < nodes.length - 1; i++) {
     graphEdges.push({
@@ -82,8 +83,8 @@ bindNodes = function(nodes) {
     graph: { nodes: graphNodes, edges: graphEdges },
     container: 'network-container',
     settings: {
-        defaultNodeColor: '#FFF',
-        defaultLabelColor: '#FFF',
+        defaultNodeColor: '#e3e3e3',
+        defaultLabelColor: '#e3e3e3',
         defaultLabelAlignment: 'top',
         zoomingRatio: 1,
         enableCamera: false,
