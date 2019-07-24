@@ -48,9 +48,6 @@ def init(ml_q,ml_init_q):
         if (len(files) > 0):
             print("file " + str(files[0]))
             file_path = os.path.join('output','processed_audio',files[0])
-            
-            # predictions = model_wrapper._predict(file_path, 0)
-            # print(predictions)
 
             prediction_feature = extract_features(file_path)
             prediction_feature = prediction_feature.reshape(1, NUM_ROWS, NUM_COLUMNS, NUM_CHANNELS)
@@ -70,7 +67,10 @@ def init(ml_q,ml_init_q):
             predictions = sorted(classes_dict.items(), key=lambda x: x[1], reverse=True)
             prediction = predictions[0][0]
             confidence = predictions[0][1]
-            print("prediction: ", prediction)
-            print("confidence: ", confidence)
+            print("Justin model prediction: ", prediction)
+            print("Justin model confidence: ", confidence)
+
+            ibm_predictions = model_wrapper._predict(file_path, 0)
+            print("IBM model predictions: ", ibm_predictions)
 
             del files[0]
