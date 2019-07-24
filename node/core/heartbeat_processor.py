@@ -1,10 +1,13 @@
 import time
-
 import multiprocessing
+import clairvoyant
+
 from clairvoyant_data import PacketBuilder
 from clairvoyant_data import Packet
+from clairvoyant_data import HeartbeatPayload
 
 _DEFAULT_HEARTBEAT_FREQ = 900 #15 Minutes
+_DEFAULT_HEARTBEAT_FREQ = 5 #15 Minutes
 
 def init(input_buff, output_buff):
     print("Initializing Heartbeat Process...")
@@ -15,16 +18,16 @@ def init(input_buff, output_buff):
         payload = HeartbeatPayload()
         payload._battery_lvl = 100.0
         payload._timestamp = round(time.time())
-        packet = PacketBuilder()
-        packet.set_type("HEART_BEAT")
-        packet.set_node_id(clairvoyant.CURRENT_NODE)
-        packet.set_message_id()
-        packet.set_payload(payload)
-        packet.set_ttl()
-        packet.set_retry_count()
-        packet.set_hop_count()
+        builder = PacketBuilder()
+        builder.set_type("HEART_BEAT")
+        builder.set_node_id(clairvoyant.CURRENT_NODE)
+        builder.set_message_id()
+        builder.set_payload(payload)
+        builder.set_ttl()
+        builder.set_retry_count()
+        builder.set_hop_count()
 
         print("adding heartbeat packet to output buff");
-        output_buff.put(packet)
+        output_buff.put(builder.build())
 
         time.sleep(_DEFAULT_HEARTBEAT_FREQ)
