@@ -93,7 +93,7 @@ def justin_model(file_path):
     else:
         timestamp = datetime.datetime.now().time()
         ml_payload = clairvoyant_data.MlPayload(_battery_lvl = 100, _timestamp = timestamp, _classification = prediction, _confidence = confidence)
-        ml_packet = clairvoyant_data.PacketBuilder(_type = "ML_CLASS",_node_id = clairvoyant.CURRENT_NODE, _payload = ml_payload)
+        ml_packet = clairvoyant_data.PacketBuilder(_type = "ML_CLASS",_node_id = clairvoyant.CURRENT_NODE, _message_id = None, _payload = ml_payload, _ttl = None)
         built_packet = ml_packet.build()
     
     return built_packet
@@ -109,11 +109,11 @@ def ibm_model(file_path):
     built_packet = ''
     if str(prediction) == 'noise':
         built_packet = "NOISE"
-        
+
     else:
         timestamp = datetime.datetime.now().time()
         ml_payload = clairvoyant_data.MlPayload(_battery_lvl = 100, _timestamp = timestamp, _classification = prediction, _confidence = confidence)
-        ml_packet = clairvoyant_data.PacketBuilder(_type = "ML_CLASS",_node_id = clairvoyant.CURRENT_NODE, _payload = ml_payload)
+        ml_packet = clairvoyant_data.PacketBuilder(_type = "ML_CLASS",_node_id = clairvoyant.CURRENT_NODE, _message_id = None, _payload = ml_payload, _ttl = None)
         built_packet = ml_packet.build()
 
     return built_packet
