@@ -10,8 +10,6 @@ import io.clairvoyant.proto.DataPoint;
 import io.clairvoyant.proto.Heartbeat;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
-import io.reactivex.Completable;
-import io.reactivex.schedulers.Schedulers;
 
 import javax.inject.Inject;
 
@@ -33,39 +31,37 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
 
     @Override
     public void createDataPoint(DataPoint dataPoint, StreamObserver<Ack> response) {
-        dataPointStore
-                .contains(dataPoint)
-                .flatMapCompletable(exists -> {
-                    if (!exists) {
-                        return dataPointStore
-                                .insert(dataPoint)
-                                .doOnComplete(() -> dataPointPublisher.publish(dataPoint));
-                    } else {
-                        // Return an ack if we already have the datapoint
-                        return Completable.complete();
-                    }
-                })
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(() -> {
-                    Ack ack = Ack.newBuilder()
-                            .setMessageId(dataPoint.getMessageId())
-                            .setNodeId(dataPoint.getNodeId())
-                            .build();
+        logger.atInfo().log(String.format("Receiving datapoint %s", dataPoint.toString()));
+        Ack ack = Ack.newBuilder()
+                .setMessageId(dataPoint.getMessageId())
+                .setNodeId(dataPoint.getNodeId())
+                .build();
+        logger.atInfo().log(ack.toString());
 
-                    logger.atInfo()
-                        .log("DataPoint %s created", dataPoint.getMessageId());
-
-                    response.onNext(ack);
-                    response.onCompleted();
-                }, error -> {
-                    error.printStackTrace();
-                    logger.atInfo().log("Failed to insert DataPoint", error);
-                    response.onError(Status.fromThrowable(error).asException());
-                });
+        response.onNext(ack);
+        response.onCompleted();
+//        dataPointStore
+//                .insert(dataPoint)
+//                .doOnComplete(() -> dataPointPublisher.publish(dataPoint))
+//                .subscribe(() -> {
+//                    Ack ack = Ack.newBuilder()
+//                            .setMessageId(dataPoint.getMessageId())
+//                            .setNodeId(dataPoint.getNodeId())
+//                            .build();
+//                    logger.atInfo()
+//                        .log("DataPoint %s created", dataPoint.getMessageId());
+//                    response.onNext(ack);
+//                    response.onCompleted();
+//                }, error -> {
+//                    error.printStackTrace();
+//                    logger.atInfo().log("Failed to insert DataPoint", error);
+//                    response.onError(error);
+//                });
     }
 
     @Override
     public void ping(Heartbeat heartbeat, StreamObserver<Ack> responseObserver) {
+        logger.atInfo().log(String.format("Receiving heartbeat %s", heartbeat.toString()));
         nodeStore
                 .insert(heartbeat)
                 .subscribe(() -> {
@@ -73,10 +69,9 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
                             .setMessageId(heartbeat.getMessageId())
                             .setNodeId(heartbeat.getNodeId())
                             .build();
-
                     logger.atInfo()
                             .log("Heartbeat created for Node %s", heartbeat.getNodeId());
-
+                    logger.atInfo().log(ack.toString());
                     responseObserver.onNext(ack);
                     responseObserver.onCompleted();
                 }, error -> {

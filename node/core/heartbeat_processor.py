@@ -7,6 +7,7 @@ from clairvoyant_data import Packet
 from clairvoyant_data import HeartbeatPayload
 
 _DEFAULT_HEARTBEAT_FREQ = 900 #15 Minutes
+_DEFAULT_HEARTBEAT_FREQ = 30 #15 Minutes
 
 def init(input_buff, output_buff):
     print("Initializing Heartbeat Process...")

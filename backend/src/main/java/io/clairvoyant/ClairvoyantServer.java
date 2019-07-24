@@ -18,13 +18,13 @@ public class ClairvoyantServer {
      * java ClairvoyantServer <gateway_port> <web_api_port>
      */
     public static void main(String[] args) throws InterruptedException, IOException {
-        if (args.length != 2) {
-            throw new IllegalArgumentException(
-                    "Ports for gateway service and web API must be specified!");
-        }
+//        if (args.length != 2) {
+//            throw new IllegalArgumentException(
+//                    "Ports for gateway service and web API must be specified!");
+//        }
 
-        final int gatewayPort = Integer.parseInt(args[0]);
-        final int frontendPort = Integer.parseInt(args[1]);
+        final int gatewayPort = 8081;//Integer.parseInt(args[0]);
+        final int frontendPort = 8080;//Integer.parseInt(args[1]);
 
         // Build DI graph
         ClairvoyantComponent component = DaggerClairvoyantComponent.create();

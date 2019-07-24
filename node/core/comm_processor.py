@@ -6,7 +6,7 @@ import clairvoyant
 import traceback
 
 from multiprocessing import Queue
-from uart_processor import uart_process
+# from uart_processor import uart_process
 from clairvoyant_rpc import ClairvoyantRPCService
 from clairvoyant_data import Packet
 from clairvoyant_data import PacketBuilder
@@ -155,8 +155,8 @@ def init(input_buff, output_buff):
     uart_rx_buff = input_buff
 
     # Start uart processttggt
-    uart_proc = multiprocessing.Process(target=uart_process, args=(uart_tx_buff, uart_rx_buff),)
-    uart_proc.start()
+    # uart_proc = multiprocessing.Process(target=uart_process, args=(uart_tx_buff, uart_rx_buff),)
+    # uart_proc.start()
 
     # Initalize rpc service for communicating with clairvoyant server
     rpc_service = ClairvoyantRPCService()

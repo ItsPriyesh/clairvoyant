@@ -3,6 +3,12 @@ import multiprocessing
 import wave
 import os
 import time
+import random
+import clairvoyant
+
+from clairvoyant_data import PacketBuilder
+from clairvoyant_data import MlPayload
+from clairvoyant_data import Packet
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
@@ -11,51 +17,65 @@ CHUNK = 4096
 RECORD_SECONDS = 11
 DEVICE_INDEX = 0
 
-def print_available_mics():
-    audio = pyaudio.PyAudio()
-    #Print out available mics
-    for ii in range(audio.get_device_count()):
-        print(audio.get_device_info_by_index(ii).get('name'))
+# def print_available_mics():
+#     audio = pyaudio.PyAudio()
+#     #Print out available mics
+#     for ii in range(audio.get_device_count()):
+#         print(audio.get_device_info_by_index(ii).get('name'))
 
-def wav_recorder(frames, count, output_buff, audio):
-    file_name = str(count)+".wav"
-    p_fname = os.path.join('output','raw_audio', file_name)
+# def wav_recorder(frames, count, output_buff, audio):
+#     # file_name = str(count)+".wav"
+#     # p_fname = os.path.join('output','raw_audio', file_name)
 
-    waveFile = wave.open(p_fname, 'wb')
-    waveFile.setnchannels(CHANNELS)
-    waveFile.setsampwidth(2)
-    waveFile.setframerate(RATE)
-    waveFile.writeframes(b''.join(frames))
-    waveFile.close()
+#     # waveFile = wave.open(p_fname, 'wb')
+#     # waveFile.setnchannels(CHANNELS)
+#     # waveFile.setsampwidth(2)
+#     # waveFile.setframerate(RATE)
+#     # waveFile.writeframes(b''.join(frames))
+#     # waveFile.close()
 
-    output_buff.put({'file_name': file_name, 'path' : p_fname, 'frames': frames[:]})
+#     # output_buff.put({'file_name': file_name, 'path' : p_fname, 'frames': frames[:]})
 
 def init(input_buff, output_buff):
     print("Initializing Audio Recorder Process...")
 
-    audio = pyaudio.PyAudio()
+    # audio = pyaudio.PyAudio()
 
-    # Initialize audio stream
-    stream = audio.open(
-        format=FORMAT, 
-        channels=CHANNELS, 
-        rate=RATE, 
-        input_device_index = DEVICE_INDEX, 
-        input=True, 
-        frames_per_buffer=CHUNK)
+    # # Initialize audio stream
+    # stream = audio.open(
+    #     format=FORMAT, 
+    #     channels=CHANNELS, 
+    #     rate=RATE, 
+    #     input_device_index = DEVICE_INDEX, 
+    #     input=True, 
+    #     frames_per_buffer=CHUNK)
 
-    count = 0
+    # count = 0
 
     while(1):
-        frames = []
-        for i in range(0,int((RATE/CHUNK)*RECORD_SECONDS)):
-            frames.append(stream.read(CHUNK))
+        # frames = []
+        # for i in range(0,int((RATE/CHUNK)*RECORD_SECONDS)):
+        #     frames.append(stream.read(CHUNK))
 
-        #init subprcss
-        wav_prcss = multiprocessing.Process(target=wav_recorder, args=(frames[:],count,output_buff,audio,))
-        wav_prcss.start()
+        # #init subprcss
+        # wav_prcss = multiprocessing.Process(target=wav_recorder, args=(frames[:],count,output_buff,audio,))
+        # wav_prcss.start()
 
-        count+=1
+        if random.randint(0,10) > 5:
+
+            payload = MlPayload()
+            payload._battery_lvl = 100.0
+            payload._timestamp = round(time.time())
+            payload._classification = "BOMB"
+            payload._confidence = 100.0
+            builder = PacketBuilder().set_type("ML_CLASS").set_node_id(clairvoyant.CURRENT_NODE).set_message_id().set_payload(payload).set_ttl().set_retry_count(10).set_hop_count(10)
+            packet = builder.build();
+            print("\r\nadding ml packet to output buff {}\r\n".format(packet));
+
+            output_buff.put(packet);
+
+        time.sleep(5)
+
 
 """
 # stop the stream, close it, and terminate the pyaudio instantiation
