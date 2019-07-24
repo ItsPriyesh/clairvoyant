@@ -80,7 +80,7 @@ def justin_model(file_path):
         count+=1
 
     predictions = sorted(classes_dict.items(), key=lambda x: x[1], reverse=True)
-    prediction = predictions[0][0]
+    prediction = "J " + predictions[0][0]
     confidence = predictions[0][1]
     built_packet = ''
 
@@ -104,9 +104,10 @@ def ibm_model(file_path):
     # print("IBM model predictions: ", ibm_predictions)
 
     sub_label = ibm_predictions[0][1]
-    prediction = LABEL_MAPPING.get(sub_label)['class']
+    prediction = "I " + LABEL_MAPPING.get(sub_label)['class']
     confidence = ibm_predictions[0][2]
     built_packet = ''
+        
     if str(prediction) == 'noise':
         built_packet = "NOISE"
 
