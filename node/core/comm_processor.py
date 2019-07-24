@@ -67,6 +67,7 @@ class RetryService:
     def __init__(self):
         self._retry_blocking_q = deque()
         self._retry_map = {}
+        print("Starting retry service")
 
     def _calculate_backoff_time(self):
         return time.time() + random.randint(5,15)
@@ -187,7 +188,9 @@ def init(input_buff, output_buff):
             continue
 
         print("processing...")
+        print(data)
 
+        # Data packets that are ready to be sent.
         #TODO(Sathoshi): implement cache for TTL
         if data.get_type() == "ACK":
             if (not clairvoyant.FORCE_GATEWAY):
@@ -195,17 +198,17 @@ def init(input_buff, output_buff):
         elif data.get_type() == "ML_CLASS":
             try:
                 #TODO(Sathoshi): Handle server ack
-                rpc_service.create_data_point(**data.get_payload())
+                rpc_service.create_data_point(data)
             except Exception as e:
-                # traceback.print_exc
+                traceback.print_exc
                 if (not clairvoyant.FORCE_GATEWAY):
                     uart_tx_buff.put(data)
         elif data.get_type() == "HEART_BEAT":
             try:
                 #TODO(Sathoshi): Handle server ack
-                rpc_service.create_data_point(**data.get_payload())
+                rpc_service.heart_beat(data)
             except Exception as e:
-                # traceback.print_exc
+                traceback.print_exc
                 if (not clairvoyant.FORCE_GATEWAY):
                     uart_tx_buff.put(data)
 
