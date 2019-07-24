@@ -1,7 +1,8 @@
 import serial
 from multiprocessing import Queue
-from clairvoyant_data import PacketBuilder, Packet
+from clairvoyant_data import *
 from lora_driver import *
+import clairvoyant
 import time
 import binascii
 import time
@@ -103,7 +104,7 @@ def parse_rx_msg(string):
     #check signature filed
     if (payload[-1] != signature): #invalid packet
         return False
-    
+    #print(payload)
     #return payload list
     return payload
 
@@ -113,12 +114,12 @@ def construct_packet_from_list(payload):
     if (payload[0] == "ml"):
         mlpayload = MlPayload()
 
-        packet.set_type(packet,"ML_CLASS")
-        packet.set_node_id(packet, payload[1])
-        packet.set_message_id(packet, payload[2])
-        packet.set_hop_count(packet, payload[3])
-        packet.set_retry_count(packet, payload[4])
-        packet.set_payload(packet, mlpayload.from_array(payload[5:]))
+        packet.set_type("ML_CLASS")
+        packet.set_node_id( payload[1])
+        packet.set_message_id( payload[2])
+        packet.set_hop_count( payload[3])
+        packet.set_retry_count( payload[4])
+        packet.set_payload( mlpayload.from_array(payload[6:]))
         
     elif (payload[0] == "hb"):
         hbpayload = HeartbeatPayload()
@@ -128,7 +129,7 @@ def construct_packet_from_list(payload):
         packet.set_message_id(packet, payload[2])
         packet.set_hop_count(packet, payload[3])
         packet.set_retry_count(packet, payload[4])
-        packet.set_payload(packet, hbpayload.from_array(payload[5:]))
+        packet.set_payload(packet, hbpayload.from_array(payload[6:]))
 
     elif (payload[0] == "ACK"):
         packet.set_type(packet, "ACK")
@@ -136,7 +137,14 @@ def construct_packet_from_list(payload):
         packet.set_message_id(packet, payload[2])
         packet.set_payload(packet, None)
 
+    else:
+        return False
+    
+    packet.set_ttl()
+    packet = packet.build()
+    
     return packet
+
 
 #input json, return string
 def parse_tx_msg(packet):
@@ -165,11 +173,11 @@ def parse_tx_msg(packet):
 def construct_lora_ml_string(Packet): 
     payload = []
     payload.append("ml")#packet type
-    payload.append(Packet.node_id)
-    payload.append(Packet.message_id)
-    payload.append(Packet.hopcount)
-    payload.append(Packet.retry)
-    payload.extend(Packet.payload.to_array())
+    payload.append(Packet._node_id)
+    payload.append(Packet._message_id)
+    payload.append(Packet._hop_count)
+    payload.append(Packet._retry_count)
+    payload.extend(Packet._payload.to_array())
 
     string = parse_tx_msg(payload)
 
@@ -178,11 +186,11 @@ def construct_lora_ml_string(Packet):
 def construct_lora_heartbeat_string(Packet):
     payload = []
     payload.append("hb")#packet type
-    payload.append(Packet.node_id)
-    payload.append(Packet.message_id)
-    payload.append(Packet.hopcount)
-    payload.append(Packet.retry)    
-    payload.extend(Packet.payload.to_array())
+    payload.append(Packet._node_id)
+    payload.append(Packet._message_id)
+    payload.append(Packet._hop_count)
+    payload.append(Packet._retry_count)    
+    payload.extend(Packet._payload.to_array())
 
     string = parse_tx_msg(payload)
 
@@ -192,8 +200,8 @@ def construct_lora_heartbeat_string(Packet):
 def construct_lora_ack_string(Packet):
     payload = []
     payload.append("ack")
-    payload.append(Packet.node_id)
-    payload.append(Packet.message_id)
+    payload.append(Packet._node_id)
+    payload.append(Packet._message_id)
 
     string = parse_tx_msg(payload)
 
@@ -221,7 +229,7 @@ def uart_process(packet_tx_q, packet_rx_q):
     #Timestamp used for retrying, when an ack wasnt received
     curr_ack_ts = None
 
-    lora_init(uart_q,1,1)
+    lora_init(uart_q,clairvoyant.LORA_NODE_ID,clairvoyant.LORA_NETWORK_ID)
 
     while(1):
 
@@ -229,6 +237,8 @@ def uart_process(packet_tx_q, packet_rx_q):
         if (ser.inWaiting() > 0):
 
             rx_data = ser.readline()
+            rx_data = str(rx_data,'utf-8',errors='ignore')
+            rx_data = rx_data[:-2] #remove /r/
 
             #check for error
             if (rx_data[:4] == "+ERR"):
@@ -238,10 +248,16 @@ def uart_process(packet_tx_q, packet_rx_q):
             #check for receive message
             elif (rx_data[:4] == "+RCV"):
                 print("Message Received: " + str(rx_data))
+                comm_index = ([pos for pos, char in enumerate(rx_data) if char == ','])
+                rx_data = rx_data[comm_index[1] + 1: comm_index[-2]]
                 ##process receive messages
-                payload = parse_rx_msg(rx_data[4:-2]) #remove\r\n , need to check if they are there ADD
-                packet = construct_packet_from_list(payload)
-                packet_rx_q.put(packet)
+                payload = parse_rx_msg(rx_data)
+
+                if (payload != False):
+                    packet = construct_packet_from_list(payload)
+
+                if (packet != False):
+                    packet_rx_q.put(packet)
                 
                 
             #ack message
@@ -261,7 +277,7 @@ def uart_process(packet_tx_q, packet_rx_q):
                     curr_ack_ts = None
                     curr_uart = None
                     curr_ack_index = 0
-                    print("clear")
+                    print("Ack Received")
 
             
 ####process tx strings
@@ -291,15 +307,15 @@ def uart_process(packet_tx_q, packet_rx_q):
 
             if (packet.get_type() == "ML_CLASS"):
                 string = construct_lora_ml_string(packet)
-                lora_transmit(uart_q, False, Packet.node_id, string)
+                lora_transmit(uart_q, True, None, string)
                 
             elif (packet.get_type() == "HEART_BEAT"):
                 string = construct_lora_heartbeat_string(packet)
-                lora_transmit(uart_q, False, Packet.node_id, string)
+                lora_transmit(uart_q, True, None, string)
 
             elif (packet.get_type() == "ACK"):
                 string = construct_lora_ack_string(packet)
-                lora_transmit(uart_q, False, Packet.node_id, string)
+                lora_transmit(uart_q, True, None, string)
 
                 
                 
@@ -309,5 +325,17 @@ def uart_process(packet_tx_q, packet_rx_q):
 def test_uart_process():
     a = Queue()
     b = Queue()
+
+    print("CREATING A ML CLASS PACKET")
+    payload = MlPayload()
+    payload._battery_lvl = 100.0
+    payload._timestamp = round(time.time())
+    payload._classification = "BOMB"
+    payload._confidence = 100.0
+    packet = PacketBuilder().set_type("ML_CLASS").set_node_id(clairvoyant.CURRENT_NODE).set_message_id().set_payload(payload).set_ttl().set_retry_count(10).set_hop_count(10)
+    packet = packet.build()
+    a.put(packet)
     uart_process(a,b)
-test_uart_process()
+
+    # print("adding ml packet to output buff");
+#test_uart_process()

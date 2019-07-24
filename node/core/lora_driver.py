@@ -13,7 +13,7 @@ def software_reset(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = [b'+RESET',b'+READY\r\n']
+    string.ack_list = ["+RESET","+READY"]
 
     uart_q.put(string)
         
@@ -23,7 +23,7 @@ def set_work_mode(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = [b'+OK\r\n']
+    string.ack_list = ["+OK"]
 
     uart_q.put(string)
 
@@ -35,7 +35,7 @@ def set_uart_baud(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = [b'+OK\r\n']
+    string.ack_list = ["+OK"]
 
     uart_q.put(string)
     #expecting +OK
@@ -46,7 +46,7 @@ def set_rf_params(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = [b'+OK\r\n']
+    string.ack_list = ["+OK"]
 
     uart_q.put(string)
     #expecting +OK
@@ -57,7 +57,7 @@ def set_rf_frequency(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = [b'+OK\r\n']
+    string.ack_list = ["+OK"]
 
     uart_q.put(string)
     #expecting +OK
@@ -71,7 +71,7 @@ def set_at_address(uart_q, addr):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = [b'+OK\r\n']
+    string.ack_list = ["+OK"]
 
     uart_q.put(string)
     #expecting +OK
@@ -84,7 +84,7 @@ def set_network_id(uart_q, id):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = [b'+OK\r\n']
+    string.ack_list = ["+OK"]
 
     uart_q.put(string)
 
@@ -96,7 +96,7 @@ def set_network_pass(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = [b'+OK\r\n']
+    string.ack_list = ["+OK"]
 
     uart_q.put(string)
     #expecting +OK
@@ -108,7 +108,7 @@ def set_rf_output_pwr(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = [b'+OK\r\n']
+    string.ack_list = ["+OK"]
 
     uart_q.put(string)
 
@@ -141,7 +141,7 @@ def lora_transmit(uart_q, transmit_all, address, datastring):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = [b'+OK\r\n']
+    string.ack_list = ["+OK"]
 
     uart_q.put(string)
 
