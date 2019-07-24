@@ -1,26 +1,28 @@
 import grpc
+import clairvoyant
+import traceback
+
 from gen import clairvoyant_pb2 as grpc_model
 from gen import clairvoyant_pb2_grpc as grpc_service
 from time import time
 
 class ClairvoyantRPCService:
 
-	_RPC_PORT = '8081'
-	_RPC_ADDRESS = 'localhost'
-
-	_DEFAULT_ID = 1
-	_DEFAULT_NODE_ID = 1
+	_DEFAULT_NODE_ID = "DEFAULT"
 	_DEFAULT_TIMESTAMP = round(1563073962.387557)
-	_DEFAULT_EVENT_TYPE = 'default'
+	_DEFAULT_ML_CLASSIFICATION = 'DEFAULT_CLASS'
 	_DEFAULT_CONFIDENCE = 100.0
+	_DEFAULT_RETRY_COUNT = 1000
+	_DEFAULT_HOP_COUNT = 1000
 	_DEFAULT_BATTERY_LEVEL = 100
 
 	_DEFAULT_PARAMS = {
-		"id" : _DEFAULT_ID,
 		"node_id" : _DEFAULT_NODE_ID,
 		"timestamp" : _DEFAULT_TIMESTAMP,
-		"event_type" : _DEFAULT_EVENT_TYPE,
+		"classification" : _DEFAULT_ML_CLASSIFICATION,
 		"confidence" : _DEFAULT_CONFIDENCE,
+		"retry_count" : _DEFAULT_RETRY_COUNT,
+		"hop_count" : _DEFAULT_HOP_COUNT,
 		"battery_level" : _DEFAULT_BATTERY_LEVEL
 	}
 
@@ -28,68 +30,105 @@ class ClairvoyantRPCService:
 	Initialize Clairyoant gprc client stub.
 	"""
 	def __init__(self):
-		self.channel = grpc.insecure_channel(":".join([ClairvoyantRPCService._RPC_ADDRESS, ClairvoyantRPCService._RPC_PORT]))
+		self.channel = grpc.insecure_channel(":".join([clairvoyant.RPC_ADDRESS, clairvoyant.RPC_PORT]))
 		self.stub = grpc_service.ClairvoyantServiceStub(self.channel)
+
 
 	"""
 	Check if there all expected parameters are present.
 	If expected parameters are missing, add default parameters.
 	"""
 	def _validate_params_and_set_default(self, obj, *args):
-		missing = args[:];
+		print("validating params {} with {}".format(obj, args))
+		missing = list(args[:])
 		params = {}
 		for arg in args:
+			# print("SATHOSHIK {}".format(arg))
 			try:
-				if arg not in obj:
+				if not arg in obj:
+					# print("CHECKING missing array {}".format(missing))
+					params[arg] = ClairvoyantRPCService._DEFAULT_PARAMS[arg]
+				else:			
+					# print("EXTRACTING PARAM")
 					missing.remove(arg)
-				else:
-					params[args] = obj[args]
-					continue
-			except:
+					params[arg] = obj[arg]
+			except Exception as e:
+				traceback.print_exc()
+				print("ERROR {}".format(e))
 				pass
-			params[arg] = ClairvoyantRPCService._DEFAULT_PARAMS[arg]
 
 		missing_str = ",".join(missing)
 		#TODO(Sathoshi): Add logging library
 		if (len(missing) > 0):
 			print("Expected params [{}], missing params [{}]".format(",".join(args), missing_str))
 
+		# print("defaults appended {}".format(params))
 		return params
 
 	"""
 	Note: This function sets default values for any missing arguments.
 	Expected arguments:
 		DataPoint {
-		    int32 id = 1;
-		    int32 node_id = 2;
+		    string node_id = 1;
+		    string message_id = 2;
 		    int64 timestamp = 3;
-		    string event_type = 4;
+		    string classification = 4;
 		    float confidence = 5;
+		    int32 retry_count = 6;
+		    int32 hop_count = 7;
 	    }
 	"""
-	def create_data_point(self, obj):
-		params = self._validate_params_and_set_default(obj, "id", "node_id", "timestamp", "event_type", "confidence")
-		datapoint = grpc_model.DataPoint(**params)
+	def create_data_point(self, packet):
+		# convert packet into a hashmap?
+		#TODO(Sathoshi) 
+		print("about to send data point to rpc")
+		params = self._validate_params_and_set_default(
+			packet.to_dict(), "node_id", 
+			"message_id", 
+			"timestamp", 
+			"classification", 
+			"confidence",
+			"retry_count",
+			"hop_count")
+		print("added defaults {}".format(params))
 		try:
+			datapoint = grpc_model.DataPoint(**params)
+			#TODO(Sathoshi): convert this result into a Ack Packet.
 			return self.stub.CreateDataPoint(datapoint)
 		except Exception as e:
+			traceback.print_exc()
 			raise(e)
 
 	"""
 	Note: This function sets default values for any missing arguments.
 	Expected arguments:
 		HeartBeat {
-		    int32 id = 1;
-		    int64 timestamp = 2;
-		    float battery_level = 3;
+	    string node_id = 1;
+		    string message_id = 2;
+		    int64 timestamp = 3;
+		    float battery_level = 4;
+		    int32 retry_count = 5;
+		    int32 hop_count = 6;
 	    }
 	"""
-	def heart_beat(self, obj):
-		params = self._validate_params_and_set_default(obj, "id", "timestamp", "battery_level")
-		heart_beat = grpc_model.Heartbeat(**params)
+	def heart_beat(self, packet):
+
+		print("about to send heart beat to rpc")
+		params = self._validate_params_and_set_default(
+			packet.to_dict(), 
+			"node_id", 
+			"message_id", 
+			"timestamp", 
+			"battery_level", 
+			"retry_count",
+			"hop_count")
+		print("added defaults {}".format(params))
 		try:
+			heart_beat = grpc_model.Heartbeat(**params)
+			#TODO(Sathoshi): convert this result into a Ack Packet.
 			return self.stub.Ping(heart_beat)
 		except Exception as e:
+			traceback.print_exc()
 			raise(e)
 
 
