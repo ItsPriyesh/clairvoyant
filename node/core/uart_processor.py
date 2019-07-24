@@ -217,8 +217,7 @@ def uart_process(packet_tx_q, packet_rx_q):
 
     #Current Transmitted/Ack String
     curr_uart = None
-    #Current Ack Index
-    curr_ack_index = 0
+
     #Timestamp used for retrying, when an ack wasnt received
     curr_ack_ts = None
 
@@ -249,19 +248,20 @@ def uart_process(packet_tx_q, packet_rx_q):
             elif (curr_uart != None):
                 print("Ack " + str(rx_data))
                 #check if received msg is first element in ack list for that command
-                if ((rx_data[:len(curr_uart.ack_list[curr_ack_index])]) == curr_uart.ack_list[curr_ack_index]):
 
-                    #check if more acks to process
-                    if (len(curr_uart.ack_list) == curr_ack_index+1):
-                        curr_ack_ts = None
-                        curr_uart = None
-                        curr_ack_index = 0
-                        print("clear")
-                    #waiting on more acks from same tx msg
+                ack_check = False
+                
+                for ack in curr_uart.ack_list:
+                    if (rx_data.find(ack) != -1):
+                        ack_check = True
                     else:
-                        #reset ack ts
-                        curr_ack_ts = time.time()
-                        curr_ack_index += 1
+                        ack_check = False
+
+                if (ack_check == True):
+                    curr_ack_ts = None
+                    curr_uart = None
+                    curr_ack_index = 0
+                    print("clear")
 
             
 ####process tx strings
