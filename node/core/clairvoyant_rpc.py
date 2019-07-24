@@ -2,6 +2,9 @@ import grpc
 import clairvoyant
 import traceback
 
+from clairvoyant_data import AckPayload
+from clairvoyant_data import PacketBuilder
+from clairvoyant_data import Packet
 from gen import clairvoyant_pb2 as grpc_model
 from gen import clairvoyant_pb2_grpc as grpc_service
 from time import time
@@ -94,7 +97,17 @@ class ClairvoyantRPCService:
 		try:
 			datapoint = grpc_model.DataPoint(**params)
 			#TODO(Sathoshi): convert this result into a Ack Packet.
-			return self.stub.CreateDataPoint(datapoint)
+			ack = self.stub.CreateDataPoint(datapoint)
+			ack_packet = PacketBuilder()
+			ack_packet.set_type("ACK")
+			ack_packet.set_node_id(ack.node_id)
+			ack_packet.set_message_id(ack.message_id)
+			ack_packet.set_payload(AckPayload())
+			ack_packet.set_ttl()
+			ack_packet.set_retry_count(0)
+			ack_packet.set_hop_count(0)
+
+			return ack_packet.build()
 		except Exception as e:
 			traceback.print_exc()
 			raise(e)
@@ -126,7 +139,17 @@ class ClairvoyantRPCService:
 		try:
 			heart_beat = grpc_model.Heartbeat(**params)
 			#TODO(Sathoshi): convert this result into a Ack Packet.
-			return self.stub.Ping(heart_beat)
+			ack = self.stub.Ping(heart_beat)
+			ack_packet = PacketBuilder()
+			ack_packet.set_type("ACK")
+			ack_packet.set_node_id(ack.node_id)
+			ack_packet.set_message_id(ack.message_id)
+			ack_packet.set_payload(AckPayload())
+			ack_packet.set_ttl()
+			ack_packet.set_retry_count(0)
+			ack_packet.set_hop_count(0)
+			
+			return ack_packet.build()
 		except Exception as e:
 			traceback.print_exc()
 			raise(e)
