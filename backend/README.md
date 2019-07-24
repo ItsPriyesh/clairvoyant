@@ -25,6 +25,11 @@ mvn compile
 mvn exec:java -Dexec.mainClass=io.clairvoyant.ClairvoyantServer 8080 8081
 ```
 
+To build the JAR and deploy to our EC2 instance:
+```
+./deploy.sh
+```
+=======
 DB with test data Setup
 -----------------------
 - Create a db with the name `clairvoyant`
