@@ -1,4 +1,4 @@
-let API_BASE = 'localhost:8081';
+let API_BASE = '3.93.231.152:8081';
 let HTTP_BASE = 'http://' + API_BASE;
 let SOCKET_BASE = 'ws://' + API_BASE;
 
