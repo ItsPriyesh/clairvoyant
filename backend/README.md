@@ -25,3 +25,36 @@ mvn compile
 mvn exec:java -Dexec.mainClass=io.clairvoyant.ClairvoyantServer 8080 8081
 ```
 
+Deployment
+----------
+To build the JAR, copy it to the EC2 instance, and run the server:
+```
+./deploy.sh
+ssh rp1@ec2-3-93-231-152.compute-1.amazonaws.com
+./run-ec2.sh
+```
+
+The EC2 instance also has a MySQL server running with the following DB:
+```
+database: clairvoyant
+user: root
+password: "" (empty)
+port: 3306
+```
+
+Create a test user (required for authenticating requests):
+```
+curl --data "firstName=Test&lastName=User&email=test@test.com&password=pass" http://ec2-3-93-231-152.compute-1.amazonaws.com:8081/createUser
+```
+
+=======
+DB with test data Setup
+-----------------------
+- Create a db with the name `clairvoyant`
+
+- Navigate to `clairvoyant/backend/src/scripts/`
+
+- Run the `create_test_db.sh` script to create the db with test data:
+```
+sh create_test_db.sh
+```

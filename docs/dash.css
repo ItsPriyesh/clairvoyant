@@ -1,5 +1,6 @@
 body {
 	background: #202023;
+	padding-bottom: 60px;
 }
 
 .header {
@@ -57,4 +58,8 @@ body {
 .event-pie-legend li {
     color: #e3e3e3;
     list-style-type:none;
+}
+
+#network-container {
+    height: 240px;
 }

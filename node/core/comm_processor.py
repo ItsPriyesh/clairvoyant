@@ -67,6 +67,7 @@ class RetryService:
     def __init__(self):
         self._retry_blocking_q = deque()
         self._retry_map = {}
+        print("Starting retry service")
 
     def _calculate_backoff_time(self):
         return time.time() + random.randint(5,15)
@@ -117,6 +118,7 @@ class RetryService:
             retry_metadata = self._retry_map[data.get_message_id()]
             retry_metadata['retry'] = retry_metadata['retry'] + 1
             retry_metadata['ttr'] = self._calculate_backoff_time()
+            data.increment_retry_count();
             return data
         else:
             # Add metadata to retry_map and return
@@ -169,6 +171,8 @@ def init(input_buff, output_buff):
             # If it is a piece of data that we don't know what to do with. simply drop it
             if not isinstance(data, Packet):
                 continue;
+                
+            data.increment_hop_count()
 
             if data.get_node_id() == clairvoyant.CURRENT_NODE:
                 if data.get_type() in Packet.VALID_EVENT_TYPES:
@@ -187,7 +191,9 @@ def init(input_buff, output_buff):
             continue
 
         print("processing...")
+        print(data)
 
+        # Data packets that are ready to be sent.
         #TODO(Sathoshi): implement cache for TTL
         if data.get_type() == "ACK":
             if (not clairvoyant.FORCE_GATEWAY):
@@ -195,17 +201,19 @@ def init(input_buff, output_buff):
         elif data.get_type() == "ML_CLASS":
             try:
                 #TODO(Sathoshi): Handle server ack
-                rpc_service.create_data_point(**data.get_payload())
+                ack_packet = rpc_service.create_data_point(data)
+                input_buff.put(ack_packet)
             except Exception as e:
-                # traceback.print_exc
+                traceback.print_exc
                 if (not clairvoyant.FORCE_GATEWAY):
                     uart_tx_buff.put(data)
         elif data.get_type() == "HEART_BEAT":
             try:
                 #TODO(Sathoshi): Handle server ack
-                rpc_service.create_data_point(**data.get_payload())
+                ack_packet = rpc_service.heart_beat(data)
+                input_buff.put(ack_packet)
             except Exception as e:
-                # traceback.print_exc
+                traceback.print_exc
                 if (not clairvoyant.FORCE_GATEWAY):
                     uart_tx_buff.put(data)
 

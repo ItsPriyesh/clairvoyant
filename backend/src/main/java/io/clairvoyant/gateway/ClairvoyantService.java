@@ -15,26 +15,30 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
     private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private final DataPointStore dataPointStore;
+    private final DataPointPublisher dataPointPublisher;
 
     @Inject
-    ClairvoyantService(DataPointStore dataPointStore) {
+    ClairvoyantService(DataPointStore dataPointStore, DataPointPublisher dataPointPublisher) {
         this.dataPointStore = dataPointStore;
+        this.dataPointPublisher = dataPointPublisher;
     }
 
     @Override
     public void createDataPoint(DataPoint dataPoint, StreamObserver<Ack> response) {
-        System.out.println("create");
         dataPointStore
                 .insert(dataPoint)
+                .doOnComplete(() -> dataPointPublisher.publish(dataPoint))
                 .subscribe(() -> {
                     Ack ack = Ack.newBuilder()
-                            .setDataPointId(dataPoint.getId())
+                            .setMessageId(dataPoint.getMessageId())
+                            .setNodeId(dataPoint.getNodeId())
                             .build();
-
-                    logger.atInfo().log("DataPoint %s created", dataPoint.getId());
+                    logger.atInfo()
+                        .log("DataPoint %s created", dataPoint.getMessageId());
                     response.onNext(ack);
                     response.onCompleted();
                 }, error -> {
+                    error.printStackTrace();
                     logger.atInfo().log("Failed to insert DataPoint", error);
                     response.onError(error);
                 });
@@ -43,7 +47,8 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
     @Override
     public void ping(Heartbeat heartbeat, StreamObserver<Ack> responseObserver) {
         Ack ack = Ack.newBuilder()
-                .setDataPointId(heartbeat.getId())
+                .setMessageId(heartbeat.getMessageId())
+                .setNodeId(heartbeat.getNodeId())
                 .build();
 
         responseObserver.onNext(ack);

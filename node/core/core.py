@@ -5,6 +5,7 @@ import random
 import audio_recorder
 import time
 import yaml
+import traceback
 
 """
 The core is responsible for dispatching initial device connections on multiple processes and 
@@ -74,6 +75,7 @@ if __name__ == '__main__':
 
         except Exception as e:
             print('Unable to launch process for arguments [{}], {}'.format(process, e))
+            traceback.print_exc()
 
 
     print(process_pool)
