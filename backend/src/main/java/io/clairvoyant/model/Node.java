@@ -5,7 +5,7 @@ import org.davidmoten.rx.jdbc.annotations.Column;
 public interface Node {
 
     @Column
-    int nodeID();
+    String nodeID();
 
     @Column
     int userID();

@@ -1,10 +1,13 @@
 package io.clairvoyant.db;
 
-import io.clairvoyant.proto.DataPoint;
+import io.clairvoyant.model.DataPoint;
+import io.clairvoyant.model.auto.DataPointAuto;
 import io.reactivex.Completable;
+import io.reactivex.Single;
 import org.davidmoten.rx.jdbc.Database;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class DataPointStore {
 
@@ -15,16 +18,25 @@ public class DataPointStore {
         this.database = database;
     }
 
-    public Completable insert(DataPoint point) {
+    public Completable insert(io.clairvoyant.proto.DataPoint point) {
         return database
                 .update("insert into DataPoint values(?, ?, FROM_UNIXTIME(?), ?, ?)")
                 .parameters(
-                        point.getId(),
+                        point.getMessageId(),
                         point.getNodeId(),
                         point.getTimestamp(),
-                        point.getEventType(),
+                        point.getClassification(),
                         point.getConfidence()
                 )
                 .complete();
+    }
+
+    public Single<List<DataPoint>> getDataPoints(int userId) {
+        return database
+                .select("select DataPoint.* from DataPoint " +
+                        "join Node using (node_id) where user_id = ?")
+                .parameter(userId)
+                .autoMap(DataPoint.class)
+                .toList();
     }
 }
