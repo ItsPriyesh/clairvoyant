@@ -277,8 +277,8 @@ class HeartbeatPayload:
 
 		return self
 
-
-
+class AckPayload:
+	pass
 ##message Ack {
 ##    string node_id = 1;
 ##    string message_id = 2; stuff is empty
