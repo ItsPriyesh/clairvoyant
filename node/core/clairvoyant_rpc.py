@@ -96,7 +96,7 @@ class ClairvoyantRPCService:
 		print("added defaults {}".format(params))
 		try:
 			datapoint = grpc_model.DataPoint(**params)
-
+			
 			ack = self.stub.CreateDataPoint(datapoint)
 			ack_packet = PacketBuilder()
 			ack_packet.set_type("ACK")
@@ -138,7 +138,7 @@ class ClairvoyantRPCService:
 		print("added defaults {}".format(params))
 		try:
 			heart_beat = grpc_model.Heartbeat(**params)
-
+			
 			ack = self.stub.Ping(heart_beat)
 			ack_packet = PacketBuilder()
 			ack_packet.set_type("ACK")
