@@ -205,7 +205,7 @@ class MlPayload:
 	def __str__(self):
 		return '[battery_level:{}, timestamp:{}, classification:{}, confidence:{}]'.format(self._battery_lvl, self._timestamp, self._classification, self._confidence)
 		    
-	def to_array():
+	def to_array(self):
 		if ((self._battery_lvl == None) or (self._timestamp == None) or (self._classification == None) or (self._confidence == None)):
 			raise ValueError("Fields are missing")
 
