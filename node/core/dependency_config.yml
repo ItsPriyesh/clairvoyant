@@ -19,3 +19,8 @@ ml_proc_1:
   module_name: ml_processor
   input_sources:
     - data_proc_1
+
+comm_proc_1:
+  module_name: comm_processor
+  input_sources:
+    - ml_proc_1
