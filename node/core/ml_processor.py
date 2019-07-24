@@ -33,6 +33,7 @@ CSV_PATH = os.path.join('ml','assets','final_labeled_df.csv')
 NUM_ROWS = 40
 NUM_COLUMNS = 174
 NUM_CHANNELS = 1
+CONFIDENCE_THRESHOLD = 0.4
 
 JUSTIN_DF = pd.read_csv(CSV_PATH)
 y = np.array(JUSTIN_DF.class_label.tolist())
@@ -97,7 +98,7 @@ def justin_model(file_path):
 
     print("\r\nJustin prediction: {}, Justin confidence: {}\r\n".format(ans, confidence))
     
-    if str(ans) == 'noise':
+    if str(ans) == 'noise' or confidence < CONFIDENCE_THRESHOLD:
         built_packet = "NOISE"
     
     else:
@@ -128,7 +129,7 @@ def ibm_model(file_path, model_wrapper):
 
     built_packet = ''
         
-    if str(prediction) == 'noise':
+    if str(prediction) == 'noise' or confidence < CONFIDENCE_THRESHOLD:
         built_packet = "NOISE"
 
     else:
