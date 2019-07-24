@@ -5,7 +5,7 @@ mvn clean compile assembly:single
 
 if [ -f "target/$JAR" ]; then
     scp target/$JAR run-ec2.sh $INSTANCE:/home/rp1/
-    ssh $INSTANCE 'chmod +x run-ec2.sh; ./run-ec2.sh'
+    echo "Copied JAR with executable script to server"
 else
     echo "Build failed, JAR doesn't exist."
 fi

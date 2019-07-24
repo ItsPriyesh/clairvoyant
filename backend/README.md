@@ -28,6 +28,8 @@ mvn exec:java -Dexec.mainClass=io.clairvoyant.ClairvoyantServer 8080 8081
 To build the JAR and deploy to our EC2 instance:
 ```
 ./deploy.sh
+ssh rp1@ec2-3-93-231-152.compute-1.amazonaws.com
+./run-ec2.sh
 ```
 =======
 DB with test data Setup
