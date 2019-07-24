@@ -104,7 +104,7 @@ def parse_rx_msg(string):
     #check signature filed
     if (payload[-1] != signature): #invalid packet
         return False
-    
+    #print(payload)
     #return payload list
     return payload
 
@@ -114,12 +114,12 @@ def construct_packet_from_list(payload):
     if (payload[0] == "ml"):
         mlpayload = MlPayload()
 
-        packet.set_type(packet,"ML_CLASS")
-        packet.set_node_id(packet, payload[1])
-        packet.set_message_id(packet, payload[2])
-        packet.set_hop_count(packet, payload[3])
-        packet.set_retry_count(packet, payload[4])
-        packet.set_payload(packet, mlpayload.from_array(payload[5:]))
+        packet.set_type("ML_CLASS")
+        packet.set_node_id( payload[1])
+        packet.set_message_id( payload[2])
+        packet.set_hop_count( payload[3])
+        packet.set_retry_count( payload[4])
+        packet.set_payload( mlpayload.from_array(payload[6:]))
         
     elif (payload[0] == "hb"):
         hbpayload = HeartbeatPayload()
@@ -129,7 +129,7 @@ def construct_packet_from_list(payload):
         packet.set_message_id(packet, payload[2])
         packet.set_hop_count(packet, payload[3])
         packet.set_retry_count(packet, payload[4])
-        packet.set_payload(packet, hbpayload.from_array(payload[5:]))
+        packet.set_payload(packet, hbpayload.from_array(payload[6:]))
 
     elif (payload[0] == "ACK"):
         packet.set_type(packet, "ACK")
@@ -137,7 +137,14 @@ def construct_packet_from_list(payload):
         packet.set_message_id(packet, payload[2])
         packet.set_payload(packet, None)
 
+    else:
+        return False
+    
+    packet.set_ttl()
+    packet = packet.build()
+    
     return packet
+
 
 #input json, return string
 def parse_tx_msg(packet):
@@ -172,7 +179,6 @@ def construct_lora_ml_string(Packet):
     payload.append(Packet._retry_count)
     payload.extend(Packet._payload.to_array())
 
-    print(payload)
     string = parse_tx_msg(payload)
 
     return string
@@ -231,6 +237,8 @@ def uart_process(packet_tx_q, packet_rx_q):
         if (ser.inWaiting() > 0):
 
             rx_data = ser.readline()
+            rx_data = str(rx_data,'utf-8',errors='ignore')
+            rx_data = rx_data[:-2] #remove /r/
 
             #check for error
             if (rx_data[:4] == "+ERR"):
@@ -240,10 +248,16 @@ def uart_process(packet_tx_q, packet_rx_q):
             #check for receive message
             elif (rx_data[:4] == "+RCV"):
                 print("Message Received: " + str(rx_data))
+                comm_index = ([pos for pos, char in enumerate(rx_data) if char == ','])
+                rx_data = rx_data[comm_index[1] + 1: comm_index[-2]]
                 ##process receive messages
-                payload = parse_rx_msg(rx_data[4:-2]) #remove\r\n , need to check if they are there ADD
-                packet = construct_packet_from_list(payload)
-                packet_rx_q.put(packet)
+                payload = parse_rx_msg(rx_data)
+
+                if (payload != False):
+                    packet = construct_packet_from_list(payload)
+
+                if (packet != False):
+                    packet_rx_q.put(packet)
                 
                 
             #ack message
@@ -263,7 +277,7 @@ def uart_process(packet_tx_q, packet_rx_q):
                     curr_ack_ts = None
                     curr_uart = None
                     curr_ack_index = 0
-                    print("clear")
+                    print("Ack Received")
 
             
 ####process tx strings
@@ -290,7 +304,6 @@ def uart_process(packet_tx_q, packet_rx_q):
 ####process tx packets from com_process             
         if (packet_tx_q.empty() == False):
             packet = packet_tx_q.get()
-            print("got packet")
 
             if (packet.get_type() == "ML_CLASS"):
                 string = construct_lora_ml_string(packet)

@@ -223,7 +223,7 @@ class MlPayload:
 	def from_dict(self):
 		pass
             
-	def from_array(array):
+	def from_array(self,array):
 		if (len(array) != 4):
 			raise ValueError("Incorrect Array length")
 
@@ -268,7 +268,7 @@ class HeartbeatPayload:
 	def from_dict(self):
 		pass
 
-	def from_array(array):
+	def from_array(self, array):
 		if (len(array)) != 2:
 			raise ValueError("Incorrect Array length")
 
