@@ -24,28 +24,32 @@ $(document).ready(function() {
 
   httpGET('/datapoints', (datapoints) => {
     console.log('Received datapoints ' + JSON.stringify(datapoints));
+    dps = datapoints;
     bindEventBreakdown(datapoints);
     bindHistory(datapoints);
   });
 
-  listenForDataPoints();
-  // $("#datapoint-notif").css({"left"})
-});
-
-
-listenForDataPoints = function() {
   let webSocket = new WebSocket(SOCKET_BASE + '/listenDataPoint');
   webSocket.onopen = function () {
     webSocket.send(JSON.stringify(credentials)); 
   }
-  webSocket.onmessage = function (msg) { 
+  webSocket.onmessage = function (msg) {
     var dp = JSON.parse(msg.data);
     dps.push(dp);
     console.log(dps);
     appendHistory(dp);
     bindEventBreakdown(dps);
+
+    let notif = $("#datapoint-notif");
+    let html = document.getElementById("datapoint-notif");
+    if (window.getComputedStyle(html).visibility === "hidden") {
+      notif.css('visibility', 'visible');
+    }
+    $("#notif-node").text("Node " + dp["node_id"]);
+    $("#notif-class").text(dp["classification"]);
+    $("#notif-time-ago").text(dp["created_at"]);
   };
-}
+});
 
 httpGET = function(endpoint, onSuccess) {
   $.ajax({
@@ -106,7 +110,9 @@ appendHistory = function(d) {
 }
 
 bindEventBreakdown = function(datapoints) {
+  console.log("bindEventBreakdown " +datapoints );
   let eventTypes = countByType(datapoints);
+  console.log(eventTypes);
   var config = {
     type: 'pie',
     data: {
