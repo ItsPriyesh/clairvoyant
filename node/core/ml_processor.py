@@ -6,13 +6,22 @@
 
 import clairvoyant_data
 import clairvoyant
-from ml.core.model import ModelWrapper
 import os
 import multiprocessing
 import time
 import warnings
 import tensorflow as tf
 import datetime
+import pandas as pd
+import numpy as np
+import librosa
+
+from ml.core.model import ModelWrapper
+from sklearn.preprocessing import LabelEncoder
+# import tensorflow.keras.utils.to_categorical as to_categorical
+# import tensorflow.keras.utils.load as load
+from keras.utils import to_categorical
+from keras.models import load_model
 
 MODEL_PATH = os.path.join('ml','assets','weights.best.resampled_cnn6.hdf5')
 CSV_PATH = os.path.join('ml','assets','final_labeled_df.csv')
@@ -118,3 +127,25 @@ def ibm_model(file_path):
         built_packet = ml_packet.build()
 
     return built_packet
+
+def extract_features(file_name):
+    max_pad_len = 174
+
+    try:
+        audio, sample_rate = librosa.load(file_name, res_type='kaiser_fast', duration=4.0) 
+        if (max(audio) != 0.0):
+            trimmed_audio, index = librosa.effects.trim(audio, top_db = 20)
+
+            mfccs = librosa.feature.mfcc(y=trimmed_audio, sr=sample_rate, n_mfcc=40)
+            pad_width = max_pad_len - mfccs.shape[1]
+            mfccs = np.pad(mfccs, pad_width=((0, 0), (0, pad_width)), mode='constant')
+        
+        else:
+            print("ERROR: Please input a non-empty audio file")
+            return None
+
+    except Exception as e:
+        print("ERROR: Cannot parse the following file: ", file_name)
+        return None
+
+    return mfccs
