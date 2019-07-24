@@ -104,6 +104,8 @@ def parse_rx_msg(string):
     #check signature filed
     if (payload[-1] != signature): #invalid packet
         return False
+    #remove signature field
+    payload = payload[:-1]
     #print(payload)
     #return payload list
     return payload
@@ -119,7 +121,7 @@ def construct_packet_from_list(payload):
         packet.set_message_id( payload[2])
         packet.set_hop_count( payload[3])
         packet.set_retry_count( payload[4])
-        packet.set_payload( mlpayload.from_array(payload[6:]))
+        packet.set_payload( mlpayload.from_array(payload[5:]))
         
     elif (payload[0] == "hb"):
         hbpayload = HeartbeatPayload()
@@ -129,7 +131,7 @@ def construct_packet_from_list(payload):
         packet.set_message_id( payload[2])
         packet.set_hop_count( payload[3])
         packet.set_retry_count( payload[4])
-        packet.set_payload( hbpayload.from_array(payload[6:]))
+        packet.set_payload( hbpayload.from_array(payload[5:]))
 
     elif (payload[0] == "ACK"):
         packet.set_type(packet, "ACK")
@@ -238,7 +240,7 @@ def uart_process(packet_tx_q, packet_rx_q):
 
             rx_data = ser.readline()
             rx_data = str(rx_data,'utf-8',errors='ignore')
-            rx_data = rx_data[:-2] #remove /r/
+            rx_data = rx_data[:-2] #remove /r/n
 
             #check for error
             if (rx_data[:4] == "+ERR"):
