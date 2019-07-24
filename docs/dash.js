@@ -1,18 +1,35 @@
+let API_BASE = 'localhost:8081';
+let HTTP_BASE = 'http://' + API_BASE;
+let SOCKET_BASE = 'ws://' + API_BASE;
+
 let pieColors = {
   GUNSHOT: '#ba2c54',
   EXPLOSION: '#4275f7',
   VEHICLE: '#b4d664',
 };
 
+let credentials = {
+  user_id: localStorage.getItem('userId'), 
+  session_token: localStorage.getItem('token')
+};
+
 $(document).ready(function() {
-  fetchDataPoints();
+  httpGET('/nodes', (nodes) => {
+    console.log('Received nodes ' + JSON.stringify(nodes));
+    bindNodes(nodes);
+  });
+
+  httpGET('/datapoints', (datapoints) => {
+    console.log('Received datapoints ' + JSON.stringify(datapoints));
+    bindEventBreakdown(datapoints);
+    bindHistory(datapoints);
+  });
+
   listenForDataPoints();
 });
 
-let credentials = {user_id: localStorage.getItem('userId'), session_token: localStorage.getItem('token')};
-
 listenForDataPoints = function() {
-  let webSocket = new WebSocket('ws://localhost:8081/listenDataPoint/');
+  let webSocket = new WebSocket(SOCKET_BASE + '/listenDataPoint');
   webSocket.onopen = function () {
     webSocket.send(JSON.stringify(credentials)); 
   }
@@ -22,20 +39,51 @@ listenForDataPoints = function() {
   };
 }
 
-fetchDataPoints = function() {
+httpGET = function(endpoint, onSuccess) {
   $.ajax({
-    url: 'http://localhost:8081/datapoints',
+    url: HTTP_BASE + endpoint,
     type: 'GET',
     'data' : credentials
-  }).done(function(datapoints) {
-      console.log('Received datapoints ' + JSON.stringify(datapoints))
-      bindEventBreakdown(datapoints);
-      bindHistory(datapoints);
+  }).done(function(data) {
+      onSuccess(data);
   }).fail(function(error) {
       // show error
-
   });
 }
+
+bindNodes = function(nodes) {
+  let graphNodes = nodes.map((node, i) => {
+    return {
+      label: 'Node ' + node,
+      id: node,
+      x: i,
+      y: 0,
+      size: 3
+    }
+  });
+  
+  let graphEdges = []
+  for (var i = 0; i < nodes.length - 1; i++) {
+    graphEdges.push({
+      id: 'edge' + i,
+      source: nodes[i],
+      target: nodes[i+1]
+    });
+  }
+
+  let s = new sigma({ 
+    graph: { nodes: graphNodes, edges: graphEdges },
+    container: 'network-container',
+    settings: {
+        defaultNodeColor: '#FFF',
+        defaultLabelColor: '#FFF',
+        defaultLabelAlignment: 'top',
+        zoomingRatio: 1,
+        enableCamera: false,
+        enableHovering: false
+    }
+  });
+};
 
 bindHistory = function(datapoints) {
   let table = $("#history_table").find('tbody');
