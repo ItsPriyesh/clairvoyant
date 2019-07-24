@@ -13,6 +13,8 @@ public abstract class NodeAuto implements Node {
 
         public abstract Builder setLastHeartbeat(long timestamp);
 
+        public abstract Builder setBatteryLevel(float batteryLevel);
+
         public abstract NodeAuto build();
     }
 
