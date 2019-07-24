@@ -1,7 +1,7 @@
 import serial
 from multiprocessing import Queue
 from clairvoyant_data import PacketBuilder, Packet
-import lora_driver
+from lora_driver import *
 import time
 import binascii
 import time
@@ -209,7 +209,7 @@ def uart_process(packet_tx_q, packet_rx_q):
     uart_q = Queue()
     
     #initialize uart
-    ser = serial.Serial('/dev/serial0', baudrate=115200,
+    ser = serial.Serial('com5', baudrate=115200,
                         parity=serial.PARITY_NONE,
                         stopbits=serial.STOPBITS_ONE,
                         bytesize=serial.EIGHTBITS
@@ -222,7 +222,7 @@ def uart_process(packet_tx_q, packet_rx_q):
     #Timestamp used for retrying, when an ack wasnt received
     curr_ack_ts = None
 
-    lora_init()
+    lora_init(uart_q,1,1)
 
     while(1):
 
@@ -233,12 +233,12 @@ def uart_process(packet_tx_q, packet_rx_q):
 
             #check for error
             if (rx_data[:4] == "+ERR"):
-                print("Error detected: " + data)
+                print("Error detected: " + str(rx_data))
                 ##ADD reset module prob... will have to test and see types of errors
 
             #check for receive message
             elif (rx_data[:4] == "+RCV"):
-                print("Message Received: " + data)
+                print("Message Received: " + str(rx_data))
                 ##process receive messages
                 payload = parse_rx_msg(rx_data[4:-2]) #remove\r\n , need to check if they are there ADD
                 packet = construct_packet_from_list(payload)
@@ -247,14 +247,16 @@ def uart_process(packet_tx_q, packet_rx_q):
                 
             #ack message
             elif (curr_uart != None):
+                print("Ack " + str(rx_data))
                 #check if received msg is first element in ack list for that command
-                if (data[:len(curr_uart.ack_list[curr_ack_index])] == curr_uart.ack_list[curr_ack_index]):
+                if ((rx_data[:len(curr_uart.ack_list[curr_ack_index])]) == curr_uart.ack_list[curr_ack_index]):
 
                     #check if more acks to process
                     if (len(curr_uart.ack_list) == curr_ack_index+1):
                         curr_ack_ts = None
                         curr_uart = None
                         curr_ack_index = 0
+                        print("clear")
                     #waiting on more acks from same tx msg
                     else:
                         #reset ack ts
@@ -264,20 +266,24 @@ def uart_process(packet_tx_q, packet_rx_q):
             
 ####process tx strings
         #check if not waiting on ack
-        if (curr_uart == None) and (uart_q.empty() == False):
+        if (uart_q.empty() == False):
+            if (curr_uart == None):
 
-            curr_uart = uart_q.get()
-            curr_ack_index = 0
-            curr_ack_ts = time.time()
+                curr_uart = uart_q.get()
+                curr_ack_index = 0
+                curr_ack_ts = time.time()
 
-            ser.write(curr_uart.tx_string.encode())
-        #check if ack timed out
-        elif (time.time() - curr_ack_ts >= 5): #5 sec has passed since string has been sent
+                ser.write(curr_uart.tx_string.encode())
+                print("sent" + str(curr_uart.tx_string.encode()))
+
+            #check if ack timed out
+            elif (time.time() - curr_ack_ts >= 5): #5 sec has passed since string has been sent
                 #resend transmit, reset ack index, and ts
                 curr_ack_index = 0
                 curr_ack_ts = time.time()
-                
+                    
                 ser.write(curr_uart.tx_string.encode())
+                print("sent retry" + str(curr_uart.tx_string.encode()))
         
 ####process tx packets from com_process             
         if (packet_tx_q.empty() == False):
@@ -300,4 +306,8 @@ def uart_process(packet_tx_q, packet_rx_q):
 
 
 
-
+def test_uart_process():
+    a = Queue()
+    b = Queue()
+    uart_process(a,b)
+test_uart_process()

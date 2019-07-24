@@ -13,7 +13,7 @@ def software_reset(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = ["+RESET", "+READY"]
+    string.ack_list = [b'+RESET\r\xea\x00+READY\r\n']
 
     uart_q.put(string)
         
@@ -23,7 +23,7 @@ def set_work_mode(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = ["+OK"]
+    string.ack_list = [b'+OK\r\n']
 
     uart_q.put(string)
 
@@ -35,7 +35,7 @@ def set_uart_baud(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = ["+OK"]
+    string.ack_list = [b'+OK\r\n']
 
     uart_q.put(string)
     #expecting +OK
@@ -46,7 +46,7 @@ def set_rf_params(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = ["+OK"]
+    string.ack_list = [b'+OK\r\n']
 
     uart_q.put(string)
     #expecting +OK
@@ -57,34 +57,34 @@ def set_rf_frequency(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = ["+OK"]
+    string.ack_list = [b'+OK\r\n']
 
     uart_q.put(string)
     #expecting +OK
             
 #set AT address (1 to 65535)
-def set_at_address(uart_q):
-    if ((count < 1) or (count > 65535)):
+def set_at_address(uart_q, addr):
+    if ((addr < 1) or (addr > 65535)):
         return False
     
     input = "AT+ADDRESS=" + str(addr) + "\r\n"
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = ["+OK"]
+    string.ack_list = [b'+OK\r\n']
 
     uart_q.put(string)
     #expecting +OK
 
 
 #def set Network ID
-def set_network_id(uart_q):
+def set_network_id(uart_q, id):
     
     input = "AT+NETWORKID=" + str(id) + "\r\n"
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = ["+OK"]
+    string.ack_list = [b'+OK\r\n']
 
     uart_q.put(string)
 
@@ -96,7 +96,7 @@ def set_network_pass(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = ["+OK"]
+    string.ack_list = [b'+OK\r\n']
 
     uart_q.put(string)
     #expecting +OK
@@ -108,20 +108,20 @@ def set_rf_output_pwr(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = ["+OK"]
+    string.ack_list = [b'+OK\r\n']
 
     uart_q.put(string)
 
     #expecting +OK
 
-def lora_init(uart_q):
+def lora_init(uart_q, addr, network_id):
     software_reset(uart_q)
     set_work_mode(uart_q)
     set_uart_baud(uart_q)
     set_rf_params(uart_q)
     set_rf_frequency(uart_q)
-    set_at_address(uart_q)
-    set_network_id(uart_q)
+    set_at_address(uart_q, addr)
+    set_network_id(uart_q, network_id)
     set_network_pass(uart_q)
     set_rf_output_pwr(uart_q)
 
@@ -134,14 +134,14 @@ def lora_transmit(uart_q, transmit_all, address, datastring):
         return False
 
     if (transmit_all == True):
-        input = "AT+SEND=0," +str(len(datastring)) + "," + datastring
+        input = "AT+SEND=0," +str(len(datastring)) + "," + datastring + "\r\n"
 
     else:
-        input = "AT+SEND=" + str(address) + "," + str(len(datastring)) + "," + datastring
+        input = "AT+SEND=" + str(address) + "," + str(len(datastring)) + "," + datastring+"\r\n"
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = ["+OK"]
+    string.ack_list = [b'+OK\r\n']
 
     uart_q.put(string)
 
