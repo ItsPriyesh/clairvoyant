@@ -13,7 +13,7 @@ def software_reset(uart_q):
 
     string = LoraString()
     string.tx_string = input
-    string.ack_list = [b'+RESET\r\xea\x00+READY\r\n']
+    string.ack_list = [b'+RESET',b'+READY\r\n']
 
     uart_q.put(string)
         
