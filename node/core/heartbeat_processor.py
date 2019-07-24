@@ -7,13 +7,11 @@ from clairvoyant_data import Packet
 from clairvoyant_data import HeartbeatPayload
 
 _DEFAULT_HEARTBEAT_FREQ = 900 #15 Minutes
-_DEFAULT_HEARTBEAT_FREQ = 5 #15 Minutes
 
 def init(input_buff, output_buff):
     print("Initializing Heartbeat Process...")
 
     while(1):
-        print("CREATING A HEART BEAT PACKETS")
 
         payload = HeartbeatPayload()
         payload._battery_lvl = 100.0
@@ -27,7 +25,7 @@ def init(input_buff, output_buff):
         builder.set_retry_count()
         builder.set_hop_count()
 
-        print("adding heartbeat packet to output buff");
+        print("=== CREATING HEART BEAT PACKET ===")
         output_buff.put(builder.build())
 
         time.sleep(_DEFAULT_HEARTBEAT_FREQ)
