@@ -70,7 +70,7 @@ class RetryService:
         print("Starting retry service")
 
     def _calculate_backoff_time(self):
-        return time.time() + random.randint(12,20)
+        return time.time() + random.randint(6,12)
 
     def has_messages(self):
         while len(self._retry_blocking_q) > 0:
