@@ -25,7 +25,7 @@ def init(input_buff, output_buff):
         builder.set_retry_count()
         builder.set_hop_count()
 
-        print("=== CREATING HEART BEAT PACKET ===");
+        print("=== CREATING HEART BEAT PACKET ===")
         output_buff.put(builder.build())
 
         time.sleep(_DEFAULT_HEARTBEAT_FREQ)
