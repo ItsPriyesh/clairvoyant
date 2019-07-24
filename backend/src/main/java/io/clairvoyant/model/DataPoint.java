@@ -30,9 +30,9 @@ public interface DataPoint {
         JsonObject json = new JsonObject();
         json.addProperty("id", dp.dataPointId());
         json.addProperty("node_id", dp.nodeId());
-        json.addProperty("type", dp.classification());
+        json.addProperty("classification", dp.classification());
         json.addProperty("confidence", dp.confidence());
-        json.addProperty("time", dp.createdAt().toString());
+        json.addProperty("created_at", dp.createdAt().toString());
         return json;
     };
 }
