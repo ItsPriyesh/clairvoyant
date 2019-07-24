@@ -256,7 +256,6 @@ class HeartbeatPayload:
 		if ((self._battery_lvl == None) or (self._timestamp == None)):
 			raise ValueError("Fields are missing")
 		payload = [self._battery_lvl, self._timestamp]
-
 		return payload
 
 	def to_dict(self):
