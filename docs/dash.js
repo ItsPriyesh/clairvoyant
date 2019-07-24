@@ -13,6 +13,9 @@ let credentials = {
   session_token: localStorage.getItem('token')
 };
 
+let historyTable = $("#history_table").find('tbody');
+var dps = [];
+
 $(document).ready(function() {
   httpGET('/nodes', (nodes) => {
     console.log('Received nodes ' + JSON.stringify(nodes));
@@ -28,14 +31,18 @@ $(document).ready(function() {
   listenForDataPoints();
 });
 
+
 listenForDataPoints = function() {
   let webSocket = new WebSocket(SOCKET_BASE + '/listenDataPoint');
   webSocket.onopen = function () {
     webSocket.send(JSON.stringify(credentials)); 
   }
   webSocket.onmessage = function (msg) { 
-    console.log('Received datapoint: ' + msg.data);
-    // TODO: Update UI
+    var dp = JSON.parse(msg.data);
+    dps.push(dp);
+    console.log(dps);
+    appendHistory(dp);
+    bindEventBreakdown(dps);
   };
 }
 
@@ -86,12 +93,15 @@ bindNodes = function(nodes) {
 };
 
 bindHistory = function(datapoints) {
-  let table = $("#history_table").find('tbody');
   for (var i = 0; i < datapoints.length; i++) {
     let d = datapoints[i];
-    let row = `<tr><td>Node ${d.node_id}</td><td>${d.type}</td><td>${d.confidence * 100}%</td><td>${d.time}</td></tr>`;
-    table.append(row);
+    appendHistory(d);
   }
+}
+
+appendHistory = function(d) {
+  let row = `<tr><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence * 100}%</td><td>${d.created_at}</td></tr>`;
+  historyTable.append(row);
 }
 
 bindEventBreakdown = function(datapoints) {
@@ -123,7 +133,7 @@ bindEventBreakdown = function(datapoints) {
 countByType = function(datapoints) {
   var groups = {};
   $.each(datapoints, function(i, datapoint) {
-    let type = datapoint["type"];
+    let type = datapoint["classification"];
     if (!(type in groups)) {
       groups[type] = 0;
     }
