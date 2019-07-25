@@ -30,7 +30,9 @@ public class NodeStore {
 
     public Single<List<Node>> getNodes(int userId) {
         return database
-                .select("select distinct Node.* from Node where user_id = ?")
+                .select("select * from Node n1 where n1.last_heartbeat = " +
+                        "(select max(n2.last_heartbeat) from Node n2 " +
+                        "where n2.user_id = ? and n2.node_id = n1.node_id);")
                 .parameter(userId)
                 .autoMap(Node.class)
                 .toList();
