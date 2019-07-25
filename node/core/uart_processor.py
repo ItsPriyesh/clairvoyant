@@ -86,7 +86,7 @@ def parse_rx_msg(string):
 
     #check crc and make sure its not corrupted
     computed_crc32 = binascii.crc32(payload.encode())    
-    computed_crc32 = str(hex(computed_crc32))[2:]
+    computed_crc32 = "{:08x}".format(computed_crc32)
 
     if (computed_crc32 != crc):
         return False
@@ -165,11 +165,11 @@ def parse_tx_msg(packet):
     #compute a crc of packet
     crc = binascii.crc32(packet.encode())
 
-    crc = str(hex(crc))[2:]
+    crc = "{:08x}".format(crc)
 
     #append CRC to beginning
     packet = crc + packet
-
+    
     return packet
 
 
@@ -248,12 +248,12 @@ def uart_process(packet_tx_q, packet_rx_q):
 
             #check for error
             if (rx_data[:4] == "+ERR"):
-                print("Error detected: " + str(rx_data))
+                print("LoRa Error detected: " + str(rx_data))
                 ##ADD reset module prob... will have to test and see types of errors
 
             #check for receive message
             elif (rx_data[:4] == "+RCV"):
-                print("Message Received: " + str(rx_data))
+                print("LoRa Message Received: " + str(rx_data))
                 comm_index = ([pos for pos, char in enumerate(rx_data) if char == ','])
                 rx_data = rx_data[comm_index[1] + 1: comm_index[-2]]
                 ##process receive messages
@@ -265,6 +265,7 @@ def uart_process(packet_tx_q, packet_rx_q):
                     #print("valid payload uart")
                 if (packet != False):
                     #print("valid packet uart")
+                    #print("Received Packet: " + str(packet))
                     packet_rx_q.put(packet)
                 
                 
@@ -298,7 +299,7 @@ def uart_process(packet_tx_q, packet_rx_q):
                 curr_ack_ts = time.time()
 
                 ser.write(curr_uart.tx_string.encode())
-                print("sent" + str(curr_uart.tx_string.encode()))
+                print("LoRa Send: " + str(curr_uart.tx_string.encode()))
 
             #check if ack timed out
             elif (time.time() - curr_ack_ts >= 5): #5 sec has passed since string has been sent
@@ -307,7 +308,7 @@ def uart_process(packet_tx_q, packet_rx_q):
                 curr_ack_ts = time.time()
                     
                 ser.write(curr_uart.tx_string.encode())
-                print("sent retry" + str(curr_uart.tx_string.encode()))
+                print("LoRa Send Retry: " + str(curr_uart.tx_string.encode()))
         
 ####process tx packets from com_process             
         if (packet_tx_q.empty() == False):
