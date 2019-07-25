@@ -1,8 +1,3 @@
-let API_BASE = '3.93.231.152:8081';
-// let API_BASE = 'localhost:8081';
-let HTTP_BASE = 'http://' + API_BASE;
-let SOCKET_BASE = 'ws://' + API_BASE;
-
 let pieColors = {
   GUNSHOT: '#ba2c54',
   EXPLOSION: '#4275f7',
@@ -10,14 +5,20 @@ let pieColors = {
 };
 
 let credentials = {
-  user_id: localStorage.getItem('userId'), 
+  user_id: localStorage.getItem('userId'),
   session_token: localStorage.getItem('token')
 };
 
 let historyTable = $("#history_table").find('tbody');
 var dps = [];
 
+var API_BASE;
+var SOCKET_BASE;
+
 $(document).ready(function() {
+  $.getJSON("config.json", (config) => {
+    API_BASE = config.api_url;
+    SOCKET_BASE = config.socket_url;
   httpGET('/nodes', (nodes) => {
     console.log('Received nodes ' + JSON.stringify(nodes));
     bindNodes(nodes);
@@ -33,7 +34,7 @@ $(document).ready(function() {
 
   let webSocket = new WebSocket(SOCKET_BASE + '/listenDataPoint');
   webSocket.onopen = function () {
-    webSocket.send(JSON.stringify(credentials)); 
+    webSocket.send(JSON.stringify(credentials));
   }
   webSocket.onmessage = function (msg) {
     var dp = JSON.parse(msg.data);
@@ -43,6 +44,7 @@ $(document).ready(function() {
     animateDataPointReceived(dp);
     bindEventBreakdown(dps);
   };
+  });
 });
 
 animateDataPointReceived = function(dp) {
@@ -55,23 +57,11 @@ animateDataPointReceived = function(dp) {
     notif.addClass('animate-pulse');
     notif.animate({opacity: .9}, 200);
 
-    setTimeout(() => {  
+    setTimeout(() => {
       notif.removeClass('animate-pulse');
       notif.addClass('animate-idle');
       notif.animate({opacity: .65}, 200);
     }, 3000);
-}
-
-httpGET = function(endpoint, onSuccess) {
-  $.ajax({
-    url: HTTP_BASE + endpoint,
-    type: 'GET',
-    'data' : credentials
-  }).done(function(data) {
-      onSuccess(data);
-  }).fail(function(error) {
-      // show error
-  });
 }
 
 bindNodes = function(nodes) {
@@ -94,7 +84,7 @@ bindNodes = function(nodes) {
     });
   }
 
-  let s = new sigma({ 
+  let s = new sigma({
     graph: { nodes: graphNodes, edges: graphEdges },
     container: 'network-container',
     settings: {
@@ -170,3 +160,15 @@ countByType = function(datapoints) {
   });
   return groups;
 };
+
+ httpGET = function(endpoint, onSuccess) {
+    $.ajax({
+      url: API_BASE + endpoint,
+      type: 'GET',
+      'data' : credentials
+    }).done(function(data) {
+        onSuccess(data);
+    }).fail(function(error) {
+        // show error
+    });
+}

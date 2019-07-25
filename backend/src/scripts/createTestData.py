@@ -1,7 +1,7 @@
 import requests
 import hashlib
 
-baseUrl = 'http://localhost:8081'
+baseUrl = 'http://40.114.122.121:8081'
 userEndpoint = '/createUser'
 
 pw = 'password'
