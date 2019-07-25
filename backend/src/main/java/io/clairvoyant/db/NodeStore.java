@@ -30,7 +30,7 @@ public class NodeStore {
 
     public Single<List<Node>> getNodes(int userId) {
         return database
-                .select("select Node.* from Node where user_id = ?")
+                .select("select distinct Node.* from Node where user_id = ?")
                 .parameter(userId)
                 .autoMap(Node.class)
                 .toList();
