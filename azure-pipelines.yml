@@ -10,18 +10,32 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: Maven@3
+# - task: Maven@3
+#   inputs:
+#     mavenPomFile: 'backend/pom.xml'
+#     mavenOptions: '-Xmx3072m'
+#     javaHomeOption: 'JDKVersion'
+#     jdkVersionOption: '1.8'
+#     jdkArchitectureOption: 'x64'
+#     publishJUnitResults: true
+#     testResultsFiles: '**/surefire-reports/TEST-*.xml'
+#     goals: 'clean compile assembly:single'
+- task: Bash@3
   inputs:
-    mavenPomFile: 'backend/pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'clean compile assembly:single'
+    targetType: 'inline'
+    script: |
+      # Write your commands here
+      
+      echo 'Hello world'
+      pwd
+      ls
+      cd backend
+      mvn clean compile assembly:single
+- task: CopyFiles@2
+  inputs:
+    contents: target/*.jar
+    targetFolder: $(Build.ArtifactStagingDirectory)
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'clairvoyant-server'
-    publishLocation: 'Container'
+    pathtoPublish: $(Build.ArtifactStagingDirectory)
+    artifactName: ClairvoyantJAR
