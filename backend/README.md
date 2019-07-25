@@ -27,14 +27,15 @@ mvn exec:java -Dexec.mainClass=io.clairvoyant.ClairvoyantServer 8080 8081
 
 Deployment
 ----------
-To build the JAR, copy it to the EC2 instance, and run the server:
+To build the JAR, copy it to the Azure instance, and run the server:
 ```
 ./deploy.sh
-ssh rp1@ec2-3-93-231-152.compute-1.amazonaws.com
-./run-ec2.sh
+ssh -i path_to_key azureuser@40.114.122.121
+chmod +x run-jar.sh
+./run-jar.sh
 ```
 
-The EC2 instance also has a MySQL server running with the following DB:
+The instance also has a MySQL server running with the following DB:
 ```
 database: clairvoyant
 user: root
@@ -44,7 +45,7 @@ port: 3306
 
 Create a test user (required for authenticating requests):
 ```
-curl --data "firstName=Test&lastName=User&email=test@test.com&password=pass" http://ec2-3-93-231-152.compute-1.amazonaws.com:8081/createUser
+curl --data "firstName=Test&lastName=User&email=test@test.com&password=pass" http://40.114.122.121:8081/createUser
 ```
 
 =======

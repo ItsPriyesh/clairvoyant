@@ -1,7 +1,8 @@
 $(document).ready(function(){
+  $.getJSON("config.json", function(config) {
   $("#submit").click(function() {
     $.ajax({
-      url: 'http://localhost:8081/login',
+      url: config.api_url + '/login',
       type: 'GET',
       'data' : {
         'email' : $("#login").val(),
@@ -13,6 +14,7 @@ $(document).ready(function(){
       alert(error.responseText);
     });
   });
+  });
 });
 
 loadDashboard = function(data) {
@@ -23,3 +25,4 @@ loadDashboard = function(data) {
   console.log(localStorage.getItem('userId'));
   window.location = "./dash.html";
 }
+
