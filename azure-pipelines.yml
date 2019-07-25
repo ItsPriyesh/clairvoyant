@@ -33,7 +33,7 @@ steps:
       mvn clean compile assembly:single
 - task: CopyFiles@2
   inputs:
-    contents: target/*.jar
+    contents: backend/target/*.jar
     targetFolder: $(Build.ArtifactStagingDirectory)
 - task: PublishBuildArtifacts@1
   inputs:
