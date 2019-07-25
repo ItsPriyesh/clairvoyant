@@ -3,6 +3,8 @@ package io.clairvoyant.model.auto;
 import com.google.auto.value.AutoValue;
 import io.clairvoyant.model.Node;
 
+import java.sql.Timestamp;
+
 @AutoValue
 public abstract class NodeAuto implements Node {
     @AutoValue.Builder
@@ -11,7 +13,7 @@ public abstract class NodeAuto implements Node {
 
         public abstract Builder setUserID(int id);
 
-        public abstract Builder setLastHeartbeat(long timestamp);
+        public abstract Builder setLastHeartbeat(Timestamp timestamp);
 
         public abstract Builder setBatteryLevel(float batteryLevel);
 

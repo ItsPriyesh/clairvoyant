@@ -9,6 +9,7 @@ import dagger.Provides;
 import io.clairvoyant.api.model.Credentials;
 import io.clairvoyant.db.DatabaseConfig;
 import io.clairvoyant.model.DataPoint;
+import io.clairvoyant.model.Node;
 import org.davidmoten.rx.jdbc.Database;
 
 import javax.inject.Singleton;
@@ -62,6 +63,7 @@ public class ClairvoyantModule {
         return new GsonBuilder()
                 .registerTypeAdapter(Credentials.class, Credentials.DESERIALIZER)
                 .registerTypeAdapter(DataPoint.class, DataPoint.SERIALIZER)
+                .registerTypeAdapter(Node.class, Node.SERIALIZER)
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
     }

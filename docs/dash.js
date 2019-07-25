@@ -21,6 +21,7 @@ $(document).ready(function() {
   httpGET('/nodes', (nodes) => {
     console.log('Received nodes ' + JSON.stringify(nodes));
     bindNodes(nodes);
+    bindNodeSummary(nodes);
   });
 
   httpGET('/datapoints', (datapoints) => {
@@ -76,8 +77,8 @@ httpGET = function(endpoint, onSuccess) {
 bindNodes = function(nodes) {
   let graphNodes = nodes.map((node, i) => {
     return {
-      label: 'Node ' + node,
-      id: node,
+      label: 'Node ' + node.id,
+      id: node.id,
       x: i,
       y: 0,
       size: 3
@@ -88,8 +89,8 @@ bindNodes = function(nodes) {
   for (var i = 0; i < nodes.length - 1; i++) {
     graphEdges.push({
       id: 'edge' + i,
-      source: nodes[i],
-      target: nodes[i+1]
+      source: nodes[i].id,
+      target: nodes[i+1].id
     });
   }
 
@@ -106,6 +107,17 @@ bindNodes = function(nodes) {
     }
   });
 };
+
+bindNodeSummary = function(nodes) {
+  let nodesTable = $("#nodes_table").find('tbody');
+  let historyTable = $("#history_table").find('tbody');
+  for(var i = 0; i < nodes.length; i++) {
+    let n = nodes[i];
+    let row = `<tr><td>${n.id}</td><td>${n.battery_level}%</td></tr>`;
+    console.log(n.battery_level);
+    nodesTable.append(row);
+  }
+}
 
 bindHistory = function(datapoints) {
   for (var i = 0; i < datapoints.length; i++) {

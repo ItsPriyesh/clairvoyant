@@ -45,6 +45,20 @@ body {
 	opacity: .85;
 }
 
+.nodes_table_head {
+  color: #e3e3e3;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  opacity: .6;
+}
+
+.nodes_table_body {
+  color: #e3e3e3;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  opacity: .85;
+}
+
 .event-pie-legend li span {
     display: inline-block;
     width: 12px;
