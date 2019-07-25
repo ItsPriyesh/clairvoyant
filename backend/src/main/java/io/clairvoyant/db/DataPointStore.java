@@ -41,7 +41,7 @@ public class DataPointStore {
 
     public Single<List<DataPoint>> getDataPoints(int userId) {
         return database
-                .select("select DataPoint.* from DataPoint " +
+                .select("select distinct DataPoint.* from DataPoint " +
                         "join Node using (node_id) where user_id = ?")
                 .parameter(userId)
                 .autoMap(DataPoint.class)
