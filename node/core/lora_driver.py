@@ -42,7 +42,7 @@ def set_uart_baud(uart_q):
 
 #set RF parameter (all default parameters)
 def set_rf_params(uart_q):
-    input = "AT+PARAMETER=7,2,1,4\r\n"
+    input = "AT+PARAMETER=7,3,4,5\r\n"
 
     string = LoraString()
     string.tx_string = input
