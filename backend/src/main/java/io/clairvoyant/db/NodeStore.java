@@ -1,6 +1,5 @@
 package io.clairvoyant.db;
 
-import io.clairvoyant.model.Node;
 import io.clairvoyant.proto.Heartbeat;
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -33,12 +32,12 @@ public class NodeStore {
                 .getUserForNode(node.getNodeId()).blockingGet();
 
         return database
-                .update("insert into Node values(?, ?, ?, ?)")
+                .update("insert into Node values(?, from_unixtime(?), ?, ?)")
                 .parameters(
                       node.getNodeId(),
                       node.getTimestamp(),
                       userId,
-                      node.batteryLevel()
+                      node.getBatteryLevel()
                 )
                 .complete();
     }

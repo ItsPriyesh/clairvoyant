@@ -66,16 +66,23 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
 
     @Override
     public void ping(Heartbeat heartbeat, StreamObserver<Ack> responseObserver) {
-        Ack ack = Ack.newBuilder()
-                .setMessageId(heartbeat.getMessageId())
-                .setNodeId(heartbeat.getNodeId())
-                .build();
-        
         nodeStore
                 .insert(heartbeat)
-                .doOnComplete(() -> )
+                .subscribe(() -> {
+                    Ack ack = Ack.newBuilder()
+                            .setMessageId(heartbeat.getMessageId())
+                            .setNodeId(heartbeat.getNodeId())
+                            .build();
 
-        responseObserver.onNext(ack);
-        responseObserver.onCompleted();
+                    logger.atInfo()
+                            .log("Heartbeat created for Node %s", heartbeat.getNodeId());
+
+                    responseObserver.onNext(ack);
+                    responseObserver.onCompleted();
+                }, error -> {
+                    error.printStackTrace();
+                    logger.atInfo().log("Failed to insert Heartbeat", error);
+                    responseObserver.onError(Status.fromThrowable(error).asException());
+                });
     }
 }
