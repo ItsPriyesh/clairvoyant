@@ -12,4 +12,7 @@ public interface Node {
 
     @Column
     long lastHeartbeat();
+
+    @Column
+    float batteryLevel();
 }

@@ -20,6 +20,7 @@ CREATE TABLE Node(
     node_id        varchar(255)  not null,
     last_heartbeat datetime 	 not null,
     user_id		   int           not null,
+    battery_level  float,           
     CONSTRAINT Node_user_id FOREIGN KEY (user_id) REFERENCES User(user_id),
     PRIMARY KEY(node_id, last_heartbeat, user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

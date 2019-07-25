@@ -2,6 +2,8 @@ package io.clairvoyant.gateway;
 
 import com.google.common.flogger.FluentLogger;
 import io.clairvoyant.db.DataPointStore;
+import io.clairvoyant.db.NodeStore;
+import io.clairvoyant.model.Node;
 import io.clairvoyant.proto.Ack;
 import io.clairvoyant.proto.ClairvoyantServiceGrpc;
 import io.clairvoyant.proto.DataPoint;
@@ -19,11 +21,14 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
 
     private final DataPointStore dataPointStore;
     private final DataPointPublisher dataPointPublisher;
+    private final NodeStore nodeStore;
 
     @Inject
-    ClairvoyantService(DataPointStore dataPointStore, DataPointPublisher dataPointPublisher) {
+    ClairvoyantService(DataPointStore dataPointStore, DataPointPublisher dataPointPublisher,
+                       NodeStore nodeStore) {
         this.dataPointStore = dataPointStore;
         this.dataPointPublisher = dataPointPublisher;
+        this.nodeStore = nodeStore;
     }
 
     @Override
@@ -61,13 +66,23 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
 
     @Override
     public void ping(Heartbeat heartbeat, StreamObserver<Ack> responseObserver) {
-        Ack ack = Ack.newBuilder()
-                .setMessageId(heartbeat.getMessageId())
-                .setNodeId(heartbeat.getNodeId())
-                .build();
+        nodeStore
+                .insert(heartbeat)
+                .subscribe(() -> {
+                    Ack ack = Ack.newBuilder()
+                            .setMessageId(heartbeat.getMessageId())
+                            .setNodeId(heartbeat.getNodeId())
+                            .build();
 
+                    logger.atInfo()
+                            .log("Heartbeat created for Node %s", heartbeat.getNodeId());
 
-        responseObserver.onNext(ack);
-        responseObserver.onCompleted();
+                    responseObserver.onNext(ack);
+                    responseObserver.onCompleted();
+                }, error -> {
+                    error.printStackTrace();
+                    logger.atInfo().log("Failed to insert Heartbeat", error);
+                    responseObserver.onError(Status.fromThrowable(error).asException());
+                });
     }
 }
