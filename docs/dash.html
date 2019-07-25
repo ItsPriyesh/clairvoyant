@@ -29,13 +29,18 @@
 
     <div class="container">
       <div class="row" style="padding-bottom: 24px; padding-top: 32px">
-        <div class="col-md-12">
+        <div class="col-md-8">
           <div class="card">
             <p class="subheading">Mesh Network</p>
             <div id="network-container"></div>
-            <div id="datapoint-notif">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card" style="height: 265px">
+            <p class="subheading">Recent Activity</p>
+            <div id="datapoint-notif" class="animate-idle">
               <p id="notif-node" class="roboto-bold"></p>
-              <p id="notif-class" class="roboto-med"></p>
+              <p id="notif-class" class="roboto-med">No recent events</p>
               <p id="notif-time-ago" class="roboto-reg"></p>
             </div>
           </div>
