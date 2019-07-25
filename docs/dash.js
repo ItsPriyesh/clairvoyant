@@ -1,4 +1,5 @@
 let API_BASE = '3.93.231.152:8081';
+// let API_BASE = 'localhost:8081';
 let HTTP_BASE = 'http://' + API_BASE;
 let SOCKET_BASE = 'ws://' + API_BASE;
 
@@ -38,18 +39,27 @@ $(document).ready(function() {
     dps.push(dp);
     console.log(dps);
     appendHistory(dp);
+    animateDataPointReceived(dp);
     bindEventBreakdown(dps);
+  };
+});
 
-    let notif = $("#datapoint-notif");
-    let html = document.getElementById("datapoint-notif");
-    if (window.getComputedStyle(html).visibility === "hidden") {
-      notif.css('visibility', 'visible');
-    }
+animateDataPointReceived = function(dp) {
     $("#notif-node").text("Node " + dp["node_id"]);
     $("#notif-class").text(dp["classification"]);
     $("#notif-time-ago").text(dp["created_at"]);
-  };
-});
+
+    let notif = $("#datapoint-notif");
+    notif.removeClass('animate-idle');
+    notif.addClass('animate-pulse');
+    notif.animate({opacity: .9}, 200);
+
+    setTimeout(() => {  
+      notif.removeClass('animate-pulse');
+      notif.addClass('animate-idle');
+      notif.animate({opacity: .65}, 200);
+    }, 3000);
+}
 
 httpGET = function(endpoint, onSuccess) {
   $.ajax({
