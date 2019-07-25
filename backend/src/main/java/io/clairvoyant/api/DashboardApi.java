@@ -7,6 +7,7 @@ import io.clairvoyant.db.DataPointStore;
 import io.clairvoyant.db.NodeStore;
 import io.clairvoyant.db.UserStore;
 import io.clairvoyant.model.DataPoint;
+import io.clairvoyant.model.Node;
 import spark.Request;
 import spark.Response;
 
@@ -41,7 +42,7 @@ public class DashboardApi extends ApiBase {
         if (err.isPresent()) return toJson(err.get());
 
         int userId = Integer.parseInt(req.queryParams("user_id"));
-        List<String> data = nodeStore.getNodes(userId).blockingGet();
-        return toJson(data, new TypeToken<List<String>>() {}.getType());
+        List<Node> data = nodeStore.getNodes(userId).blockingGet();
+        return toJson(data, new TypeToken<List<Node>>() {}.getType());
     }
 }

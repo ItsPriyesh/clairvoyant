@@ -29,13 +29,27 @@
 
     <div class="container">
       <div class="row" style="padding-bottom: 24px; padding-top: 32px">
-        <div class="col-md-8">
+        <div class="col-md-6">
           <div class="card">
             <p class="subheading">Mesh Network</p>
             <div id="network-container"></div>
           </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
+          <div class="card">
+            <p class="subheading">Node Summary</p>
+            <table id="nodes_table" style="margin-left: 8px">
+              <thead>
+                <tr>
+                  <th class="nodes_table_head">Node</th>
+                  <th class="nodes_table_head">Battery</th>
+                </tr>
+              </thead>
+              <tbody class="nodes_table_body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-md-3">
           <div class="card" style="height: 265px">
             <p class="subheading">Recent Activity</p>
             <div id="datapoint-notif" class="animate-idle">

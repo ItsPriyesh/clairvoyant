@@ -1,5 +1,6 @@
 package io.clairvoyant.db;
 
+import io.clairvoyant.model.Node;
 import io.clairvoyant.proto.Heartbeat;
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -19,11 +20,19 @@ public class NodeStore {
         this.userStore = userStore;
     }
 
-    public Single<List<String>> getNodes(int userId) {
+    public Single<List<String>> getNodeIds(int userId) {
         return database
                 .select("select distinct node_id from Node where user_id = ?")
                 .parameter(userId)
                 .getAs(String.class)
+                .toList();
+    }
+
+    public Single<List<Node>> getNodes(int userId) {
+        return database
+                .select("select Node.* from Node where user_id = ?")
+                .parameter(userId)
+                .autoMap(Node.class)
                 .toList();
     }
 
