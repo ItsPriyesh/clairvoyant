@@ -126,17 +126,19 @@ def construct_packet_from_list(payload):
     elif (payload[0] == "hb"):
         hbpayload = HeartbeatPayload()
         
-        packet.set_type(packet, "HEART_BEAT")
+        packet.set_type( "HEART_BEAT")
         packet.set_node_id( payload[1])
         packet.set_message_id( payload[2])
         packet.set_hop_count( payload[3])
         packet.set_retry_count( payload[4])
         packet.set_payload( hbpayload.from_array(payload[5:]))
 
-    elif (payload[0] == "ACK"):
-        packet.set_type(packet, "ACK")
+    elif (payload[0] == "ack"):
+        packet.set_type( "ACK")
         packet.set_node_id( payload[1])
         packet.set_message_id( payload[2])
+        packet.set_hop_count( payload[3])
+        packet.set_retry_count( payload[4])
         packet.set_payload(AckPayload())
 
     else:
@@ -204,6 +206,8 @@ def construct_lora_ack_string(Packet):
     payload.append("ack")
     payload.append(Packet._node_id)
     payload.append(Packet._message_id)
+    payload.append(Packet._hop_count)
+    payload.append(Packet._retry_count)
 
     string = parse_tx_msg(payload)
 
@@ -254,17 +258,19 @@ def uart_process(packet_tx_q, packet_rx_q):
                 rx_data = rx_data[comm_index[1] + 1: comm_index[-2]]
                 ##process receive messages
                 payload = parse_rx_msg(rx_data)
-
+                packet = False
+                
                 if (payload != False):
                     packet = construct_packet_from_list(payload)
-
+                    #print("valid payload uart")
                 if (packet != False):
+                    #print("valid packet uart")
                     packet_rx_q.put(packet)
                 
                 
             #ack message
             elif (curr_uart != None):
-                print("Ack " + str(rx_data))
+                #print("Ack " + str(rx_data))
                 #check if received msg is first element in ack list for that command
 
                 ack_check = False
@@ -279,7 +285,7 @@ def uart_process(packet_tx_q, packet_rx_q):
                     curr_ack_ts = None
                     curr_uart = None
                     curr_ack_index = 0
-                    print("Ack Received")
+                    #print("Ack Received")
 
             
 ####process tx strings
