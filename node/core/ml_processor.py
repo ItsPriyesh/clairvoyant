@@ -103,7 +103,7 @@ def justin_model(file_path):
     
     else:
         timestamp = round(time.time())
-        prediction = "J: " + ans
+        prediction = "j_" + ans
         # ml_payload = clairvoyant_data.MlPayload(_battery_lvl = 100.0, _timestamp = timestamp, _classification = prediction, _confidence = confidence)
         ml_payload = clairvoyant_data.MlPayload()
         ml_payload._battery_lvl = 100.0
@@ -150,7 +150,7 @@ def ibm_model(file_path, model_wrapper):
         built_packet = "NOISE"
 
     else:
-        ans = "I: " + prediction 
+        ans = "i_" + prediction 
         timestamp = round(time.time())
         # ml_payload = clairvoyant_data.MlPayload(_battery_lvl = 100.0, _timestamp = timestamp, _classification = prediction, _confidence = confidence)
         ml_payload = clairvoyant_data.MlPayload()
