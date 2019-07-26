@@ -10,7 +10,7 @@ let credentials = {
 };
 
 let historyTable = $("#history_table").find('tbody');
-var dps = [];
+var pie;
 
 var API_BASE;
 var SOCKET_BASE;
@@ -27,7 +27,6 @@ $(document).ready(function() {
 
   httpGET('/datapoints', (datapoints) => {
     // console.log('Received datapoints ' + JSON.stringify(datapoints));
-    dps = datapoints;
     bindEventBreakdown(datapoints);
     bindHistory(datapoints);
   });
@@ -39,11 +38,9 @@ $(document).ready(function() {
   }
   webSocket.onmessage = function (msg) {
     var dp = JSON.parse(msg.data);
-    dps.push(dp);
-    console.log(dps);
     prependHistory(dp);
     animateDataPointReceived(dp);
-    bindEventBreakdown(dps);
+    updateChart(pie, dp.classification, dp);
   };
   });
 });
@@ -101,11 +98,9 @@ bindNodes = function(nodes) {
 
 bindNodeSummary = function(nodes) {
   let nodesTable = $("#nodes_table").find('tbody');
-  let historyTable = $("#history_table").find('tbody');
   for(var i = 0; i < nodes.length; i++) {
     let n = nodes[i];
     let row = `<tr><td>${n.id}</td><td>${n.battery_level}%</td></tr>`;
-    // console.log(n.battery_level);
     nodesTable.append(row);
   }
 }
@@ -130,9 +125,7 @@ prependHistory = function(d) {
 }
 
 bindEventBreakdown = function(datapoints) {
-  // console.log("bindEventBreakdown " +datapoints );
   let eventTypes = countByType(datapoints);
-  // console.log(eventTypes);
   var config = {
     type: 'pie',
     data: {
@@ -154,7 +147,17 @@ bindEventBreakdown = function(datapoints) {
   var ctx = document.getElementById('event-pie').getContext('2d');
   ctx.width = 1;
   ctx.height = 1;
-  let pie = new Chart(ctx, config);
+  pie = new Chart(ctx, config);
+}
+
+updateChart = function(chart, label, data) {
+  for(var i = 0; i < chart.data.datasets[0].data.length; i++) {
+    if(label === chart.data.labels[i]) {
+      chart.data.datasets[0].data[i]++;
+    }
+  }
+  
+  chart.update();
 }
 
 countByType = function(datapoints) {
