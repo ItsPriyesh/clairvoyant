@@ -3,7 +3,6 @@ package io.clairvoyant.gateway;
 import com.google.common.flogger.FluentLogger;
 import io.clairvoyant.db.DataPointStore;
 import io.clairvoyant.db.NodeStore;
-import io.clairvoyant.model.Node;
 import io.clairvoyant.proto.Ack;
 import io.clairvoyant.proto.ClairvoyantServiceGrpc;
 import io.clairvoyant.proto.DataPoint;
@@ -32,31 +31,23 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
     @Override
     public void createDataPoint(DataPoint dataPoint, StreamObserver<Ack> response) {
         logger.atInfo().log(String.format("Receiving datapoint %s", dataPoint.toString()));
-        Ack ack = Ack.newBuilder()
-                .setMessageId(dataPoint.getMessageId())
-                .setNodeId(dataPoint.getNodeId())
-                .build();
-        logger.atInfo().log(ack.toString());
-
-        response.onNext(ack);
-        response.onCompleted();
-//        dataPointStore
-//                .insert(dataPoint)
-//                .doOnComplete(() -> dataPointPublisher.publish(dataPoint))
-//                .subscribe(() -> {
-//                    Ack ack = Ack.newBuilder()
-//                            .setMessageId(dataPoint.getMessageId())
-//                            .setNodeId(dataPoint.getNodeId())
-//                            .build();
-//                    logger.atInfo()
-//                        .log("DataPoint %s created", dataPoint.getMessageId());
-//                    response.onNext(ack);
-//                    response.onCompleted();
-//                }, error -> {
-//                    error.printStackTrace();
-//                    logger.atInfo().log("Failed to insert DataPoint", error);
-//                    response.onError(error);
-//                });
+        dataPointStore
+                .insert(dataPoint)
+                .doOnComplete(() -> dataPointPublisher.publish(dataPoint))
+                .subscribe(() -> {
+                    Ack ack = Ack.newBuilder()
+                            .setMessageId(dataPoint.getMessageId())
+                            .setNodeId(dataPoint.getNodeId())
+                            .build();
+                    logger.atInfo()
+                        .log("DataPoint %s created", dataPoint.getMessageId());
+                    response.onNext(ack);
+                    response.onCompleted();
+                }, error -> {
+                    error.printStackTrace();
+                    logger.atInfo().log("Failed to insert DataPoint", error);
+                    response.onError(error);
+                });
     }
 
     @Override
