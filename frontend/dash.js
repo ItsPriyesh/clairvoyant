@@ -53,12 +53,12 @@ animateDataPointReceived = function(dp) {
     let notif = $("#datapoint-notif");
     notif.removeClass('animate-idle');
     notif.addClass('animate-pulse');
-    notif.animate({opacity: .9}, 200);
+    notif.animate({opacity: 1}, 200);
 
     setTimeout(() => {
       notif.removeClass('animate-pulse');
       notif.addClass('animate-idle');
-      notif.animate({opacity: .65}, 200);
+      notif.animate({opacity: .75}, 200);
     }, 3000);
 }
 
@@ -139,7 +139,8 @@ bindEventBreakdown = function(datapoints) {
     options: {
       responsive: false,
       legend: {
-        position: "right"
+        position: "right",
+	labels: { fontColor: "#fff" }
       }
     }
   };
@@ -156,7 +157,7 @@ updateChart = function(chart, label, data) {
       chart.data.datasets[0].data[i]++;
     }
   }
-  
+
   chart.update();
 }
 
@@ -184,3 +185,4 @@ countByType = function(datapoints) {
         // show error
     });
 }
+
