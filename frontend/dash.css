@@ -76,18 +76,21 @@ body {
 	font-family: 'Roboto', sans-serif;
 	font-weight: 300;
 	font-size: 14px;
+  color: #000;
 }
 
 .roboto-med {
 	font-family: 'Roboto', sans-serif;
 	font-weight: 400;
 	font-size: 14px;
+  color: #000;
 }
 
 .roboto-bold {
 	font-family: 'Roboto', sans-serif;
 	font-weight: 500;
 	font-size: 14px;
+  color: #000;
 }
 #network-container {
     height: 180px;
@@ -96,11 +99,11 @@ body {
 #datapoint-notif {
 	padding-top: 8px;
 	padding-top: 8px;
-	padding-left: 12px;
+	padding-left: 32px;
 	padding-right: 12px;
 	height: 75px;
 	width: 180px;
-  	border-radius: 12px;
+  	border-radius: 48px;
   	background: rgba(255,255,255,.6);
   	box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.1);
   	margin-top: 30px;
