@@ -32,13 +32,13 @@ $(document).ready(function() {
   });
 
   let webSocket = new WebSocket(SOCKET_BASE + '/listenDataPoint');
+  // let webSocket = new WebSocket('ws://localhost:8081' + '/listenDataPoint');
   webSocket.onopen = function () {
     webSocket.send(JSON.stringify(credentials));
   }
   webSocket.onmessage = function (msg) {
     var dp = JSON.parse(msg.data);
-    console.log(dp);
-    appendHistory(dp);
+    prependHistory(dp);
     animateDataPointReceived(dp);
     updateChart(pie, dp.classification, dp);
   };
@@ -117,6 +117,13 @@ appendHistory = function(d) {
   historyTable.append(row);
 }
 
+prependHistory = function(d) {
+  let histTable = document.getElementById("history_table");
+  var row = histTable.insertRow(1);
+  row.innerHTML = `<tr><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence * 100}%</td><td>${d.created_at}</td></tr>`;
+
+}
+
 bindEventBreakdown = function(datapoints) {
   let eventTypes = countByType(datapoints);
   var config = {
@@ -168,6 +175,7 @@ countByType = function(datapoints) {
  httpGET = function(endpoint, onSuccess) {
     $.ajax({
       url: API_BASE + endpoint,
+      // url: 'http://localhost:8081' + endpoint,
       type: 'GET',
       'data' : credentials
     }).done(function(data) {
