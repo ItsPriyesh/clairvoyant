@@ -52,8 +52,7 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
                             .setNodeId(dataPoint.getNodeId())
                             .build();
 
-                    logger.atInfo()
-                        .log("DataPoint %s created", dataPoint.getMessageId());
+                    logger.atInfo().log("DataPoint %s created", dataPoint.getMessageId());
 
                     response.onNext(ack);
                     response.onCompleted();

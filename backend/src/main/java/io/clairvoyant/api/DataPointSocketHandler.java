@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import io.clairvoyant.api.model.Credentials;
 import io.clairvoyant.db.UserStore;
 import io.clairvoyant.gateway.DataPointPublisher;
+import io.clairvoyant.model.DataPoint;
 import io.clairvoyant.model.auto.DataPointAuto;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -81,9 +82,11 @@ public class DataPointSocketHandler {
                         .setClassification(proto.getClassification())
                         .setConfidence(proto.getConfidence())
                         .setCreatedAt(new Timestamp(proto.getTimestamp()))
+                        .build()
                 )
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(data -> session.getRemote().sendString(gson.toJson(data)), e -> e.printStackTrace());
+                .subscribe(data -> session.getRemote().sendString(gson.toJson(data, DataPoint.class)),
+                        Throwable::printStackTrace);
 
         clients.put(session, disposable);
     }
