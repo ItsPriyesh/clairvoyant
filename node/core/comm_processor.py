@@ -196,8 +196,7 @@ def init(input_buff, output_buff):
         # Data packets that are ready to be sent.
         #TODO(Sathoshi): implement cache for TTL
         if data.get_type() == "ACK":
-            if (not clairvoyant.FORCE_GATEWAY):
-                uart_tx_buff.put(data)
+            uart_tx_buff.put(data)
         elif data.get_type() == "ML_CLASS":
             try:
                 #TODO(Sathoshi): Handle server ack
