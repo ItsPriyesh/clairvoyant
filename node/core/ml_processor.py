@@ -33,6 +33,7 @@ CSV_PATH = os.path.join('ml','assets','final_labeled_df.csv')
 NUM_ROWS = 40
 NUM_COLUMNS = 174
 NUM_CHANNELS = 1
+# CONFIDENCE_LEVEL = 0.5
 
 JUSTIN_DF = pd.read_csv(CSV_PATH)
 y = np.array(JUSTIN_DF.class_label.tolist())
@@ -97,12 +98,12 @@ def justin_model(file_path):
 
     print("\r\nJustin prediction: {}, Justin confidence: {}\r\n".format(ans, confidence))
     
-    if str(ans) == 'noise':
+    if str(ans) == 'noise': 
         built_packet = "NOISE"
     
     else:
         timestamp = round(time.time())
-        prediction = "J " + ans
+        prediction = "j_" + ans
         # ml_payload = clairvoyant_data.MlPayload(_battery_lvl = 100.0, _timestamp = timestamp, _classification = prediction, _confidence = confidence)
         ml_payload = clairvoyant_data.MlPayload()
         ml_payload._battery_lvl = 100.0
@@ -119,12 +120,29 @@ def ibm_model(file_path, model_wrapper):
     IBM_DF = model_wrapper.indices
     LABEL_MAPPING = IBM_DF[['display_name', 'class']].set_index('display_name').T.to_dict('dict')
     ibm_predictions = model_wrapper._predict(file_path, 0)
+    glob_df = pd.DataFrame(columns=['sub_label', 'confidence', 'label'])
 
+    for el in ibm_predictions:
+        sub_label = el[1]
+        num = el[2]
+        new_label = LABEL_MAPPING.get(sub_label)['class']
+        temp_df = pd.DataFrame([[sub_label, num, new_label]], columns=['sub_label', 'confidence', 'label'])
+        glob_df = glob_df.append(temp_df)
+
+    total_confidence = glob_df['confidence'].sum()
     sub_label = ibm_predictions[0][1]
-    prediction = "I " + LABEL_MAPPING.get(sub_label)['class']
-    confidence = ibm_predictions[0][2]
+    prediction = LABEL_MAPPING.get(sub_label)['class']
 
-    print("\r\nIBM prediction: {}, IBM confidence: {}\r\n".format(prediction, confidence))
+    pred_df = glob_df.loc[glob_df['label'] == str(prediction)]
+    prediction_sum = pred_df['confidence'].sum()
+    normalized_ratio = prediction_sum / total_confidence
+
+    # print('pred confidence: ', prediction_sum)
+    # print("total confidence: ", total_confidence)
+    # print("ratio: ", ratio)
+    # confidence = ibm_predictions[0][2]
+
+    print("\r\nIBM prediction: {}, IBM confidence: {}\r\n".format(prediction, normalized_ratio))
 
     built_packet = ''
         
@@ -132,12 +150,13 @@ def ibm_model(file_path, model_wrapper):
         built_packet = "NOISE"
 
     else:
+        ans = "i_" + prediction 
         timestamp = round(time.time())
         # ml_payload = clairvoyant_data.MlPayload(_battery_lvl = 100.0, _timestamp = timestamp, _classification = prediction, _confidence = confidence)
         ml_payload = clairvoyant_data.MlPayload()
         ml_payload._battery_lvl = 100.0
         ml_payload._timestamp = timestamp
-        ml_payload._classification = prediction
+        ml_payload._classification = ans
         ml_payload._confidence = confidence
         ml_packet = PacketBuilder().set_type("ML_CLASS").set_node_id(clairvoyant.CURRENT_NODE).set_message_id().set_payload(ml_payload).set_ttl().set_retry_count().set_hop_count()
         built_packet = ml_packet.build()
