@@ -1,7 +1,7 @@
 use clairvoyant;
 
 SELECT @testUser := user_id FROM User 
-WHERE email = 'test@test.com';
+WHERE email = 'mnassar@uwaterloo.ca';
 
 -- create nodes
 INSERT INTO Node(node_id,last_heartbeat, user_id, battery_level)

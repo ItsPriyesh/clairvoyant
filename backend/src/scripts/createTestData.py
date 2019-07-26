@@ -8,10 +8,10 @@ pw = 'password'
 # hash pw in md5 because fe hashes pw in md5 in request
 initialHashPw = hashlib.md5(pw.encode()).hexdigest()
 
-data = {'firstName':'Test',
-		'lastName':'User',
-		'email':'test@test.com',
-		'password':initialHashPw}
+data = {'firstName':'Mohammed',
+		'lastName': 'Nassar',
+		'email': 'mnassar@uwaterloo.ca',
+		'password': initialHashPw}
 
 try:
 	response = requests.post(url = baseUrl+userEndpoint, data = data)

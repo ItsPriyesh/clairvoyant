@@ -223,7 +223,7 @@ def uart_process(packet_tx_q, packet_rx_q):
     uart_q = Queue()
     
     #initialize uart
-    ser = serial.Serial('com5', baudrate=115200,
+    ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate=115200,
                         parity=serial.PARITY_NONE,
                         stopbits=serial.STOPBITS_ONE,
                         bytesize=serial.EIGHTBITS

@@ -29,7 +29,7 @@ public interface DataPoint {
         json.addProperty("id", dp.dataPointId());
         json.addProperty("node_id", dp.nodeId());
         json.addProperty("classification", dp.classification());
-        json.addProperty("confidence", dp.confidence());
+        json.addProperty("confidence", String.format("%.2f", dp.confidence() * 100));
         json.addProperty("created_at", DateFormat.toReadableDate(dp.createdAt()));
         return json;
     };

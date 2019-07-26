@@ -113,14 +113,14 @@ bindHistory = function(datapoints) {
 }
 
 appendHistory = function(d) {
-  let row = `<tr><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence * 100}%</td><td>${d.created_at}</td></tr>`;
+  let row = `<tr><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
   historyTable.append(row);
 }
 
 prependHistory = function(d) {
   let histTable = document.getElementById("history_table");
   var row = histTable.insertRow(1);
-  row.innerHTML = `<tr><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence * 100}%</td><td>${d.created_at}</td></tr>`;
+  row.innerHTML = `<tr><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
 
 }
 
