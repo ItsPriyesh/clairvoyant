@@ -81,7 +81,7 @@ public class DataPointSocketHandler {
                         .setNodeId(proto.getNodeId())
                         .setClassification(proto.getClassification())
                         .setConfidence(proto.getConfidence())
-                        .setCreatedAt(new Timestamp(proto.getTimestamp()))
+                        .setCreatedAt(new Timestamp(proto.getTimestamp() * 1000L))
                         .build()
                 )
                 .subscribeOn(Schedulers.newThread())
