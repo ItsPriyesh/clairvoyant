@@ -157,7 +157,7 @@ def ibm_model(file_path, model_wrapper):
         ml_payload._battery_lvl = 100.0
         ml_payload._timestamp = timestamp
         ml_payload._classification = ans
-        ml_payload._confidence = confidence
+        ml_payload._confidence = normalized_ratio
         ml_packet = PacketBuilder().set_type("ML_CLASS").set_node_id(clairvoyant.CURRENT_NODE).set_message_id().set_payload(ml_payload).set_ttl().set_retry_count().set_hop_count()
         built_packet = ml_packet.build()
 
