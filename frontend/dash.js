@@ -131,7 +131,7 @@ bindEventBreakdown = function(datapoints) {
     data: {
       datasets: [{
         data: Object.values(eventTypes),
-        backgroundColor: Object.keys(eventTypes).map(t => pieColors[t]),
+        backgroundColor: ["#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF", "#B10DC9", "#FFDC00", "#001f3f", "#39CCCC", "#01FF70", "#85144b", "#F012BE"],
         borderWidth: 0
       }],
       labels: Object.keys(eventTypes)
