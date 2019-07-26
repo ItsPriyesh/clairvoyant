@@ -20,19 +20,20 @@ $(document).ready(function() {
     API_BASE = config.api_url;
     SOCKET_BASE = config.socket_url;
   httpGET('/nodes', (nodes) => {
-    console.log('Received nodes ' + JSON.stringify(nodes));
+    // console.log('Received nodes ' + JSON.stringify(nodes));
     bindNodes(nodes);
     bindNodeSummary(nodes);
   });
 
   httpGET('/datapoints', (datapoints) => {
-    console.log('Received datapoints ' + JSON.stringify(datapoints));
+    // console.log('Received datapoints ' + JSON.stringify(datapoints));
     dps = datapoints;
     bindEventBreakdown(datapoints);
     bindHistory(datapoints);
   });
 
   let webSocket = new WebSocket(SOCKET_BASE + '/listenDataPoint');
+  // let webSocket = new WebSocket('ws://localhost:8081' + '/listenDataPoint');
   webSocket.onopen = function () {
     webSocket.send(JSON.stringify(credentials));
   }
@@ -40,7 +41,7 @@ $(document).ready(function() {
     var dp = JSON.parse(msg.data);
     dps.push(dp);
     console.log(dps);
-    appendHistory(dp);
+    prependHistory(dp);
     animateDataPointReceived(dp);
     bindEventBreakdown(dps);
   };
@@ -104,7 +105,7 @@ bindNodeSummary = function(nodes) {
   for(var i = 0; i < nodes.length; i++) {
     let n = nodes[i];
     let row = `<tr><td>${n.id}</td><td>${n.battery_level}%</td></tr>`;
-    console.log(n.battery_level);
+    // console.log(n.battery_level);
     nodesTable.append(row);
   }
 }
@@ -121,10 +122,17 @@ appendHistory = function(d) {
   historyTable.append(row);
 }
 
+prependHistory = function(d) {
+  let histTable = document.getElementById("history_table");
+  var row = histTable.insertRow(1);
+  row.innerHTML = `<tr><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence * 100}%</td><td>${d.created_at}</td></tr>`;
+
+}
+
 bindEventBreakdown = function(datapoints) {
-  console.log("bindEventBreakdown " +datapoints );
+  // console.log("bindEventBreakdown " +datapoints );
   let eventTypes = countByType(datapoints);
-  console.log(eventTypes);
+  // console.log(eventTypes);
   var config = {
     type: 'pie',
     data: {
@@ -164,6 +172,7 @@ countByType = function(datapoints) {
  httpGET = function(endpoint, onSuccess) {
     $.ajax({
       url: API_BASE + endpoint,
+      // url: 'http://localhost:8081' + endpoint,
       type: 'GET',
       'data' : credentials
     }).done(function(data) {
