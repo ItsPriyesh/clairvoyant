@@ -66,9 +66,9 @@ def init(input_buff, output_buff):
             payload = MlPayload()
             payload._battery_lvl = 100.0
             payload._timestamp = round(time.time())
-            payload._classification = "BOMB"
-            payload._confidence = 100.0
-            builder = PacketBuilder().set_type("ML_CLASS").set_node_id(clairvoyant.CURRENT_NODE).set_message_id().set_payload(payload).set_ttl().set_retry_count(10).set_hop_count(10)
+            payload._classification = random.choice(["VEHICLE","GUNSHOT","EXPLOSION"])
+            payload._confidence = random.uniform(0, 1) 
+            builder = PacketBuilder().set_type("ML_CLASS").set_node_id(clairvoyant.CURRENT_NODE).set_message_id().set_payload(payload).set_ttl().set_retry_count().set_hop_count()
             packet = builder.build();
             print("\r\nadding ml packet to output buff {}\r\n".format(packet));
 
