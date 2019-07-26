@@ -143,7 +143,7 @@ class ModelWrapper(MAXModelWrapper):
         Returns :
             preds : list of (label_id,label,probability) tuples for top 5 class scores.
         """
-        top_preds = raw_preds.argsort()[-5:][::-1]
+        top_preds = raw_preds.argsort()[-526:][::-1]
         preds = [(self.indices.loc[top_preds[i]]['mid'], self.indices.loc[top_preds[i]]['display_name'],
                   raw_preds[top_preds[i]]) for i in range(len(top_preds))]
         return preds
