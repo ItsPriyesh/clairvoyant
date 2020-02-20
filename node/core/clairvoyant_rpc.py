@@ -109,7 +109,7 @@ class ClairvoyantRPCService:
 
 			return ack_packet.build()
 		except Exception as e:
-			traceback.print_exc()
+			# traceback.print_exc()
 			raise(e)
 
 	"""
@@ -151,7 +151,7 @@ class ClairvoyantRPCService:
 			
 			return ack_packet.build()
 		except Exception as e:
-			traceback.print_exc()
+			# traceback.print_exc()
 			raise(e)
 
 

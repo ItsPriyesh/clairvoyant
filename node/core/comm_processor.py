@@ -203,7 +203,7 @@ def init(input_buff, output_buff):
                 ack_packet = rpc_service.create_data_point(data)
                 input_buff.put(ack_packet)
             except Exception as e:
-                traceback.print_exc
+                # traceback.print_exc
                 if (not clairvoyant.FORCE_GATEWAY):
                     uart_tx_buff.put(data)
         elif data.get_type() == "HEART_BEAT":
@@ -212,7 +212,7 @@ def init(input_buff, output_buff):
                 ack_packet = rpc_service.heart_beat(data)
                 input_buff.put(ack_packet)
             except Exception as e:
-                traceback.print_exc
+                # traceback.print_exc
                 if (not clairvoyant.FORCE_GATEWAY):
                     uart_tx_buff.put(data)
 

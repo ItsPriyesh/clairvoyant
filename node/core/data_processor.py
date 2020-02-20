@@ -8,7 +8,7 @@ def init(audio_q, ml_q):
     print("Initializing Data Processing Process...")
     FRAME_LENGTH = 44100*10 #10 sec
 
-    shift = int(176400) #4 second
+    shift = int(441000) #4 second
     files = []
     frames_1 = []
     frames_2 = []
