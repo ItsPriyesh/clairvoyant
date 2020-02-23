@@ -11,6 +11,7 @@ let credentials = {
 
 let historyTable = $("#history_table").find('tbody');
 var pie;
+var chartGlobal;
 
 var API_BASE;
 var SOCKET_BASE;
@@ -42,7 +43,7 @@ $(document).ready(function() {
     var dp = JSON.parse(msg.data);
     prependHistory(dp);
     animateDataPointReceived(dp);
-    updateChart(pie, dp.classification, dp);
+    updateChart(chartGlobal, dp.classification, dp);
   };
   });
 // });
@@ -115,7 +116,7 @@ bindHistory = function(datapoints) {
 }
 
 appendHistory = function(d) {
-  let row = `<tr><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
+  let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
   historyTable.append(row);
 }
 
@@ -137,7 +138,7 @@ prependHistory = function(d) {
 
 bindEventBreakdown = function(datapoints) {
   let eventTypes = countByType(datapoints);
-  var config = {
+  /*var config = {
     type: 'pie',
     data: {
       datasets: [{
@@ -160,16 +161,47 @@ bindEventBreakdown = function(datapoints) {
   ctx.width = 1;
   ctx.height = 1;
   pie = new Chart(ctx, config);
+
+*/
+  var dps = [];
+  for (var type in eventTypes) {
+    dps.push({ y: eventTypes[type], label: type})
+  }
+  var chart = new CanvasJS.Chart("chartContainer", {
+  animationEnabled: true,
+  backgroundColor: '#27272b',
+  data: [{
+    type: "pie",
+    startAngle: 240,
+    indexLabelFontColor: "#e3e3e3",
+    yValueFormatString: "##0.00\"%\"",
+    indexLabel: "{label} {y}",
+    dataPoints: dps
+  }]
+});
+chart.render();
+chartGlobal = chart;
 }
 
 updateChart = function(chart, label, data) {
-  for(var i = 0; i < chart.data.datasets[0].data.length; i++) {
+  /*for(var i = 0; i < chart.data.datasets[0].data.length; i++) {
     if(label === chart.data.labels[i]) {
       chart.data.datasets[0].data[i]++;
     }
   }
 
-  chart.update();
+  chart.update();*/
+  var added = false;
+  for(var i = 0; i < chart.options.data[0].dataPoints.length; i++) {
+    if (label == chart.options.data[0].dataPoints[i].label) {
+      chart.options.data[0].dataPoints[i].y++;
+      added = true;
+    }
+  }
+  if (!added) {
+    chart.options.data[0].dataPoints.push({y: 1, label: label});
+  }
+  chart.render();
 }
 
 countByType = function(datapoints) {
