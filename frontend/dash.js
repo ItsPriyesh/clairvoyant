@@ -15,8 +15,10 @@ var pie;
 var API_BASE;
 var SOCKET_BASE;
 
+let config = {"api_url": "http://40.114.122.121:8081", "socket_url": "ws://40.114.122.121:8081"};
+
 $(document).ready(function() {
-  $.getJSON("config.json", (config) => {
+  // $.getJSON("config.json", (config) => {
     API_BASE = config.api_url;
     SOCKET_BASE = config.socket_url;
   httpGET('/nodes', (nodes) => {
@@ -43,7 +45,7 @@ $(document).ready(function() {
     updateChart(pie, dp.classification, dp);
   };
   });
-});
+// });
 
 animateDataPointReceived = function(dp) {
     $("#notif-node").text("Node " + dp["node_id"]);

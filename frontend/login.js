@@ -1,5 +1,7 @@
+let config = {"api_url": "http://40.114.122.121:8081", "socket_url": "ws://40.114.122.121:8081"};
+
 $(document).ready(function(){
-  $.getJSON("config.json", function(config) {
+  // $.getJSON("config.json", function(config) {
   $("#submit").click(function() {
     $.ajax({
       url: config.api_url + '/login',
@@ -15,7 +17,7 @@ $(document).ready(function(){
     });
   });
   });
-});
+// });
 
 loadDashboard = function(data) {
   console.log(data);
