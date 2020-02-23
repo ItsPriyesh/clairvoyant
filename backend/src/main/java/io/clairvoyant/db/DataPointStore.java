@@ -48,4 +48,17 @@ public class DataPointStore {
                 .autoMap(DataPoint.class)
                 .toList();
     }
+
+    public Single<List<DataPoint>> getDataPointsForNode(int userId, int nodeId) {
+        return database
+                .select("select distinct DataPoint.* from DataPoint " +
+                        "join Node using (node_id) where user_id = ? and node_id = ? " +
+                        "order by created_at desc")
+                .parameters(
+                        userId,
+                        nodeId
+                )
+                .autoMap(DataPoint.class)
+                .toList();
+    }
 }

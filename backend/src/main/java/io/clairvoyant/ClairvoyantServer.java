@@ -3,6 +3,7 @@ package io.clairvoyant;
 import com.google.common.flogger.FluentLogger;
 import io.clairvoyant.api.DashboardApi;
 import io.clairvoyant.api.LoginApi;
+import io.clairvoyant.api.NodeInfoApi;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import spark.Spark;
@@ -64,5 +65,8 @@ public class ClairvoyantServer {
         DashboardApi dash = component.createDashboardApi();
         Spark.get("/datapoints", dash::getDataPoints);
         Spark.get("/nodes", dash::getNodes);
+
+        NodeInfoApi nodeInfo = component.createNodeInfoApi();
+        Spark.get("/nodeInfo", nodeInfo::getDataPointsForNode);
     }
 }
