@@ -15,7 +15,7 @@ var pie;
 var API_BASE;
 var SOCKET_BASE;
 
-let config = {"api_url": "http://40.114.122.121:8081", "socket_url": "ws://40.114.122.121:8081"};
+let config = {"api_url": "http://localhost:8081", "socket_url": "ws://localhost:8081"};
 
 $(document).ready(function() {
   // $.getJSON("config.json", (config) => {
@@ -122,7 +122,16 @@ appendHistory = function(d) {
 prependHistory = function(d) {
   let histTable = document.getElementById("history_table");
   var row = histTable.insertRow(1);
-  row.innerHTML = `<tr><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  cell1.innerHTML = `Node ${d.node_id}`;
+  cell2.innerHTML = `${d.classification}`;
+  cell3.innerHTML = `${d.confidence}%`;
+  cell4.innerHTML = `${d.created_at}`;
+  row.classList.add('history_table_body');
+  //row.innerHTML = `<tr><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
 
 }
 

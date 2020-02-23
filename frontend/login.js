@@ -1,4 +1,4 @@
-let config = {"api_url": "http://40.114.122.121:8081", "socket_url": "ws://40.114.122.121:8081"};
+let config = {"api_url": "http://localhost:8081", "socket_url": "ws://localhost:8081"};
 
 $(document).ready(function(){
   // $.getJSON("config.json", function(config) {
