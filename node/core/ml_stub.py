@@ -10,57 +10,67 @@ import numpy as np
 import librosa
 import traceback
 
-from ml.core.model import ModelWrapper
 from sklearn.preprocessing import LabelEncoder
 from keras.utils import to_categorical
 from keras.models import load_model
 from clairvoyant_data import PacketBuilder
+from clairvoyant_data import PacketBuilder
+
+MODEL_PATH = os.path.join('ml','assets','weights.best.resampled_cnn6.hdf5')
+CSV_PATH = os.path.join('ml','assets','final_labeled_df.csv')
 
 ## fixed params
 NUM_ROWS = 40
 NUM_COLUMNS = 174
 NUM_CHANNELS = 1
+# CONFIDENCE_LEVEL = 0.5
 
-def ibm_model(file_path, model_wrapper):
-    # model_wrapper = ModelWrapper()
-    IBM_DF = model_wrapper.indices
-    LABEL_MAPPING = IBM_DF[['display_name', 'class']].set_index('display_name').T.to_dict('dict')
-    ibm_predictions = model_wrapper._predict(file_path, 0)
-    glob_df = pd.DataFrame(columns=['sub_label', 'confidence', 'label'])
+JUSTIN_DF = pd.read_csv(CSV_PATH)
+y = np.array(JUSTIN_DF.class_label.tolist())
+le = LabelEncoder()
+yy = to_categorical(le.fit_transform(y)) 
+# JUSTIN_MODEL = load_model(MODEL_PATH)
 
-    for el in ibm_predictions:
-        sub_label = el[1]
-        num = el[2]
-        new_label = LABEL_MAPPING.get(sub_label)['class']
-        temp_df = pd.DataFrame([[sub_label, num, new_label]], columns=['sub_label', 'confidence', 'label'])
-        glob_df = glob_df.append(temp_df)
+def justin_model(file_path):
+    prediction_feature = extract_features(file_path)
 
-    total_confidence = glob_df['confidence'].sum()
-    sub_label = ibm_predictions[0][1]
-    prediction = LABEL_MAPPING.get(sub_label)['class']
+    prediction_feature = prediction_feature.reshape(1, NUM_ROWS, NUM_COLUMNS, NUM_CHANNELS)
+    JUSTIN_MODEL = load_model(MODEL_PATH)
+    predicted_vector = JUSTIN_MODEL.predict_classes(prediction_feature)
+    predicted_class = le.inverse_transform(predicted_vector)
+    keys = le.classes_
+    values = le.transform(le.classes_)
+    classes_dict = dict(zip(keys, values))
+    predicted_proba_vector = JUSTIN_MODEL.predict_proba(prediction_feature)
+    listed = predicted_proba_vector[0]
+    count = 0
+    
+    for key, value in classes_dict.items():
+        classes_dict[key] = listed[count]
+        count+=1
 
-    pred_df = glob_df.loc[glob_df['label'] == str(prediction)]
-    prediction_sum = pred_df['confidence'].sum()
-    normalized_ratio = prediction_sum / total_confidence
-
-    print("\r\nIBM prediction: {}, IBM confidence: {}\r\n".format(prediction, normalized_ratio))
-
+    predictions = sorted(classes_dict.items(), key=lambda x: x[1], reverse=True)
+    ans = predictions[0][0]
+    confidence = predictions[0][1]
     built_packet = ''
-        
-    if str(prediction) == 'noise':
-        built_packet = "NOISE"
 
+    print("\r\nJustin prediction: {}, Justin confidence: {}\r\n".format(ans, confidence))
+    
+    if str(ans) == 'noise': 
+        built_packet = "NOISE"
+    
     else:
-        ans = "i_" + prediction 
         timestamp = round(time.time())
+        prediction = "j_" + ans
+        # ml_payload = clairvoyant_data.MlPayload(_battery_lvl = 100.0, _timestamp = timestamp, _classification = prediction, _confidence = confidence)
         ml_payload = clairvoyant_data.MlPayload()
         ml_payload._battery_lvl = 100.0
         ml_payload._timestamp = timestamp
-        ml_payload._classification = ans
-        ml_payload._confidence = normalized_ratio
+        ml_payload._classification = prediction
+        ml_payload._confidence = confidence
         ml_packet = PacketBuilder().set_type("ML_CLASS").set_node_id(clairvoyant.CURRENT_NODE).set_message_id().set_payload(ml_payload).set_ttl().set_retry_count().set_hop_count()
         built_packet = ml_packet.build()
-
+    
     return built_packet
 
 def extract_features(file_name):
@@ -95,8 +105,6 @@ if __name__ == '__main__':
     warnings.filterwarnings("ignore")
     tf.logging.set_verbosity(tf.logging.ERROR)
 
-    model_wrapper = ModelWrapper()
-
     prefix = 0;
 
     while (1):
@@ -107,9 +115,9 @@ if __name__ == '__main__':
 
         file_path = os.path.join('output','processed_audio', processed_audio_file)
 
-        ibm_packet = ibm_model(file_path, model_wrapper)
+        justin_packet = justin_model(file_path)
 
-        print(ibm_packet)
+        print(justin_packet)
 
         prefix+=1
 
