@@ -9,7 +9,7 @@ import json
 from clairvoyant_data import PacketBuilder
 from clairvoyant_data import PacketBuilder
 
-_API_ENDPOINT = "http://localhost:5000/model/predict"
+_API_ENDPOINT = "http://168.62.177.105:5000/model/predict"
 
 def init(input_q, output_q):
     print("Initializing Machine Learning Process...")
