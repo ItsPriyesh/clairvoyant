@@ -31,6 +31,7 @@ def init(input_q, output_q):
             if (ibm_packet != "NOISE"):
                 output_q.put(ibm_packet)
 
+            os.remove(file_path)
             del files[0]
 
 def ibm_model(file_name, file_path):
