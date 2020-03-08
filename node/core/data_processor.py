@@ -22,7 +22,8 @@ def init(audio_q, ml_q):
             files.append(audio_q.get()['file_name'])
 
         if (len(files) > 0):
-            fname = os.path.join('output','raw_audio',files[0])
+            raw_file_path = os.path.join('output','raw_audio',files[0])
+            fname = raw_file_path
             f1 = wave.open(fname,'rb')
             frame_cnt = f1.getnframes()
             #print(frame_cnt)
@@ -56,6 +57,7 @@ def init(audio_q, ml_q):
                 if (sample_index >= frame_cnt):
                     #done with fil                    
                     #add delete file here
+                    os.remove(os.path.join('output','raw_audio',files[0]))
                     del files[0]
                     sample_index -= frame_cnt
                 #print (sample_index)
@@ -73,7 +75,8 @@ def init(audio_q, ml_q):
 
                 #print("aa" + str(len(frames_1)/2))
                 #look at 2nd file
-                fname = os.path.join('output','raw_audio',files[1])
+                raw_file_path = os.path.join('output','raw_audio',files[1])
+                fname = raw_file_path
                 f1 = wave.open(fname,'rb')
                 frame_cnt2 = f1.getnframes()
                 
@@ -104,6 +107,7 @@ def init(audio_q, ml_q):
                 if (sample_index >= frame_cnt):
                     #done with file
                     #add delete file here
+                    os.remove(os.path.join('output','raw_audio',files[0]))
                     del files[0]
                     sample_index -= frame_cnt
 
@@ -118,6 +122,7 @@ def init(audio_q, ml_q):
                 #frames_1 = frames_1[f1.getsampwidth()*sample_index:]
                 f1.close()
                 #print("aa" + str(len(frames_1)/2))
+
 
 """                
 #testing code 
@@ -148,6 +153,9 @@ def init(audio_q, ml_q):
                 #print("processcead" + " frames count: " + str(count))
 
             #print(len(files))
+
+
+
         
 
      
