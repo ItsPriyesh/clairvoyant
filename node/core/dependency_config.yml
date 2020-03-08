@@ -16,9 +16,9 @@ data_proc_1:
     - audio_proc_1
 
 ml_proc_1:
-  module_name: ml_processor
+  module_name: ml_cloud_processor
   input_sources:
-   - data_proc_1
+    - data_proc_1
 
 heart_beat_proc1:
   module_name: heartbeat_processor
