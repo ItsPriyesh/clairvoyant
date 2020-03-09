@@ -6,6 +6,7 @@ package io.clairvoyant.proto;
 
 service ClairvoyantService {
     rpc CreateDataPoint (DataPoint) returns (Ack) {}
+    rpc CreateMotionEvent (MotionEvent) returns (Ack) {}
     rpc Ping (Heartbeat) returns (Ack) {}
 }
 
@@ -31,4 +32,17 @@ message Heartbeat {
 message Ack {
     string node_id = 1;
     string message_id = 2;
+}
+
+message MotionEvent {
+    string node_id = 1;
+    string message_id = 2;
+    int64 timestamp = 3;
+    string motion_type = 4;
+    string orientation = 5;
+    int32 roll = 6;
+    int32 pitch = 7;
+    int32 yaw = 8;
+    int32 retry_count = 9;
+    int32 hop_count = 10;
 }
