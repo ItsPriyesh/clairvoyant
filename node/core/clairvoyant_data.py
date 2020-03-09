@@ -2,7 +2,7 @@ import uuid
 """
 Expected Packet structure
 {
-    type: [HEART_BEAT, ML_CLASS, ACK],
+    type: [HEART_BEAT, ML_CLASS, MOTION_EVENT, ACK],
     node_id: ,
     message_id: 1,
     payload: { /* follow rpc standard */},
@@ -11,7 +11,7 @@ Expected Packet structure
 """
 class Packet:
 
-	VALID_EVENT_TYPES = {"HEART_BEAT", "ML_CLASS"}
+	VALID_EVENT_TYPES = {"HEART_BEAT", "ML_CLASS", "MOTION_EVENT"}
 	VALID_ACK_TYPES = {"ACK"}
 	VALID_TYPES = VALID_ACK_TYPES | VALID_EVENT_TYPES
 
@@ -123,6 +123,7 @@ class PacketBuilder:
 		self._retry_count = None
 		self._hop_count = None
 
+	## Valid packet types are {"HEART_BEAT", "ML_CLASS", "MOTION_EVENT", "ACK"}
 	def set_type(self, t):
 		Packet.type_arg_validate(t)
 		self._type = t
@@ -231,6 +232,64 @@ class MlPayload:
 		self._timestamp = array[1]
 		self._classification = array[2]
 		self._confidence = array[3]
+
+		return self
+
+##message DataPoint {
+##    string node_id = 1;
+##    string message_id = 2;
+##    int64 timestamp = 3;
+##    string motion_type = 4;
+##    string orientation = 5;
+##    int32 roll = 6;
+##    int32 pitch = 7;
+##    int32 yaw = 8;
+##    int32 retry_count = 9;
+##    int32 hop_count = 10;
+##}
+class MotionPayload:
+        
+	def __init__(self):
+		self._battery_lvl = None
+		self._timestamp = None
+		self._motion_type = None
+		self._orientation = None
+		self._roll = None
+		self._pitch = None
+		self._yaw = None
+
+	def __str__(self):
+		return '[battery_level:{}, timestamp:{}, motion_type:{}, orientation:{}, roll:{}, pitch:{}, yaw:{}]'.format(self._battery_lvl, self._timestamp, self._motion_type, self._orientation , self._roll, self._pitch, self._yaw)
+		    
+	def to_array(self):
+		if ((self._battery_lvl == None) or (self._timestamp == None) or (self._motion_type == None) or (self._orientation == None) or (self._roll == None) or (self._pitch == None) or (self._yaw == None)):
+			raise ValueError("Required fields are missing")
+
+		payload = [self._battery_lvl, self._timestamp, self._motion_type, self._orientation , self._roll, self._pitch, self._yaw]
+		return payload
+
+	def to_dict(self):
+		if ((self._battery_lvl == None) or (self._timestamp == None) or (self._motion_type == None) or (self._orientation == None) or (self._roll == None) or (self._pitch == None) or (self._yaw == None)):
+			raise ValueError("Fields are missing")
+
+		data = {"battery_level": self._battery_lvl, "timestamp": self._timestamp, "motion_type": self._motion_type, "orientation": self._orientation, "roll": self._roll, "pitch": self._pitch, "yaw": self._yaw}
+		return data
+
+
+	def from_dict(self):
+		pass
+            
+	def from_array(self,array):
+		if (len(array) != 7):
+			raise ValueError("Incorrect Array length.. Expected fields are missing")
+
+		self._battery_lvl = array[0]
+		self._timestamp = array[1]
+		self._motion_type = array[2]
+		self._orientation = array[3]
+		self._roll = array[4]
+		self._pitch = array[5]
+		self._yaw = array[6]
 
 		return self
                 
