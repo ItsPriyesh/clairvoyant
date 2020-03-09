@@ -32,7 +32,7 @@ The messeages that must be handled can be broken into two main criteria
 
 Expected Packet
 {
-    t: [HEART_BEAT, ML_CLASS, ACK],
+    t: [HEART_BEAT, ML_CLASS, MOTION_EVENT, ACK],
     node_id: 
     message_id: 1,
     payload: { /* follow rpc standard */},
