@@ -4,10 +4,7 @@ import com.google.common.flogger.FluentLogger;
 import io.clairvoyant.db.DataPointStore;
 import io.clairvoyant.db.NodeStore;
 import io.clairvoyant.model.Node;
-import io.clairvoyant.proto.Ack;
-import io.clairvoyant.proto.ClairvoyantServiceGrpc;
-import io.clairvoyant.proto.DataPoint;
-import io.clairvoyant.proto.Heartbeat;
+import io.clairvoyant.proto.*;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import io.reactivex.Completable;
@@ -83,5 +80,10 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
                     logger.atInfo().log("Failed to insert Heartbeat", error);
                     responseObserver.onError(Status.fromThrowable(error).asException());
                 });
+    }
+
+    @Override
+    public void createMotionEvent(MotionEvent request, StreamObserver<Ack> responseObserver) {
+        // Add motion event to db
     }
 }
