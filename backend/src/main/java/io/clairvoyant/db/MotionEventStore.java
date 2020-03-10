@@ -1,6 +1,7 @@
 package io.clairvoyant.db;
 
 import io.clairvoyant.model.DataPoint;
+import io.clairvoyant.model.MotionEvent;
 import io.clairvoyant.model.auto.DataPointAuto;
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -34,7 +35,15 @@ public class MotionEventStore {
                 .complete();
     }
 
-
+    public Single<List<MotionEvent>> getMotionEvents(int userId) {
+        return database
+                .select("select distinct MotionEvent.* from MotionEvent " +
+                        "join Node using (node_id) where user_id = ? " +
+                        "order by created_at desc")
+                .parameter(userId)
+                .autoMap(MotionEvent.class)
+                .toList();
+    }
 
 
 }

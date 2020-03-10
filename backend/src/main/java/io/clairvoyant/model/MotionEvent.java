@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 public interface MotionEvent {
 
     @Column
-    String dataPointId();
+    String motionEventId();
 
     @Column
     String nodeId();
@@ -35,7 +35,7 @@ public interface MotionEvent {
 
     JsonSerializer<MotionEvent> SERIALIZER = (me, type, context) -> {
         JsonObject json = new JsonObject();
-        json.addProperty("id", me.dataPointId());
+        json.addProperty("id", me.motionEventId());
         json.addProperty("node_id", me.nodeId());
         json.addProperty("created_at", DateFormat.toReadableDate(me.createdAt()));
         json.addProperty("motion_type", me.motionType());

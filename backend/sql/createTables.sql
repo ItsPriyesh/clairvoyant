@@ -38,7 +38,7 @@ CREATE TABLE DataPoint(
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE MotionEvent(
-    data_point_id  varchar(255)  not null,
+    motion_event_id  varchar(255)  not null,
     node_id        varchar(255)  not null,
     created_at     datetime      not null,
     motion_type    varchar(255)  not null,
@@ -47,6 +47,5 @@ CREATE TABLE MotionEvent(
     pitch          int           not null,
     yaw            int           not null,
     CONSTRAINT MotionEvent_node_id FOREIGN KEY (node_id) REFERENCES Node(node_id),
-    CONSTRAINT MotionEvent_data_point_id FOREIGN KEY (data_point_id) REFERENCES DataPoint(data_point_id),
-    PRIMARY KEY(data_point_id)
+    PRIMARY KEY(motion_event_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

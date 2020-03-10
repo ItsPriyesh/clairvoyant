@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 public abstract class MotionEventAuto implements MotionEvent {
     @AutoValue.Builder
     public static abstract class Builder {
-        public abstract Builder setDataPointId(String id);
+        public abstract Builder setMotionEventId(String id);
 
         public abstract Builder setNodeId(String id);
 
