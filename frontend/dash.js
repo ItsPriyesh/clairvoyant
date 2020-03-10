@@ -10,6 +10,8 @@ let credentials = {
 };
 
 let historyTable = $("#history_table").find('tbody');
+let motionHistoryTable = $("#motion_history_table").find('tbody');
+
 var pie;
 var chartGlobal;
 
@@ -32,6 +34,11 @@ $(document).ready(function() {
     // console.log('Received datapoints ' + JSON.stringify(datapoints));
     bindEventBreakdown(datapoints);
     bindHistory(datapoints);
+  });
+
+  httpGET('/motionevents', (motionevents) => {
+     console.log('Received motionevents ' + JSON.stringify(motionevents));
+    bindMotionHistory(motionevents);
   });
 
   let webSocket = new WebSocket(SOCKET_BASE + '/listenDataPoint');
@@ -117,6 +124,18 @@ bindHistory = function(datapoints) {
 
 appendHistory = function(d) {
   let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
+  historyTable.append(row);
+}
+
+bindMotionHistory = function(motionevents) {
+  for (var i = 0; i < motionevents.length; i++) {
+    let d = motionevents[i];
+    appendMotionHistory(d);
+  }
+}
+
+appendMotionHistory = function(d) {
+  let row = `<tr class='motion_history_table_body'><td>Node ${d.node_id}</td><td>${d.motion_type}</td><td>${d.orientation}%</td><td>${d.roll}</td><td>${d.pitch}</td><td>${d.yaw}</td></tr>`;
   historyTable.append(row);
 }
 

@@ -64,14 +64,25 @@
       <div class="row">
         <div class="col-md-5">
           <div class="card">
-            <p class="subheading">Event Breakdown</p>
-            <!-- <canvas id="event-pie" style="margin: 10px"></canvas> -->
-            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+            <p class="subheading">Motion Event History</p>
+            <table id="motion_history_table" style="margin-left: 8px">
+              <thead>
+                <tr>
+                  <th class="history_table_head">Source</th>
+                  <th class="history_table_head">Type</th>
+                  <th class="history_table_head">Orientation</th>
+                  <th class="history_table_head">Roll</th>
+                  <th class="history_table_head">Pitch</th>
+                  <th class="history_table_head">Yaw</th>
+                </tr>
+              </thead>
+              <tbody class="history_table_body"></tbody>
+            </table>
           </div>
         </div>
         <div class="col-md-7">
           <div class="card">
-            <p class="subheading">History</p>
+            <p class="subheading">Classification History</p>
             <table id="history_table" style="margin-left: 8px">
               <thead>
                 <tr>
@@ -83,6 +94,15 @@
               </thead>
               <tbody class="history_table_body"></tbody>
             </table>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <p class="subheading">Motion Event History</p>
+            <!-- <canvas id="event-pie" style="margin: 10px"></canvas> -->
+            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
           </div>
         </div>
       </div>
