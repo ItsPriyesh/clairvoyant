@@ -68,5 +68,7 @@ public class ClairvoyantServer {
 
         NodeInfoApi nodeInfo = component.createNodeInfoApi();
         Spark.get("/nodeInfo", nodeInfo::getDataPointsForNode);
+
+        Spark.get("/motionevents", dash::getMotionEvents);
     }
 }

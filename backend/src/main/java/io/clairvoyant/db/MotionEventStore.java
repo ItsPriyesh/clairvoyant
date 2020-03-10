@@ -35,6 +35,14 @@ public class MotionEventStore {
                 .complete();
     }
 
+    public Single<Boolean> contains(io.clairvoyant.proto.MotionEvent event) {
+        return database.select("select motion_event_id from MotionEvent where motion_event_id = ?")
+                .parameter(event.getMessageId())
+                .getAs(String.class)
+                .toList()
+                .map(res -> !res.isEmpty());
+    }
+
     public Single<List<MotionEvent>> getMotionEvents(int userId) {
         return database
                 .select("select distinct MotionEvent.* from MotionEvent " +
