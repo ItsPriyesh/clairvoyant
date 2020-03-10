@@ -18,14 +18,16 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
 
     private final DataPointStore dataPointStore;
     private final DataPointPublisher dataPointPublisher;
+    private final MotionEventPublisher motionEventPublisher;
     private final NodeStore nodeStore;
     private final MotionEventStore motionEventStore;
 
     @Inject
     ClairvoyantService(DataPointStore dataPointStore, DataPointPublisher dataPointPublisher,
-                       NodeStore nodeStore, MotionEventStore motionEventStore) {
+                       MotionEventPublisher motionEventPublisher, NodeStore nodeStore, MotionEventStore motionEventStore) {
         this.dataPointStore = dataPointStore;
         this.dataPointPublisher = dataPointPublisher;
+        this.motionEventPublisher = motionEventPublisher;
         this.nodeStore = nodeStore;
         this.motionEventStore = motionEventStore;
     }
@@ -91,8 +93,8 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
                 .flatMapCompletable(exists -> {
                     if (!exists) {
                         return motionEventStore
-                                .insert(request);
-                                //.doOnComplete(() -> dataPointPublisher.publish(dataPoint));
+                                .insert(request)
+                                .doOnComplete(() -> motionEventPublisher.publish(request));
                     } else {
                         // Return an ack if we already have the datapoint
                         return Completable.complete();
