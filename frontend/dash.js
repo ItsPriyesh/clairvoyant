@@ -146,7 +146,7 @@ bindMotionHistory = function(motionevents) {
 
 appendMotionHistory = function(d) {
   let row = `<tr class='motion_history_table_body'><td>Node ${d.node_id}</td><td>${d.motion_type}</td><td>${d.orientation}%</td><td>${d.roll}</td><td>${d.pitch}</td><td>${d.yaw}</td></tr>`;
-  historyTable.append(row);
+  motionHistoryTable.append(row);
 }
 
 prependHistory = function(d) {
