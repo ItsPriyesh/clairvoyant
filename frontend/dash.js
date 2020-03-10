@@ -52,7 +52,17 @@ $(document).ready(function() {
     animateDataPointReceived(dp);
     updateChart(chartGlobal, dp.classification, dp);
   };
-  });
+
+  let motionEventSocket = new WebSocket(SOCKET_BASE + '/listenMotionEvent');
+  motionEventSocket.onopen = function () {
+    motionEventSocket.send(JSON.stringify(credentials));
+  }
+  motionEventSocket.onmessage = function (msg) {
+    var event = JSON.parse(msg.data);
+    prependMotionHistory(event);
+  };
+});
+  
 // });
 
 animateDataPointReceived = function(dp) {
@@ -152,7 +162,26 @@ prependHistory = function(d) {
   cell4.innerHTML = `${d.created_at}`;
   row.classList.add('history_table_body');
   //row.innerHTML = `<tr><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
+}
 
+prependMotionHistory = function(d) {
+  let histTable = document.getElementById("motion_history_table");
+  var row = histTable.insertRow(1);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  var cell4 = row.insertCell(3);
+  var cell5 = row.insertCell(4);
+  var cell6 = row.insertCell(5);
+
+  cell1.innerHTML = `Node ${d.node_id}`;
+  cell2.innerHTML = `${d.motion_type}`;
+  cell3.innerHTML = `${d.orientation}%`;
+  cell4.innerHTML = `${d.roll}`;
+  cell5.innerHTML = `${d.pitch}`;
+  cell6.innerHTML = `${d.yaw}`;
+
+  row.classList.add('history_table_body');
 }
 
 bindEventBreakdown = function(datapoints) {
