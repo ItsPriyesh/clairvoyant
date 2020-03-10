@@ -51,6 +51,7 @@ public class ClairvoyantServer {
         logger.atInfo().log("Listening for frontend on port " + port);
 
         Spark.webSocket("/listenDataPoint", component.createSocketHandler());
+        Spark.webSocket("/listenMotionEvent", component.createMotionEventSocketHandler());
 
         Spark.before((req, res) -> {
             res.header("Access-Control-Allow-Origin", "*");
