@@ -1,6 +1,7 @@
 use clairvoyant;
 
 DROP TABLE IF EXISTS `UserDataPoint`;
+DROP TABLE IF EXISTS `MotionEvent`;
 DROP TABLE IF EXISTS `DataPoint`;
 DROP TABLE IF EXISTS `Node`;
 DROP TABLE IF EXISTS `User`;
@@ -34,4 +35,17 @@ CREATE TABLE DataPoint(
     CHECK(confidence >= 0 AND confidence <= 1),
     CONSTRAINT DataPoint_node_id FOREIGN KEY (node_id) REFERENCES Node(node_id),
     PRIMARY KEY(data_point_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE MotionEvent(
+    motion_event_id  varchar(255)  not null,
+    node_id        varchar(255)  not null,
+    created_at     datetime      not null,
+    motion_type    varchar(255)  not null,
+    orientation    varchar(255)  not null,
+    roll           int           not null,
+    pitch          int           not null,
+    yaw            int           not null,
+    CONSTRAINT MotionEvent_node_id FOREIGN KEY (node_id) REFERENCES Node(node_id),
+    PRIMARY KEY(motion_event_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
