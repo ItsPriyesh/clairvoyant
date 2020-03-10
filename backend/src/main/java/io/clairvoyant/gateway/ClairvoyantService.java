@@ -2,8 +2,8 @@ package io.clairvoyant.gateway;
 
 import com.google.common.flogger.FluentLogger;
 import io.clairvoyant.db.DataPointStore;
+import io.clairvoyant.db.MotionEventStore;
 import io.clairvoyant.db.NodeStore;
-import io.clairvoyant.model.Node;
 import io.clairvoyant.proto.*;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
@@ -19,13 +19,15 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
     private final DataPointStore dataPointStore;
     private final DataPointPublisher dataPointPublisher;
     private final NodeStore nodeStore;
+    private final MotionEventStore motionEventStore;
 
     @Inject
     ClairvoyantService(DataPointStore dataPointStore, DataPointPublisher dataPointPublisher,
-                       NodeStore nodeStore) {
+                       NodeStore nodeStore, MotionEventStore motionEventStore) {
         this.dataPointStore = dataPointStore;
         this.dataPointPublisher = dataPointPublisher;
         this.nodeStore = nodeStore;
+        this.motionEventStore = motionEventStore;
     }
 
     @Override
@@ -83,7 +85,34 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
     }
 
     @Override
-    public void createMotionEvent(MotionEvent request, StreamObserver<Ack> responseObserver) {
-        // Add motion event to db
+    public void createMotionEvent(MotionEvent request, StreamObserver<Ack> response) {
+        motionEventStore
+                .contains(request)
+                .flatMapCompletable(exists -> {
+                    if (!exists) {
+                        return motionEventStore
+                                .insert(request);
+                                //.doOnComplete(() -> dataPointPublisher.publish(dataPoint));
+                    } else {
+                        // Return an ack if we already have the datapoint
+                        return Completable.complete();
+                    }
+                })
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(() -> {
+                    Ack ack = Ack.newBuilder()
+                            .setMessageId(request.getMessageId())
+                            .setNodeId(request.getNodeId())
+                            .build();
+
+                    logger.atInfo().log("MotionEvent %s created", request.getMessageId());
+
+                    response.onNext(ack);
+                    response.onCompleted();
+                }, error -> {
+                    error.printStackTrace();
+                    logger.atInfo().log("Failed to insert MotionEvent", error);
+                    response.onError(Status.fromThrowable(error).asException());
+                });
     }
 }
