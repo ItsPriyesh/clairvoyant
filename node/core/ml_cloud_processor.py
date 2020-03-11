@@ -51,6 +51,8 @@ def ibm_model(file_name, file_path):
         
     prediction = parsed_res['prediction']
     normalized_ratio = parsed_res['normalized_ratio']
+    if normalized_ratio < 0.3:
+      return "NOISE"
 
     # If we have classified as noise..
     # Ignore and don't send a packet through the mesh network.
