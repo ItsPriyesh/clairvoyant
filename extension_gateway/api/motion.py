@@ -11,7 +11,7 @@ expected_response = MAX_API.model('Response', {
     'status': fields.String(required=True, description='Response status message')
 })
 
-class HeartBeatAPI(CustomMAXAPI):
+class MotionAPI(CustomMAXAPI):
 
 	@MAX_API.expect(input_parser)
 	@MAX_API.marshal_with(expected_response)
