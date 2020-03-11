@@ -16,3 +16,8 @@ heartbeat = grpc_model.Heartbeat(node_id="1", message_id="nfeihefhefh", timestam
 ack = stub.Ping(heartbeat)
 print(ack)
 
+motionevent = grpc_model.MotionEvent(message_id="eee"+str(time()), node_id="2", 
+	timestamp=round(time()), motion_type="EXTERNAL", orientation="UP", roll=120, pitch=40, yaw=90)
+ack = stub.CreateMotionEvent(motionevent)
+print(ack)
+
