@@ -95,6 +95,7 @@ body {
 .mesh-table-head {
 
   text-align: left;
+  font-style: italic;
 }
 #network-container {
     height: 180px;

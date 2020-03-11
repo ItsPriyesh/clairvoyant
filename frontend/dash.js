@@ -39,6 +39,7 @@ $(document).ready(function() {
   httpGET('/motionevents', (motionevents) => {
      console.log('Received motionevents ' + JSON.stringify(motionevents));
     bindMotionHistory(motionevents);
+    updateNodeInMesh(motionevents[0]);
   });
 
   let webSocket = new WebSocket(SOCKET_BASE + '/listenDataPoint');
@@ -61,6 +62,7 @@ $(document).ready(function() {
   motionEventSocket.onmessage = function (msg) {
     var event = JSON.parse(msg.data);
     prependMotionHistory(event);
+    updateNodeInMesh(event);
   };
 });
   
@@ -162,7 +164,7 @@ bindMotionHistory = function(motionevents) {
 }
 
 appendMotionHistory = function(d) {
-  let row = `<tr class='motion_history_table_body'><td>Node ${d.node_id}</td><td>${d.motion_type}</td><td>${d.orientation}%</td><td>${d.roll}</td><td>${d.pitch}</td><td>${d.yaw}</td></tr>`;
+  let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${d.motion_type}</td><td>${d.orientation}</td><td>${d.roll}</td><td>${d.pitch}</td><td>${d.yaw}</td></tr>`;
   motionHistoryTable.append(row);
 }
 
@@ -193,12 +195,19 @@ prependMotionHistory = function(d) {
 
   cell1.innerHTML = `Node ${d.node_id}`;
   cell2.innerHTML = `${d.motion_type}`;
-  cell3.innerHTML = `${d.orientation}%`;
+  cell3.innerHTML = `${d.orientation}`;
   cell4.innerHTML = `${d.roll}`;
   cell5.innerHTML = `${d.pitch}`;
   cell6.innerHTML = `${d.yaw}`;
 
   row.classList.add('history_table_body');
+}
+
+updateNodeInMesh = function(dp) {
+    $("#node-" + dp["node_id"] + "-orientation").text(dp.orientation);
+    $("#node-" + dp["node_id"] + "-roll").text(dp.roll);
+    $("#node-" + dp["node_id"] + "-pitch").text(dp.pitch);
+    $("#node-" + dp["node_id"] + "-yaw").text(dp.yaw);
 }
 
 bindEventBreakdown = function(datapoints) {
