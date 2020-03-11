@@ -7,6 +7,8 @@ from maxfw.core import MAX_API, PredictAPI
 import pandas as pd
 import traceback
 
+from .gateway import RXTXGateway
+
 # set up parser for audio input data
 input_parser = MAX_API.parser()
 input_parser.add_argument('audio', type=FileStorage, location='files', required=True,
@@ -30,6 +32,10 @@ class PredictAPI(PredictAPI):
     @MAX_API.marshal_with(predict_response)
     def post(self):
         """Predict audio classes from input data"""
+
+        x = RXTXGateway()
+        x.get_input_queue().put("predict")
+
         result = {'status': 'error'}
 
         args = input_parser.parse_args()
