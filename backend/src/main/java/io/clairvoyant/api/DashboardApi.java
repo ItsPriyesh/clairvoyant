@@ -56,6 +56,6 @@ public class DashboardApi extends ApiBase {
 
         int userId = Integer.parseInt(req.queryParams("user_id"));
         List<MotionEvent> data = motionEventStore.getMotionEvents(userId).blockingGet();
-        return toJson(data, new TypeToken<List<Node>>() {}.getType());
+        return toJson(data, new TypeToken<List<MotionEvent>>() {}.getType());
     }
 }

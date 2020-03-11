@@ -18,3 +18,8 @@ INSERT INTO DataPoint (data_point_id, node_id, created_at, classification, confi
 VALUES ('c56be2cd0f0244d7aa3a9117ca29579a', @node, '2019-01-01 10:28:01.00', 'EXPLOSION', 0.92),
 	   ('7304b98072304a91afdb7da63cda9ec3', @node, '2019-01-01 9:38:01.00', 'GUNSHOT', 0.45),
 	   ('fc704b40f0904bb7ab7fddacc0a2f860', @node, '2019-01-01 7:38:01.00', 'VEHICLE', 0.72);
+
+INSERT INTO MotionEvent (motion_event_id, node_id, created_at, motion_type, orientation, roll, pitch, yaw)
+VALUES ('c56be2cd0f0244d7aa3a9117ca29579a', @node, '2019-01-01 10:28:01.00', 'fbrei', 'up', 1, 2, 3),
+	   ('7304b98072304a91afdb7da63cda9ec3', @node, '2019-01-01 9:38:01.00', 'fewfw','down', 4, 5, 6),
+	   ('fc704b40f0904bb7ab7fddacc0a2f860', @node, '2019-01-01 7:38:01.00', 'VEHdnjndICLE','left', 180, 181, 182);

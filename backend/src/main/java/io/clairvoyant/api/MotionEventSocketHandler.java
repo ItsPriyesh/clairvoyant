@@ -7,6 +7,7 @@ import io.clairvoyant.db.UserStore;
 import io.clairvoyant.gateway.DataPointPublisher;
 import io.clairvoyant.gateway.MotionEventPublisher;
 import io.clairvoyant.model.DataPoint;
+import io.clairvoyant.model.MotionEvent;
 import io.clairvoyant.model.auto.DataPointAuto;
 import io.clairvoyant.model.auto.MotionEventAuto;
 import io.reactivex.disposables.Disposable;
@@ -84,7 +85,7 @@ public class MotionEventSocketHandler {
                         .build()
                 )
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(data -> session.getRemote().sendString(gson.toJson(data, DataPoint.class)),
+                .subscribe(data -> session.getRemote().sendString(gson.toJson(data, MotionEvent.class)),
                         Throwable::printStackTrace);
 
         clients.put(session, disposable);
