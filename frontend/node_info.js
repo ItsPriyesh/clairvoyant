@@ -100,27 +100,27 @@ populateConfidence = function(datapoints) {
 	for(var i = 0; i < datapoints.length; i++) {
 		if(datapoints[i].classification === 'EXPLOSION'){
 			if(datapoints[i].confidence > hiMed) {
-				vals[0][0]++;
+				vals[0][2]++;
 			} else if(datapoints[i].confidence > medLo) {
 				vals[0][1]++;
 			} else {
-				vals[0][2]++;
+				vals[0][0]++;
 			}
 		} else if (datapoints[i].classification === 'VEHICLE') {
 			if(datapoints[i].confidence > hiMed) {
-				vals[1][0]++;
+				vals[1][2]++;
 			} else if(datapoints[i].confidence > medLo) {
 				vals[1][1]++;
 			} else {
-				vals[1][2]++;
+				vals[1][0]++;
 			}
 		} else if (datapoints[i].classification === 'GUNSHOT') {
 			if(datapoints[i].confidence > hiMed) {
-				vals[2][0]++;
+				vals[2][2]++;
 			} else if(datapoints[i].confidence > medLo) {
 				vals[2][1]++;
 			} else {
-				vals[2][2]++;
+				vals[2][0]++;
 			}
 		}
 	}
