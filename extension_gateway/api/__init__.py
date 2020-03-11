@@ -1,2 +1,1 @@
-from .metadata import ModelMetadataAPI
-from .predict import ModelPredictAPI
+from .predict import PredictAPI

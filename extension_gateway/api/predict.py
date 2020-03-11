@@ -15,24 +15,17 @@ input_parser.add_argument('start_time', type=float, default=0,
                           help='The number of seconds into the audio file the prediction should start at.')
 input_parser.add_argument('filter', required=False, action='split', help='List of labels to filter (optional)')
 
-label_prediction = MAX_API.model('LabelPrediction', {
-    'label_id': fields.String(required=False, description='Label identifier'),
-    'label': fields.String(required=True, description='Audio class label'),
-    'probability': fields.Float(required=True)
-})
-
-predict_response = MAX_API.model('ModelPredictResponse', {
+predict_response = MAX_API.model('Response', {
     'status': fields.String(required=True, description='Response status message'),
     'prediction': fields.String(required=True, description='Highest confidence rated prediction'),
     'normalized_ratio': fields.Float(required=True)
 })
 
 
-class ModelPredictAPI(PredictAPI):
+class PredictAPI(PredictAPI):
 
     model_wrapper = ModelWrapper()
 
-    @MAX_API.doc('predict')
     @MAX_API.expect(input_parser)
     @MAX_API.marshal_with(predict_response)
     def post(self):
