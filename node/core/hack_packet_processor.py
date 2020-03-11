@@ -49,6 +49,19 @@ def convertpayload_transmit(payload_q):
             response_decoded = response_bytes.decode('utf8').replace("'", '"')
             parsed_res = json.loads(response_decoded)
 
+q = Queue()
+
+print("CREATING A ML CLASS PACKET")
+payload = MlPayload()
+payload._battery_lvl = 100.0
+payload._timestamp = round(time.time())
+payload._classification = "BOMB"
+payload._confidence = 100.0
+packet = PacketBuilder().set_type("ML_CLASS").set_node_id(clairvoyant.CURRENT_NODE).set_message_id().set_payload(payload).set_ttl().set_retry_count(10).set_hop_count(10)
+packet = packet.build()
+q.put(packet)
+convertpayload_transmit(q)
+
                 
 
         
