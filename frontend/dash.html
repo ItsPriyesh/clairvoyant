@@ -29,23 +29,67 @@
 
     <div class="container">
       <div class="row" style="padding-bottom: 24px; padding-top: 32px">
-        <div class="col-md-6">
+        <div class="col-md-9">
           <div class="card">
             <p class="subheading">Mesh Network</p>
-            <div id="network-container"></div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="card">
-            <p class="subheading">Node Summary</p>
-            <table id="nodes_table" style="margin-left: 8px">
-              <thead>
+            <!-- <div id="network-container"></div> -->
+            
+
+            <table id="mesh_table" style="margin-left: 8px; text-align: center; ">
                 <tr>
-                  <th class="nodes_table_head">Node</th>
-                  <th class="nodes_table_head">Battery</th>
+                  <th class="mesh-table-head history_table_body"></th>
+                  
+                  <td class="history_table_body">
+                    <p>Node 1</p>
+                    <div id="node-1-notif" class="animate-idle node-notif">
+                      <p id="node-1-notif-text"class="roboto-med" style="text-align: center;">...</p>
+                    </div>
+                  </td>
+                  <td class="history_table_body">
+                    <p>Node 2</p>
+                    <div id="node-2-notif" class="animate-idle node-notif">
+                      <p id="node-2-notif-text"class="roboto-med" style="text-align: center;">...</p>
+                    </div>
+                  </td>
+                  <td class="history_table_body">
+                    <p>Node 3</p>
+                    <div id="node-3-notif" class="animate-idle node-notif">
+                      <p id="node-3-notif-text"class="roboto-med" style="text-align: center;">...</p>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody class="nodes_table_body"></tbody>
+
+                <tr>
+                  <th class="mesh-table-head history_table_body">Status</th>
+                  
+                  <td class="history_table_body">1</td>
+                  <td class="history_table_body">2</td>
+                  <td class="history_table_body">3</td>
+                </tr>
+                <tr>
+                  <th class="mesh-table-head history_table_body">Orientation</th>
+                  <td class="history_table_body">1</td>
+                  <td class="history_table_body">2</td>
+                  <td class="history_table_body">3</td>
+                </tr>
+                <tr>
+                  <th class="mesh-table-head history_table_body">Roll</th>
+                  <td class="history_table_body">1</td>
+                  <td class="history_table_body">2</td>
+                  <td class="history_table_body">3</td>
+                </tr>
+                <tr>
+                  <th class="mesh-table-head history_table_body">Pitch</th>
+                  <td class="history_table_body">1</td>
+                  <td class="history_table_body">2</td>
+                  <td class="history_table_body">3</td>
+                </tr>
+                <tr>
+                  <th class="mesh-table-head history_table_body">Yaw</th>
+                  <td class="history_table_body">1</td>
+                  <td class="history_table_body">2</td>
+                  <td class="history_table_body">3</td>
+                </tr>
             </table>
           </div>
         </div>
@@ -65,7 +109,8 @@
         <div class="col-md-5">
           <div class="card">
             <p class="subheading">Motion Event History</p>
-            <table id="motion_history_table" style="margin-left: 8px">
+            <div style="max-height: 250px; overflow-y: scroll; width: 100%">
+            <table id="motion_history_table" style="margin-left: 8px; width: 100%">
               <thead>
                 <tr>
                   <th class="history_table_head">Source</th>
@@ -78,12 +123,14 @@
               </thead>
               <tbody class="history_table_body"></tbody>
             </table>
+            </div>
           </div>
         </div>
         <div class="col-md-7">
           <div class="card">
             <p class="subheading">Classification History</p>
-            <table id="history_table" style="margin-left: 8px">
+            <div style="max-height: 250px; overflow-y: scroll; width: 100%">
+            <table id="history_table" style="margin-left: 8px; width: 100%">
               <thead>
                 <tr>
                   <th class="history_table_head">Source</th>
@@ -94,17 +141,12 @@
               </thead>
               <tbody class="history_table_body"></tbody>
             </table>
+            </div>
           </div>
         </div>
       </div>
       <div class="row">
-        <div class="col-md-12">
-          <div class="card">
-            <p class="subheading">Motion Event History</p>
-            <!-- <canvas id="event-pie" style="margin: 10px"></canvas> -->
-            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
-          </div>
-        </div>
+        
       </div>
     </div>
 

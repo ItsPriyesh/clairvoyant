@@ -26,13 +26,13 @@ $(document).ready(function() {
     SOCKET_BASE = config.socket_url;
   httpGET('/nodes', (nodes) => {
     // console.log('Received nodes ' + JSON.stringify(nodes));
-    bindNodes(nodes);
-    bindNodeSummary(nodes);
+    // bindNodes(nodes);
+    // bindNodeSummary(nodes);
   });
 
   httpGET('/datapoints', (datapoints) => {
     // console.log('Received datapoints ' + JSON.stringify(datapoints));
-    bindEventBreakdown(datapoints);
+    // bindEventBreakdown(datapoints);
     bindHistory(datapoints);
   });
 
@@ -50,7 +50,8 @@ $(document).ready(function() {
     var dp = JSON.parse(msg.data);
     prependHistory(dp);
     animateDataPointReceived(dp);
-    updateChart(chartGlobal, dp.classification, dp);
+    animateNodeReceived(dp);
+    // updateChart(chartGlobal, dp.classification, dp);
   };
 
   let motionEventSocket = new WebSocket(SOCKET_BASE + '/listenMotionEvent');
@@ -71,6 +72,22 @@ animateDataPointReceived = function(dp) {
     $("#notif-time-ago").text(dp["created_at"]);
 
     let notif = $("#datapoint-notif");
+    notif.removeClass('animate-idle');
+    notif.addClass('animate-pulse');
+    notif.animate({opacity: 1}, 200);
+
+    setTimeout(() => {
+      notif.removeClass('animate-pulse');
+      notif.addClass('animate-idle');
+      notif.animate({opacity: .75}, 200);
+    }, 3000);
+}
+
+animateNodeReceived = function(dp) {
+
+    $("#node-" + dp["node_id"] + "-notif-text").text(dp["classification"]);
+
+    let notif = $("#node-" + dp["node_id"] + "-notif");
     notif.removeClass('animate-idle');
     notif.addClass('animate-pulse');
     notif.animate({opacity: 1}, 200);

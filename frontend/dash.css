@@ -92,6 +92,10 @@ body {
 	font-size: 14px;
   color: #000;
 }
+.mesh-table-head {
+
+  text-align: left;
+}
 #network-container {
     height: 180px;
 }
@@ -111,6 +115,23 @@ body {
     margin-right: auto;
     display: block;
   	opacity: .65;
+}
+
+.node-notif {
+  padding-top: 14px;
+  padding-bottom: 14px;
+  padding-left: 12px;
+  padding-right: 12px;
+  height: 50px;
+  width: 100px;
+    border-radius: 48px;
+    background: rgba(156, 255, 194,.75);
+    box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.1);
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px;
+    display: block;
+    opacity: .65;
 }
 
 #datapoint-notif p {
