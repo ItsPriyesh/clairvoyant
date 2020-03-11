@@ -370,7 +370,7 @@ def motion(input_buff, output_buff):
             motion_payload._roll = croll
             motion_payload._pitch = cpitch
             motion_payload._yaw = avg_yaw
-            motion_packet = PacketBuilder().
+            motion_packet = PacketBuilder()
             
 
             print("Roll: " + str(int(croll)) + " Pitch: " + str(int(cpitch)))
