@@ -26,19 +26,20 @@ $(document).ready(function() {
     SOCKET_BASE = config.socket_url;
   httpGET('/nodes', (nodes) => {
     // console.log('Received nodes ' + JSON.stringify(nodes));
-    bindNodes(nodes);
-    bindNodeSummary(nodes);
+    // bindNodes(nodes);
+    // bindNodeSummary(nodes);
   });
 
   httpGET('/datapoints', (datapoints) => {
     // console.log('Received datapoints ' + JSON.stringify(datapoints));
-    bindEventBreakdown(datapoints);
+    // bindEventBreakdown(datapoints);
     bindHistory(datapoints);
   });
 
   httpGET('/motionevents', (motionevents) => {
      console.log('Received motionevents ' + JSON.stringify(motionevents));
     bindMotionHistory(motionevents);
+    updateNodeInMesh(motionevents[0]);
   });
 
   let webSocket = new WebSocket(SOCKET_BASE + '/listenDataPoint');
@@ -50,7 +51,8 @@ $(document).ready(function() {
     var dp = JSON.parse(msg.data);
     prependHistory(dp);
     animateDataPointReceived(dp);
-    updateChart(chartGlobal, dp.classification, dp);
+    animateNodeReceived(dp);
+    // updateChart(chartGlobal, dp.classification, dp);
   };
 
   let motionEventSocket = new WebSocket(SOCKET_BASE + '/listenMotionEvent');
@@ -60,6 +62,7 @@ $(document).ready(function() {
   motionEventSocket.onmessage = function (msg) {
     var event = JSON.parse(msg.data);
     prependMotionHistory(event);
+    updateNodeInMesh(event);
   };
 });
   
@@ -71,6 +74,22 @@ animateDataPointReceived = function(dp) {
     $("#notif-time-ago").text(dp["created_at"]);
 
     let notif = $("#datapoint-notif");
+    notif.removeClass('animate-idle');
+    notif.addClass('animate-pulse');
+    notif.animate({opacity: 1}, 200);
+
+    setTimeout(() => {
+      notif.removeClass('animate-pulse');
+      notif.addClass('animate-idle');
+      notif.animate({opacity: .75}, 200);
+    }, 3000);
+}
+
+animateNodeReceived = function(dp) {
+
+    $("#node-" + dp["node_id"] + "-notif-text").text(dp["classification"]);
+
+    let notif = $("#node-" + dp["node_id"] + "-notif");
     notif.removeClass('animate-idle');
     notif.addClass('animate-pulse');
     notif.animate({opacity: 1}, 200);
@@ -145,7 +164,7 @@ bindMotionHistory = function(motionevents) {
 }
 
 appendMotionHistory = function(d) {
-  let row = `<tr class='motion_history_table_body'><td>Node ${d.node_id}</td><td>${d.motion_type}</td><td>${d.orientation}%</td><td>${d.roll}</td><td>${d.pitch}</td><td>${d.yaw}</td></tr>`;
+  let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${d.motion_type}</td><td>${d.orientation}</td><td>${d.roll}</td><td>${d.pitch}</td><td>${d.yaw}</td></tr>`;
   motionHistoryTable.append(row);
 }
 
@@ -176,12 +195,19 @@ prependMotionHistory = function(d) {
 
   cell1.innerHTML = `Node ${d.node_id}`;
   cell2.innerHTML = `${d.motion_type}`;
-  cell3.innerHTML = `${d.orientation}%`;
+  cell3.innerHTML = `${d.orientation}`;
   cell4.innerHTML = `${d.roll}`;
   cell5.innerHTML = `${d.pitch}`;
   cell6.innerHTML = `${d.yaw}`;
 
   row.classList.add('history_table_body');
+}
+
+updateNodeInMesh = function(dp) {
+    $("#node-" + dp["node_id"] + "-orientation").text(dp.orientation);
+    $("#node-" + dp["node_id"] + "-roll").text(dp.roll);
+    $("#node-" + dp["node_id"] + "-pitch").text(dp.pitch);
+    $("#node-" + dp["node_id"] + "-yaw").text(dp.yaw);
 }
 
 bindEventBreakdown = function(datapoints) {
