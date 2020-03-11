@@ -6,8 +6,8 @@ from time import time
 channel = grpc.insecure_channel("localhost:8080")
 stub = grpc_service.ClairvoyantServiceStub(channel)
 
-datapoint = grpc_model.DataPoint(message_id="sss"+str(time()), node_id="2", 
-	timestamp=round(time()), classification="BOMB", confidence=0.42)
+datapoint = grpc_model.DataPoint(message_id="sss"+str(time()), node_id="1", 
+	timestamp=round(time()), classification="EXPLOSION", confidence=0.42)
 ack = stub.CreateDataPoint(datapoint)
 print(ack)
 
@@ -16,7 +16,7 @@ heartbeat = grpc_model.Heartbeat(node_id="1", message_id="nfeihefhefh", timestam
 ack = stub.Ping(heartbeat)
 print(ack)
 
-motionevent = grpc_model.MotionEvent(message_id="eee"+str(time()), node_id="2", 
+motionevent = grpc_model.MotionEvent(message_id="eee"+str(time()), node_id="1", 
 	timestamp=round(time()), motion_type="EXTERNAL", orientation="UP", roll=120, pitch=40, yaw=90)
 ack = stub.CreateMotionEvent(motionevent)
 print(ack)
