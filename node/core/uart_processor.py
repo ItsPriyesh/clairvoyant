@@ -141,6 +141,17 @@ def construct_packet_from_list(payload):
         packet.set_retry_count( payload[4])
         packet.set_payload(AckPayload())
 
+    elif (payload[0] == "mtn"):
+
+        mtnpayload = MotionPayload()
+        
+        packet.set_type("MOTION_EVENT")
+        packet.set_node_id( payload[1])
+        packet.set_message_id( payload[2])
+        packet.set_hop_count( payload[3])
+        packet.set_retry_count( payload[4])
+        packet.set_payload( mtnpayload.from_array(payload[5:]))
+
     else:
         return False
     
@@ -172,6 +183,18 @@ def parse_tx_msg(packet):
     
     return packet
 
+def construct_lora_motion_string(Packet):
+    payload = []
+    payload.append("mtn")
+    payload.append(Packet._node_id)
+    payload.append(Packet._message_id)
+    payload.append(Packet._hop_count)
+    payload.append(Packet._retry_count)
+    payload.extend(Packet._payload.to_array())
+
+    string = parse_tx_msg(payload)
+
+    return string
 
 
 def construct_lora_ml_string(Packet): 
@@ -324,6 +347,10 @@ def uart_process(packet_tx_q, packet_rx_q):
 
             elif (packet.get_type() == "ACK"):
                 string = construct_lora_ack_string(packet)
+                lora_transmit(uart_q, True, None, string)
+
+            elif (packet.get_type() == "MOTION_EVENT"):
+                string = construct_lora_motion_string(packet)
                 lora_transmit(uart_q, True, None, string)
 
                 
