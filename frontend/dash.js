@@ -39,7 +39,21 @@ $(document).ready(function() {
   httpGET('/motionevents', (motionevents) => {
      console.log('Received motionevents ' + JSON.stringify(motionevents));
     bindMotionHistory(motionevents);
-    updateNodeInMesh(motionevents[0]);
+    
+    var node1 = null, node2 = null, node3 = null;
+    for (var i = 0; i < motionevents.length; i++) {
+      if (node1 != null && node2 != null && node3 != null) {
+        break;
+      }
+      switch (motionevents[i].node_id) {
+        case "1": node1 = motionevents[i]; break;
+        case "2": node2 = motionevents[i]; break;
+        case "3": node3 = motionevents[i]; break;
+      }
+    }
+    if (node1 != null) updateNodeInMesh(node1);
+    if (node2 != null) updateNodeInMesh(node2);
+    if (node3 != null) updateNodeInMesh(node3);
   });
 
   let webSocket = new WebSocket(SOCKET_BASE + '/listenDataPoint');
