@@ -78,7 +78,7 @@ if __name__ == '__main__':
             traceback.print_exc()
 
 
-    print(process_pool)
+    # print(process_pool)
 
     #TODO(sathoshi):
         # Continously do heartbeat polling with all the different processes that exist. 

@@ -56,7 +56,6 @@ class Packet:
 	def to_dict(self):
 		first_class_params = {"type": self._type, "node_id": self._node_id, "message_id": self._message_id, "ttl": self._ttl, "hop_count": self._hop_count, "retry_count": self._retry_count}
 		first_class_params.update(self._payload.to_dict())
-		print(first_class_params)
 		return first_class_params
 
 	def increment_retry_count(self):
