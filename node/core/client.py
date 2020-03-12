@@ -8,38 +8,74 @@ import traceback
 import json
 import multiprocessing
 from multiprocessing import Queue
-from clairvoyant_data import PacketBuilder
-from clairvoyant_data import PacketBuilder
-from uart_process import *
+from clairvoyant_data import *
+import json
 
 _API_ENDPOINT = "http://localhost:5000/model/predict"
 
 
-def convertpayload_transmit(payload_q):
+def cms(Packet):
+    payload = []
+    payload.append("mtn")
+    payload.append(Packet._node_id)
+    payload.append(Packet._message_id)
+    payload.append(Packet._hop_count)
+    payload.append(Packet._retry_count)
+    payload.extend(Packet._payload.to_array())
+
+
+    return payload
+
+
+def cml(Packet): 
+    payload = []
+    payload.append("ml")#packet type
+    payload.append(Packet._node_id)
+    payload.append(Packet._message_id)
+    payload.append(Packet._hop_count)
+    payload.append(Packet._retry_count)
+    payload.extend(Packet._payload.to_array())
+
+
+    return payload
+  
+def chb(Packet):
+    payload = []
+    payload.append("hb")#packet type
+    payload.append(Packet._node_id)
+    payload.append(Packet._message_id)
+    payload.append(Packet._hop_count)
+    payload.append(Packet._retry_count)    
+    payload.extend(Packet._payload.to_array())
+
+
+    return payload
+
+def convertpayload_transmit(packet_tx_q):
+    string = ""
 
     while(1):
         if (packet_tx_q.empty() == False):
             packet = packet_tx_q.get()
 
             if (packet.get_type() == "ML_CLASS"):
-                string = construct_lora_ml_string(packet)
+                string = cml(packet)
                                 
             elif (packet.get_type() == "HEART_BEAT"):
-                string = construct_lora_heartbeat_string(packet)
+                string = chb(packet)
 
-            elif (packet.get_type() == "ACK"):
-                string = construct_lora_ack_string(packet)
 
             elif (packet.get_type() == "MOTION_EVENT"):
-                string = construct_lora_motion_string(packet)
+                string = cms(packet)
 
+            string = json.dumps(string,separators=(',', ':'))
 
-  
-    
+            b = string
+            print(b)
 
-			data = parse.urlencode({"test": string}).encode()
-			req =  request.Request("http://localhost:5001/", data=data) # this will make the method "POST"
-			resp = request.urlopen(req)
+            data = parse.urlencode({str(string): "test"}).encode('utf8')
+            req =  request.Request("http://localhost:5001/", data=data) # this will make the method "POST"
+            resp = request.urlopen(req)
             
           
 
