@@ -51,7 +51,7 @@ bindEventBreakdown = function(datapoints) {
     type: "pie",
     startAngle: 240,
     indexLabelFontColor: "#e3e3e3",
-    yValueFormatString: "##0.00\"%\"",
+    yValueFormatString: "##0",
     indexLabel: "{label} {y}",
     dataPoints: dps
   }]
@@ -85,8 +85,8 @@ appendHistory = function(d) {
 }
 
 appendConfidenceTable = function(type, vals) {
-	let row = `<tr><th class='confidence_table_head'>${type}</th><td class = 'confidence_table_cell'>${vals[0]}</td><td class = 'confidence_table_cell'>${vals[1]}</td><td class = 'confidence_table_cell'>${vals[2]}</td></tr>`;
-  	confidenceTable.append(row);
+	let row = `<tr><th class='confidence_table_head'>${type}</th><td class='confidence_table_cell' style='background-color:red;'>${vals[0]}</td><td class='confidence_table_cell' style='background-color:orange;'>${vals[1]}</td><td class='confidence_table_cell' style='background-color:green;'>${vals[2]}</td></tr>`;
+  confidenceTable.append(row);
 }
 
 populateConfidence = function(datapoints) {
