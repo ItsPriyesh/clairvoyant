@@ -51,12 +51,12 @@ def chb(Packet):
 
     return payload
 
-def convertpayload_transmit(packet_tx_q):
+def client_process(input_buff, output_buff):
     string = ""
 
     while(1):
-        if (packet_tx_q.empty() == False):
-            packet = packet_tx_q.get()
+        if (input_buff.empty() == False):
+            packet = input_buff.get()
 
             if (packet.get_type() == "ML_CLASS"):
                 string = cml(packet)
@@ -70,27 +70,27 @@ def convertpayload_transmit(packet_tx_q):
 
             string = json.dumps(string,separators=(',', ':'))
 
-            b = string
+            b = string  
             print(b)
 
             data = parse.urlencode({str(string): "test"}).encode('utf8')
-            req =  request.Request("http://localhost:5001/", data=data) # this will make the method "POST"
+            req =  request.Request("http://10.33.143.62:5001/", data=data) # this will make the method "POST"
             resp = request.urlopen(req)
             
           
 
-q = Queue()
+# q = Queue()
 
-print("CREATING A ML CLASS PACKET")
-payload = MlPayload()
-payload._battery_lvl = 100.0
-payload._timestamp = round(time.time())
-payload._classification = "BOMB"
-payload._confidence = 100.0
-packet = PacketBuilder().set_type("ML_CLASS").set_node_id(clairvoyant.CURRENT_NODE).set_message_id().set_payload(payload).set_ttl().set_retry_count(10).set_hop_count(10)
-packet = packet.build()
-q.put(packet)
-convertpayload_transmit(q)
+# print("CREATING A ML CLASS PACKET")
+# payload = MlPayload()
+# payload._battery_lvl = 100.0
+# payload._timestamp = round(time.time())
+# payload._classification = "BOMB"
+# payload._confidence = 100.0
+# packet = PacketBuilder().set_type("ML_CLASS").set_node_id(clairvoyant.CURRENT_NODE).set_message_id().set_payload(payload).set_ttl().set_retry_count(10).set_hop_count(10)
+# packet = packet.build()
+# q.put(packet)
+# convertpayload_transmit(q)
 
                 
 
