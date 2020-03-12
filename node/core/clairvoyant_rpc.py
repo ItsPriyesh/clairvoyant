@@ -155,3 +155,50 @@ class ClairvoyantRPCService:
 			raise(e)
 
 
+	"""
+	Expected arguments
+		MotionEvent {
+			string node_id = 1;
+		    string message_id = 2;
+		    int64 timestamp = 3;
+		    string motion_type = 4;
+		    string orientation = 5;
+		    int32 roll = 6;
+		    int32 pitch = 7;
+		    int32 yaw = 8;
+		    int32 retry_count = 9;
+		    int32 hop_count = 10;
+		}
+	"""
+	def create_motion_event(self, motion_packet):
+		print("about to send motion event to rpc")
+		params = self._validate_params_and_set_default(
+			motion_packet.to_dict(), 
+			"node_id", 
+			"message_id", 
+			"timestamp", 
+			"retry_count",
+			"hop_count")
+
+		print("added defaults {}".format(params))
+
+		try:
+			motion_event = grpc_model.MotionEvent(**params)
+			
+			ack = self.stub.CreateMotionEvent(motion_event)
+			ack_packet = PacketBuilder()
+			ack_packet.set_type("ACK")
+			ack_packet.set_node_id(ack.node_id)
+			ack_packet.set_message_id(ack.message_id)
+			ack_packet.set_payload(AckPayload())
+			ack_packet.set_ttl()
+			ack_packet.set_retry_count(0)
+			ack_packet.set_hop_count(0)
+			
+			return ack_packet.build()
+		except Exception as e:
+			traceback.print_exc()
+			raise(e)
+
+
+

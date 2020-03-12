@@ -215,5 +215,12 @@ def init(input_buff, output_buff):
                 traceback.print_exc
                 if (not clairvoyant.FORCE_GATEWAY):
                     uart_tx_buff.put(data)
-
+        elif data.get_type() == 'MOTION_EVENT':
+            try:
+                ack_packet = rpc_service.create_motion_event(data)
+                input_buff.put(ack_packet)
+            except Exception as e:
+                traceback.print_exc
+                if (not clairvoyant.FORCE_GATEWAY):
+                    uart_tx_buff.put(data)
 
