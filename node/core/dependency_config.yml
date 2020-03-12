@@ -10,9 +10,9 @@ audio_proc_1:
   module_name: audio_recorder
   input_sources:
 
-# motion_proc_1:
-#   module_name: motion_processor
-#   input_sources:
+motion_proc_1:
+  module_name: motion_processor
+  input_sources:
 
 data_proc_1:
   module_name: data_processor
@@ -40,4 +40,4 @@ client_proc_1:
   input_sources:
     - ml_proc_1
     - heart_beat_proc1
-    # - motion_proc_1
+    - motion_proc_1

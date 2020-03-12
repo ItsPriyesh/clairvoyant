@@ -7,7 +7,7 @@ import multiprocessing
 
 from multiprocessing import Queue
 
-_API_ENDPOINT = "http://localhost:5000/model/gateway"
+_API_ENDPOINT = "http://10.33.135.138:5000/model/gateway"
 _HEADERS = {'content-type': 'application/json'}
 
 def init(input_buff, output_buff):
