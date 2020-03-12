@@ -54,7 +54,7 @@ def most_frequent(List):
     return max(set(List), key = List.count)     
 
 
-def motion(input_buff, output_buff):
+def init(input_buff, output_buff):
 
     print("Initializing Motion Process....")
     
@@ -135,7 +135,7 @@ def motion(input_buff, output_buff):
     gyro_init = False
     old_gts = 0
 
-
+    now_ts = time.time()
     mts = 0
     ots = 0
     
@@ -329,8 +329,8 @@ def motion(input_buff, output_buff):
             motion_payload = clairvoyant_data.MotionPayload()
             motion_payload._battery_lvl = 100.0
             motion_payload._timestamp = round(time.time())
-            
-            
+            motion_payload._motion_type = "DEVICE"           
+            motion_payload._motion_type = "TOP"            
             if (presence_detected == True):
                 print ("External Motion Detected")
                 motion_payload._motion_type = "EXTERNAL"
@@ -367,11 +367,11 @@ def motion(input_buff, output_buff):
                 print ("Side 4-Up Orientation")
                 motion_payload._orientation = "SIDE_4"
 
-            motion_payload._roll = croll
-            motion_payload._pitch = cpitch
-            motion_payload._yaw = avg_yaw
-            motion_packet = PacketBuilder()
-            
+            motion_payload._roll = int(croll)
+            motion_payload._pitch = int(cpitch)
+            motion_payload._yaw = int(avg_yaw)
+#            motion_packet = PacketBuilder()
+#            print(motion_payload)            
 
             print("Roll: " + str(int(croll)) + " Pitch: " + str(int(cpitch)))
             
@@ -379,12 +379,15 @@ def motion(input_buff, output_buff):
             print("Yaw: " + str(avg_yaw))
 
 
-            motion_payload = clairvoyant_data.MotionPayload()
+#            motion_payload = clairvoyant_data.MotionPayload()
             motion_payload._battery_lvl = 100.0
             motion_payload._timestamp = round(time.time())
             motion_packet = PacketBuilder().set_type("MOTION_EVENT").set_node_id(clairvoyant.CURRENT_NODE).set_message_id().set_payload(motion_payload).set_ttl().set_retry_count().set_hop_count()
-            built_packet = motion_packet.build()
-            output_buff.put(built_packet)
+            print(motion_payload)
+            if (time.time() - now_ts > 5):
+
+                built_packet = motion_packet.build()
+                output_buff.put(built_packet)
 
             
 

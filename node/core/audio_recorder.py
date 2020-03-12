@@ -9,7 +9,7 @@ CHANNELS = 1
 RATE = 44100
 CHUNK = 4096
 RECORD_SECONDS = 11
-DEVICE_INDEX = 0
+DEVICE_INDEX = 5
 
 def print_available_mics():
     audio = pyaudio.PyAudio()
