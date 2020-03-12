@@ -1,8 +1,8 @@
 import serial
 from multiprocessing import Queue
-from clairvoyant_data import *
-from lora_driver import *
-import clairvoyant
+from .clairvoyant_data import *
+from .lora_driver import *
+from . import clairvoyant
 import time
 import binascii
 import time

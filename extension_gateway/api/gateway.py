@@ -6,7 +6,7 @@ from flask_restplus import fields, reqparse
 from maxfw.core import MAX_API, CustomMAXAPI
 from multiprocessing import Queue
 from .comm_processor import init
-
+from .clairvoyant_data import Packet
 
 _INPUT_QUEUE = Queue()
 _OUTPUT_QUEUE = Queue()
@@ -46,12 +46,14 @@ class GatewayAPI(CustomMAXAPI):
 		result = {'status': 'error'}
 
 		args = input_parser.parse_args()
-		parsed_packet = eval(args['x-packet'])
+		parsed_data = eval(args['x-packet'])
+
+		clairvoyant_packet = Packet.from_dict(parsed_data)
 
 		# Need to convert the packet back into a packet that can be transmitted through 
 		# Clairyoant LoRa Mesh Network
-
-		gateway.get_input_queue().put(parsed_packet)
+		
+		gateway.get_input_queue().put(clairvoyant_packet)
 
 		result['status'] = 'ok'
 		return result

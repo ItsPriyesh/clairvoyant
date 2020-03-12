@@ -2,14 +2,15 @@ import traceback
 import multiprocessing
 import time
 import random
-import clairvoyant
+# import clairvoyant
 import traceback
 
 from multiprocessing import Queue
-from uart_processor import uart_process
-from clairvoyant_rpc import ClairvoyantRPCService
-from clairvoyant_data import Packet
-from clairvoyant_data import PacketBuilder
+from .uart_processor import uart_process
+from .clairvoyant_rpc import ClairvoyantRPCService
+from .clairvoyant_data import Packet
+from .clairvoyant_data import PacketBuilder
+from . import clairvoyant
 from collections import deque
 
 """
@@ -155,8 +156,8 @@ def init(input_buff, output_buff):
     uart_rx_buff = input_buff
 
     # Start uart processttggt
-    uart_proc = multiprocessing.Process(target=uart_process, args=(uart_tx_buff, uart_rx_buff),)
-    uart_proc.start()
+    # uart_proc = multiprocessing.Process(target=uart_process, args=(uart_tx_buff, uart_rx_buff),)
+    # uart_proc.start()
 
     # Initalize rpc service for communicating with clairvoyant server
     rpc_service = ClairvoyantRPCService()
@@ -203,7 +204,7 @@ def init(input_buff, output_buff):
                 ack_packet = rpc_service.create_data_point(data)
                 input_buff.put(ack_packet)
             except Exception as e:
-                traceback.print_exc
+                # traceback.print_exc
                 if (not clairvoyant.FORCE_GATEWAY):
                     uart_tx_buff.put(data)
         elif data.get_type() == "HEART_BEAT":
@@ -212,7 +213,7 @@ def init(input_buff, output_buff):
                 ack_packet = rpc_service.heart_beat(data)
                 input_buff.put(ack_packet)
             except Exception as e:
-                traceback.print_exc
+                # traceback.print_exc
                 if (not clairvoyant.FORCE_GATEWAY):
                     uart_tx_buff.put(data)
 

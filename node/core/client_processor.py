@@ -6,7 +6,6 @@ import json
 import multiprocessing
 
 from multiprocessing import Queue
-from clairvoyant_data import *
 
 _API_ENDPOINT = "http://localhost:5000/model/gateway"
 _HEADERS = {'content-type': 'application/json'}
