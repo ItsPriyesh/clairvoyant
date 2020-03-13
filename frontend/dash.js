@@ -69,6 +69,17 @@ $(document).ready(function() {
     // updateChart(chartGlobal, dp.classification, dp);
   };
 
+  let heartbeatSocket = new WebSocket(SOCKET_BASE + '/listenHeartbeat');
+  // let webSocket = new WebSocket('ws://localhost:8081' + '/listenDataPoint');
+  heartbeatSocket.onopen = function () {
+    heartbeatSocket.send(JSON.stringify(credentials));
+  }
+  heartbeatSocket.onmessage = function (msg) {
+    var hb = JSON.parse(msg.data);
+    updateHeartbeat(hb);
+    // updateChart(chartGlobal, dp.classification, dp);
+  };
+
   let motionEventSocket = new WebSocket(SOCKET_BASE + '/listenMotionEvent');
   motionEventSocket.onopen = function () {
     motionEventSocket.send(JSON.stringify(credentials));
@@ -222,6 +233,10 @@ updateNodeInMesh = function(dp) {
     $("#node-" + dp["node_id"] + "-roll").text(dp.roll);
     $("#node-" + dp["node_id"] + "-pitch").text(dp.pitch);
     $("#node-" + dp["node_id"] + "-yaw").text(dp.yaw);
+}
+
+updateHeartbeat = function(hb) {
+  $("#node-3-status").text(hb.created_at);
 }
 
 bindEventBreakdown = function(datapoints) {
