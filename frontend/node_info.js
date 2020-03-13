@@ -59,7 +59,16 @@ bindEventBreakdown = function(datapoints) {
 countByType = function(datapoints) {
   var groups = {};
   $.each(datapoints, function(i, datapoint) {
-    let type = datapoint["classification"];
+    var type = datapoint["classification"];
+    if(type === 'gun_shot') {
+      type = 'GUNSHOT';
+    } else if(type === 'vehicle') {
+      type = 'VEHICLE';
+    } else if(type === 'human_sound'){
+      type = 'HUMAN SOUND';
+    } else if(type === 'explosive') {
+      type = 'EXPLOSIVE';
+    }
     if (!(type in groups)) {
       groups[type] = 0;
     }
@@ -76,7 +85,18 @@ bindHistory = function(datapoints) {
 }
 
 appendHistory = function(d) {
-  let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
+  var type;
+
+  if(d.classification === 'gun_shot') {
+    type = 'GUNSHOT';
+  } else if(d.classification === 'vehicle') {
+    type = 'VEHICLE';
+  } else if(d.classification === 'human_sound'){
+    type = 'HUMAN SOUND';
+  } else if(d.classification === 'explosive') {
+    type = 'EXPLOSIVE';
+  }
+  let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${type}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
   historyTable.append(row);
 }
 
