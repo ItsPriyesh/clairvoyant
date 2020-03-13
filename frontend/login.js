@@ -16,7 +16,7 @@ $(document).ready(function(){
       alert(error.responseText);
     });
   });
-  });
+});
 // });
 
 loadDashboard = function(data) {
@@ -26,5 +26,11 @@ loadDashboard = function(data) {
   console.log(localStorage.getItem('token'));
   console.log(localStorage.getItem('userId'));
   window.location = "./dash.html";
+}
+
+function handleEnter(e) {
+  if(e.keyCode === 13){
+      document.getElementById("submit").click();
+  }
 }
 
