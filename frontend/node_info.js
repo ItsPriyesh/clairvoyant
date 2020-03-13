@@ -111,7 +111,7 @@ populateConfidence = function(datapoints) {
 			} else {
 				vals[1][0]++;
 			}
-		} else if (datapoints[i].classification === 'gunshot') {
+		} else if (datapoints[i].classification === 'gun_shot') {
 			if(datapoints[i].confidence > hiMed) {
 				vals[2][2]++;
 			} else if(datapoints[i].confidence > medLo) {
