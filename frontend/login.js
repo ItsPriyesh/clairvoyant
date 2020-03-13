@@ -3,6 +3,12 @@ let config = {"api_url": "http://168.62.177.105:8081", "socket_url": "ws://168.6
 $(document).ready(function(){
   // $.getJSON("config.json", function(config) {
   $("#submit").click(function() {
+    let twoFactor = document.getElementById('two-factor').value;
+    if (twoFactor != '1234') {
+      alert("Incorrect two-factor authentication code");
+      return;
+    }
+
     $.ajax({
       url: config.api_url + '/login',
       type: 'GET',

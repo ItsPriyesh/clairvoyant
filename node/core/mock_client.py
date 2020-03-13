@@ -11,7 +11,7 @@ datapoint = grpc_model.DataPoint(message_id="sss"+str(time()), node_id="1",
 ack = stub.CreateDataPoint(datapoint)
 print(ack)
 
-heartbeat = grpc_model.Heartbeat(node_id="1", message_id="nfeihefhefh", timestamp=round(time()),
+heartbeat = grpc_model.Heartbeat(node_id="3", message_id="nfeihefhefh", timestamp=round(time()),
 	battery_level=10.2, retry_count=1, hop_count=1)
 ack = stub.Ping(heartbeat)
 print(ack)
