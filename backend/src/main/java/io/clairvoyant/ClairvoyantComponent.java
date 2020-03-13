@@ -15,4 +15,5 @@ public interface ClairvoyantComponent {
     NodeInfoApi createNodeInfoApi();
     DataPointSocketHandler createSocketHandler();
     MotionEventSocketHandler createMotionEventSocketHandler();
+    HeartbeatSocketHandler createHeartbeatSocketHandler();
 }

@@ -52,6 +52,7 @@ public class ClairvoyantServer {
 
         Spark.webSocket("/listenDataPoint", component.createSocketHandler());
         Spark.webSocket("/listenMotionEvent", component.createMotionEventSocketHandler());
+        Spark.webSocket("/listenHeartbeat", component.createHeartbeatSocketHandler());
 
         Spark.before((req, res) -> {
             res.header("Access-Control-Allow-Origin", "*");

@@ -19,15 +19,17 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
     private final DataPointStore dataPointStore;
     private final DataPointPublisher dataPointPublisher;
     private final MotionEventPublisher motionEventPublisher;
+    private final HeartbeatPublisher heartbeatPublisher;
     private final NodeStore nodeStore;
     private final MotionEventStore motionEventStore;
 
     @Inject
     ClairvoyantService(DataPointStore dataPointStore, DataPointPublisher dataPointPublisher,
-                       MotionEventPublisher motionEventPublisher, NodeStore nodeStore, MotionEventStore motionEventStore) {
+                       MotionEventPublisher motionEventPublisher, HeartbeatPublisher heartbeatPublisher, NodeStore nodeStore, MotionEventStore motionEventStore) {
         this.dataPointStore = dataPointStore;
         this.dataPointPublisher = dataPointPublisher;
         this.motionEventPublisher = motionEventPublisher;
+        this.heartbeatPublisher = heartbeatPublisher;
         this.nodeStore = nodeStore;
         this.motionEventStore = motionEventStore;
     }
@@ -76,6 +78,8 @@ public final class ClairvoyantService extends ClairvoyantServiceGrpc.Clairvoyant
 
                     logger.atInfo()
                             .log("Heartbeat created for Node %s", heartbeat.getNodeId());
+
+                    heartbeatPublisher.publish(heartbeat);
 
                     responseObserver.onNext(ack);
                     responseObserver.onCompleted();

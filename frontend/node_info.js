@@ -21,7 +21,7 @@ var chartGlobal;
 var API_BASE;
 var SOCKET_BASE;
 
-let config = {"api_url": "http://localhost:8081", "socket_url": "ws://localhost:8081"};
+let config = {"api_url": "http://168.62.177.105:8081", "socket_url": "ws://168.62.177.105:8081"};
 
 $(document).ready(function() {
   // $.getJSON("config.json", (config) => {
