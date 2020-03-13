@@ -26,6 +26,8 @@ class S(BaseHTTPRequestHandler):
 
         print(packet)
 
+        tx_q.put(packet)
+
 
         # print(parse_rx_msg(post_data))
         self._set_response()
@@ -54,7 +56,7 @@ tx_q = Queue()
 rx_q = Queue()
 
 # Start uart processttggt
-# proc = multiprocessing.Process(target=comm_processor.init, args=(tx_q, rx_q),)
-# proc.start()
+proc = multiprocessing.Process(target=comm_processor.init, args=(tx_q, rx_q),)
+proc.start()
 
 run(port=5001)
