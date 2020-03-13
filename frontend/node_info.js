@@ -1,8 +1,4 @@
-let pieColors = {
-  GUNSHOT: '#ba2c54',
-  EXPLOSION: '#4275f7',
-  VEHICLE: '#b4d664',
-};
+
 
 let credentials = {
   user_id: localStorage.getItem('userId'),
@@ -91,14 +87,15 @@ appendConfidenceTable = function(type, vals) {
 
 populateConfidence = function(datapoints) {
 	var vals = [];
-	for(var i = 0; i < 3; i++) {
+	for(var i = 0; i < 4; i++) {
 		vals[i] = [];
 		vals[i][0] = 0;
 		vals[i][1] = 0;
 		vals[i][2] = 0;
+    vals[i][3] = 0;
 	}
 	for(var i = 0; i < datapoints.length; i++) {
-		if(datapoints[i].classification === 'EXPLOSION'){
+		if(datapoints[i].classification === 'explosive'){
 			if(datapoints[i].confidence > hiMed) {
 				vals[0][2]++;
 			} else if(datapoints[i].confidence > medLo) {
@@ -106,7 +103,7 @@ populateConfidence = function(datapoints) {
 			} else {
 				vals[0][0]++;
 			}
-		} else if (datapoints[i].classification === 'VEHICLE') {
+		} else if (datapoints[i].classification === 'vehicle') {
 			if(datapoints[i].confidence > hiMed) {
 				vals[1][2]++;
 			} else if(datapoints[i].confidence > medLo) {
@@ -114,7 +111,7 @@ populateConfidence = function(datapoints) {
 			} else {
 				vals[1][0]++;
 			}
-		} else if (datapoints[i].classification === 'GUNSHOT') {
+		} else if (datapoints[i].classification === 'gunshot') {
 			if(datapoints[i].confidence > hiMed) {
 				vals[2][2]++;
 			} else if(datapoints[i].confidence > medLo) {
@@ -122,12 +119,21 @@ populateConfidence = function(datapoints) {
 			} else {
 				vals[2][0]++;
 			}
-		}
+		} else if (datapoints[i].classification === 'human_sound') {
+      if(datapoints[i].confidence > hiMed) {
+        vals[3][2]++;
+      } else if(datapoints[i].confidence > medLo) {
+        vals[3][1]++;
+      } else {
+        vals[3][0]++;
+      }
+    }
 	}
 
-	appendConfidenceTable("EXPLOSION", vals[0]);
+	appendConfidenceTable("EXPLOSIVE", vals[0]);
 	appendConfidenceTable("VEHICLE", vals[1]);
 	appendConfidenceTable("GUNSHOT", vals[2]);
+  appendConfidenceTable("HUMAN SOUND", vals[3]);
 
 }
 
