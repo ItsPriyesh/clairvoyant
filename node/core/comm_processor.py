@@ -174,7 +174,8 @@ def init(input_buff, output_buff):
                 
             data.increment_hop_count()
 
-            if data.get_node_id() == clairvoyant.CURRENT_NODE:
+            # Hack to ensure that two nodes can go through the same comm_processor
+            if (data.get_node_id() == '1') or (data.get_node_id() == '2'):
                 if data.get_type() in Packet.VALID_EVENT_TYPES:
                     try:
                         retry_service.add_message_to_blocking_queue(data)
@@ -195,25 +196,11 @@ def init(input_buff, output_buff):
 
         # Data packets that are ready to be sent.
         #TODO(Sathoshi): implement cache for TTL
-        if data.get_type() == "ACK":
-            uart_tx_buff.put(data)
-        elif data.get_type() == "ML_CLASS":
-            try:
-                #TODO(Sathoshi): Handle server ack
-                ack_packet = rpc_service.create_data_point(data)
-                input_buff.put(ack_packet)
-            except Exception as e:
-                traceback.print_exc
-                if (not clairvoyant.FORCE_GATEWAY):
-                    uart_tx_buff.put(data)
-        elif data.get_type() == "HEART_BEAT":
-            try:
-                #TODO(Sathoshi): Handle server ack
-                ack_packet = rpc_service.heart_beat(data)
-                input_buff.put(ack_packet)
-            except Exception as e:
-                traceback.print_exc
-                if (not clairvoyant.FORCE_GATEWAY):
-                    uart_tx_buff.put(data)
+        # if data.get_type() == "ACK":
+        uart_tx_buff.put(data)
+        # elif data.get_type() == "ML_CLASS":
+        #     uart_tx_buff.put(data)
+        # elif data.get_type() == "HEART_BEAT":
+        #     uart_tx_buff.put(data)
 
 
