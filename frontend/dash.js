@@ -236,7 +236,8 @@ updateNodeInMesh = function(dp) {
 }
 
 updateHeartbeat = function(hb) {
-  $("#node-3-status").text(hb.created_at);
+  // $("#node-3-status").text(hb.created_at);
+  document.getElementById("node-3-status").innerHTML = `${hb.created_at}`
 }
 
 bindEventBreakdown = function(datapoints) {
