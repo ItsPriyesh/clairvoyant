@@ -176,8 +176,16 @@ bindHistory = function(datapoints) {
   }
 }
 
+let classMapping = {
+  explosive: "Explosive",
+  EXPLOSION: "Explosion",
+  gun_shot: "Gunshot",
+  human_voice: "Human voice",
+  human_sound: "Human sound",
+  vehicle: "Vehicle"
+}
 appendHistory = function(d) {
-  let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
+  let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${classMapping[d.classification]}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
   historyTable.append(row);
 }
 
@@ -201,7 +209,7 @@ prependHistory = function(d) {
   var cell3 = row.insertCell(2);
   var cell4 = row.insertCell(3);
   cell1.innerHTML = `Node ${d.node_id}`;
-  cell2.innerHTML = `${d.classification}`;
+  cell2.innerHTML = `${classMapping[d.classification]}`;
   cell3.innerHTML = `${d.confidence}%`;
   cell4.innerHTML = `${d.created_at}`;
   row.classList.add('history_table_body');
