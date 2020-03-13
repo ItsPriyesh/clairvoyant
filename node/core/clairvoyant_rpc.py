@@ -189,7 +189,12 @@ class ClairvoyantRPCService:
 			"message_id", 
 			"timestamp", 
 			"retry_count",
-			"hop_count")
+			"hop_count",
+			"motion_type",
+			"orientation",
+			"pitch",
+			"roll",
+			"yaw")
 
 		print("added defaults {}".format(params))
 
