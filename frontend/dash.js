@@ -104,13 +104,13 @@ animateNodeReceived = function(dp) {
     $("#node-" + dp["node_id"] + "-notif-text").text(dp["classification"]);
 
     let notif = $("#node-" + dp["node_id"] + "-notif");
-    notif.removeClass('animate-idle');
+    // notif.removeClass('animate-idle');
     notif.addClass('animate-pulse');
     notif.animate({opacity: 1}, 200);
 
     setTimeout(() => {
       notif.removeClass('animate-pulse');
-      notif.addClass('animate-idle');
+      // notif.addClass('animate-idle');
       notif.animate({opacity: .75}, 200);
     }, 3000);
 }

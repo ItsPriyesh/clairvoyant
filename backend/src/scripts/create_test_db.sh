@@ -8,6 +8,6 @@ python3 createTestData.py
 
 echo "Created test user"
 
-mysql -u root -p < ../../sql/createTestData.sql
+# mysql -u root -p < ../../sql/createTestData.sql
 
-echo "Created test nodes and data points"
+# echo "Created test nodes and data points"
