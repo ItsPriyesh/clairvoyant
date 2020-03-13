@@ -95,7 +95,7 @@ $(document).ready(function() {
 
 animateDataPointReceived = function(dp) {
     $("#notif-node").text("Node " + dp["node_id"]);
-    $("#notif-class").text(dp["classification"]);
+    $("#notif-class").text(classMapping[dp["classification"]]);
     $("#notif-time-ago").text(dp["created_at"]);
 
     let notif = $("#datapoint-notif");
@@ -112,7 +112,7 @@ animateDataPointReceived = function(dp) {
 
 animateNodeReceived = function(dp) {
 
-    $("#node-" + dp["node_id"] + "-notif-text").text(dp["classification"]);
+    $("#node-" + dp["node_id"] + "-notif-text").text(classMapping[dp["classification"]]);
 
     let notif = $("#node-" + dp["node_id"] + "-notif");
     // notif.removeClass('animate-idle');
@@ -176,8 +176,16 @@ bindHistory = function(datapoints) {
   }
 }
 
+let classMapping = {
+  explosive: "EXPLOSION",
+  EXPLOSION: "EXPLOSION",
+  gun_shot: "GUNSHOT",
+  human_voice: "HUMAN VOICE",
+  human_sound: "HUMAN SOUND",
+  vehicle: "VEHICLE"
+}
 appendHistory = function(d) {
-  let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${d.classification}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
+  let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${classMapping[d.classification]}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
   historyTable.append(row);
 }
 
@@ -201,7 +209,7 @@ prependHistory = function(d) {
   var cell3 = row.insertCell(2);
   var cell4 = row.insertCell(3);
   cell1.innerHTML = `Node ${d.node_id}`;
-  cell2.innerHTML = `${d.classification}`;
+  cell2.innerHTML = `${classMapping[d.classification]}`;
   cell3.innerHTML = `${d.confidence}%`;
   cell4.innerHTML = `${d.created_at}`;
   row.classList.add('history_table_body');

@@ -67,7 +67,6 @@ countByType = function(datapoints) {
   var groups = {};
   $.each(datapoints, function(i, datapoint) {
     var type = classMapping[datapoint["classification"]];
-
     if (!(type in groups)) {
       groups[type] = 0;
     }
