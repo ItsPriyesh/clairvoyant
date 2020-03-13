@@ -18,6 +18,12 @@ class ClairvoyantRPCService:
 	_DEFAULT_RETRY_COUNT = 1000
 	_DEFAULT_HOP_COUNT = 1000
 	_DEFAULT_BATTERY_LEVEL = 100
+	_DEFAULT_MOTION_TYPE = 'EXTERNAL'
+	_DEFAULT_ORIENTATION = 'TOP'
+	_DEFAULT_ROLL = 0
+	_DEFAULT_PITCH = 0
+	_DEFAULT_YAW = 0
+
 
 	_DEFAULT_PARAMS = {
 		"node_id" : _DEFAULT_NODE_ID,
@@ -26,7 +32,12 @@ class ClairvoyantRPCService:
 		"confidence" : _DEFAULT_CONFIDENCE,
 		"retry_count" : _DEFAULT_RETRY_COUNT,
 		"hop_count" : _DEFAULT_HOP_COUNT,
-		"battery_level" : _DEFAULT_BATTERY_LEVEL
+		"battery_level" : _DEFAULT_BATTERY_LEVEL,
+		"motion_type" : _DEFAULT_MOTION_TYPE,
+		"orientation" : _DEFAULT_ORIENTATION,
+		"roll" : _DEFAULT_ROLL,
+		"pitch" : _DEFAULT_PITCH,
+		"yaw" : _DEFAULT_YAW
 	}
 
 	"""
