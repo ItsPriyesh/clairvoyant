@@ -95,7 +95,7 @@ $(document).ready(function() {
 
 animateDataPointReceived = function(dp) {
     $("#notif-node").text("Node " + dp["node_id"]);
-    $("#notif-class").text(dp["classification"]);
+    $("#notif-class").text(classMapping[dp["classification"]]);
     $("#notif-time-ago").text(dp["created_at"]);
 
     let notif = $("#datapoint-notif");
@@ -112,7 +112,7 @@ animateDataPointReceived = function(dp) {
 
 animateNodeReceived = function(dp) {
 
-    $("#node-" + dp["node_id"] + "-notif-text").text(dp["classification"]);
+    $("#node-" + dp["node_id"] + "-notif-text").text(classMapping[dp["classification"]]);
 
     let notif = $("#node-" + dp["node_id"] + "-notif");
     // notif.removeClass('animate-idle');
@@ -177,12 +177,12 @@ bindHistory = function(datapoints) {
 }
 
 let classMapping = {
-  explosive: "Explosive",
-  EXPLOSION: "Explosion",
-  gun_shot: "Gunshot",
-  human_voice: "Human voice",
-  human_sound: "Human sound",
-  vehicle: "Vehicle"
+  explosive: "EXPLOSION",
+  EXPLOSION: "EXPLOSION",
+  gun_shot: "GUNSHOT",
+  human_voice: "HUMAN VOICE",
+  human_sound: "HUMAN SOUND",
+  vehicle: "VEHICLE"
 }
 appendHistory = function(d) {
   let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${classMapping[d.classification]}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
