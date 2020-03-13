@@ -4,7 +4,7 @@ $(document).ready(function(){
   // $.getJSON("config.json", function(config) {
   $("#submit").click(function() {
     let twoFactor = document.getElementById('two-factor').value;
-    if (twoFactor != '1234') {
+    if (twoFactor != 'cz1j83gs73') {
       alert("Incorrect two-factor authentication code");
       return;
     }
