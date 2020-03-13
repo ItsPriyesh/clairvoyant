@@ -1,4 +1,11 @@
-
+let classMapping = {
+  explosive: "EXPLOSIVE",
+  EXPLOSION: "EXPLOSIVE",
+  gun_shot: "GUNSHOT",
+  human_voice: "HUMAN VOICE",
+  human_sound: "HUMAN SOUND",
+  vehicle: "VEHICLE"
+}
 
 let credentials = {
   user_id: localStorage.getItem('userId'),
@@ -59,16 +66,8 @@ bindEventBreakdown = function(datapoints) {
 countByType = function(datapoints) {
   var groups = {};
   $.each(datapoints, function(i, datapoint) {
-    var type = datapoint["classification"];
-    if(type === 'gun_shot') {
-      type = 'GUNSHOT';
-    } else if(type === 'vehicle') {
-      type = 'VEHICLE';
-    } else if(type === 'human_sound'){
-      type = 'HUMAN SOUND';
-    } else if(type === 'explosive') {
-      type = 'EXPLOSIVE';
-    }
+    var type = classMapping[datapoint["classification"]];
+
     if (!(type in groups)) {
       groups[type] = 0;
     }
@@ -85,18 +84,8 @@ bindHistory = function(datapoints) {
 }
 
 appendHistory = function(d) {
-  var type;
-
-  if(d.classification === 'gun_shot') {
-    type = 'GUNSHOT';
-  } else if(d.classification === 'vehicle') {
-    type = 'VEHICLE';
-  } else if(d.classification === 'human_sound'){
-    type = 'HUMAN SOUND';
-  } else if(d.classification === 'explosive') {
-    type = 'EXPLOSIVE';
-  }
-  let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${type}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
+  
+  let row = `<tr class='history_table_body'><td>Node ${d.node_id}</td><td>${classMapping[d.classification]}</td><td>${d.confidence}%</td><td>${d.created_at}</td></tr>`;
   historyTable.append(row);
 }
 
